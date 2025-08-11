@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "io.github.tr100000.researcher.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChatScreenMixin",
+    "ClientPlayNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

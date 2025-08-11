@@ -1,0 +1,114 @@
+plugins {
+    id "fabric-loom" version "${loom_version}"
+    id "com.diffplug.spotless" version "7.+"
+    id "maven-publish"
+}
+
+version = "$project.mod_version+${project.minecraft_version}"
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    maven {
+        name = "TerraformersMC Maven"
+        url = "https://maven.terraformersmc.com/releases"
+        content {
+            includeGroup "com.terraformersmc"
+        }
+    }
+    maven {
+        name = "FzzyMaven"
+        url = "https://maven.fzzyhmstrs.me/"
+        content {
+            includeGroup "me.fzzyhmstrs"
+        }
+    }
+    flatDir {
+        dirs "libs"
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation ":trutils:${project.trutils_version}"
+    modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+}
+
+apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "researcher" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+
+    accessWidenerPath = file("src/main/resources/researcher.accesswidener")
+}
+
+spotless {
+    format "misc", {
+        target "*.gradle", "*.properties", ".gitattributes", ".gitignore"
+
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+    }
+    java {
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+        endWithNewline()
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": inputs.properties.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    inputs.property "archivesName", project.base.archivesName
+
+    from("LICENSE") {
+        rename { "${it}_${inputs.properties.archivesName}"}
+    }
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            artifactId = project.archives_base_name
+            from components.java
+        }
+    }
+
+    repositories {
+
+    }
+}

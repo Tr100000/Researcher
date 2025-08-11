@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "researcher",
+  "version": "${version}",
+  "name": "Researcher",
+  "description": "A (mostly) data-driven research system inspired by Factorio.",
+  "authors": ["Tr100000"],
+  "contact": {
+    "homepage": "https://github.com/Tr100000/Researcher",
+    "sources": "https://github.com/Tr100000/Researcher",
+    "issues": "https://github.com/Tr100000/Researcher/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/researcher/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.tr100000.researcher.Researcher"],
+    "client": ["io.github.tr100000.researcher.ResearcherClient"]
+  },
+  "custom": {
+    "fzzy_config": ["researcher"],
+    "loom:injected_interfaces": {
+      "net/minecraft/class_5350": ["io/github/tr100000/researcher/api/ResearchManagerGetter"],
+      "net/minecraft/server/MinecraftServer": ["io/github/tr100000/researcher/api/ResearchManagerGetter"],
+      "net/minecraft/class_3324": ["io/github/tr100000/researcher/api/ServerResearchTrackerGetter"],
+      "net/minecraft/class_3222": ["io/github/tr100000/researcher/api/PlayerResearchTrackerGetter"],
+      "net/minecraft/class_634": ["io/github/tr100000/researcher/api/ClientResearchTrackerGetter"]
+    }
+  },
+  "mixins": [
+    "researcher.mixins.json",
+    {
+      "config": "researcher.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "researcher.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.17",
+    "minecraft": "~1.21.8",
+    "java": ">=21",
+    "fabric-api": "*",
+    "trutils": "*",
+    "fzzy_config": ">=0.7"
+  }
+}
