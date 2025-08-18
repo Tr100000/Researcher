@@ -17,14 +17,12 @@ import net.minecraft.util.context.ContextParameterMap;
 public final class CraftingRecipeUnlockDisplay {
     private CraftingRecipeUnlockDisplay() {}
 
-    public static RecipeUnlockDisplay create(RecipeEntry<CraftingRecipe> entry) {
-        CraftingRecipe recipe = entry.value();
-        return switch (recipe) {
-            case ShapedRecipe shapedRecipe -> createNormal(shapedRecipe, entry.id().getValue());
-            case ShapelessRecipe shapelessRecipe -> createNormal(shapelessRecipe, entry.id().getValue());
-            case TransmuteRecipe transmuteRecipe -> createTransmute(transmuteRecipe, entry.id().getValue());
-            default -> throw new IllegalStateException("Unexpected value: " + recipe);
-        };
+    public static RecipeUnlockDisplay createShaped(RecipeEntry<ShapedRecipe> entry) {
+        return createNormal(entry.value(), entry.id().getValue());
+    }
+
+    public static RecipeUnlockDisplay createShapeless(RecipeEntry<ShapelessRecipe> entry) {
+        return createNormal(entry.value(), entry.id().getValue());
     }
 
     private static RecipeUnlockDisplay createNormal(CraftingRecipe recipe, Identifier recipeId) {
@@ -44,13 +42,13 @@ public final class CraftingRecipeUnlockDisplay {
         return new RecipeUnlockDisplay.Impl(new ItemIconRenderer(resultStack), tooltip);
     }
 
-    private static RecipeUnlockDisplay createTransmute(TransmuteRecipe recipe, Identifier recipeId) {
+    public static RecipeUnlockDisplay createTransmute(RecipeEntry<TransmuteRecipe> entry) {
         ContextParameterMap contextParameterMap = SlotDisplayContexts.createParameters(MinecraftClient.getInstance().world);
-        RecipeDisplay recipeDisplay = recipe.getDisplays().getFirst();
+        RecipeDisplay recipeDisplay = entry.value().getDisplays().getFirst();
         CraftingRecipeTooltipComponent tooltip = CraftingRecipeTooltipComponent.create(
-                recipeId,
+                entry.id().getValue(),
                 2,
-                recipe.getIngredientPlacement(),
+                entry.value().getIngredientPlacement(),
                 recipeDisplay.result(),
                 contextParameterMap
         );

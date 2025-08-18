@@ -34,7 +34,7 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
             title = researchManager.getTitleWithStatus(research).asOrderedText();
         }
         else {
-            title = Text.translatable(research.getTranslationKey(researchManager)).asOrderedText();
+            title = research.getTitle(researchManager).asOrderedText();
         }
 
         Identifier researchId = researchManager.getId(research);

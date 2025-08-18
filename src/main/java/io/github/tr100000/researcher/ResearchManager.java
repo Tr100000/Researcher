@@ -64,7 +64,7 @@ public class ResearchManager extends JsonDataLoader<Research> implements Identif
             researchMap.put(id, entry);
             entry.recipeUnlocks().forEach(unlock -> parent.getRecipeManager().get(RegistryKey.of(RegistryKeys.RECIPE, unlock)).ifPresentOrElse(
                     recipe -> {
-                        if (LockableRecipeTypesList.getTypes().contains(recipe.value().getType())) {
+                        if (LockableRecipeTypesList.getTypes().contains(recipe.value().getSerializer())) {
                             unlockableRecipes.add(unlock);
                         }
                         else {

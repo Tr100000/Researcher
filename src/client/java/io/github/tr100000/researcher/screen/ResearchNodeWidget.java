@@ -10,7 +10,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -39,7 +38,7 @@ public class ResearchNodeWidget extends PressableWidget {
     }
 
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
-        super(x, y, width, height, Text.translatable(research.getTranslationKey(MinecraftClient.getInstance().getNetworkHandler().researcher$getClientTracker())));
+        super(x, y, width, height, research.getTitle(MinecraftClient.getInstance().getNetworkHandler().researcher$getClientTracker()));
         this.screen = screen;
         this.parentView = parentView;
         this.research = research;

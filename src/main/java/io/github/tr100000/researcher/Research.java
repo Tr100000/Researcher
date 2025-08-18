@@ -50,15 +50,6 @@ public record Research(Optional<Text> titleText, Optional<Text> descriptionText,
             Research::new
     );
 
-    public Research(Optional<Text> titleText, Optional<Text> descriptionText, ResearchCriterion<?> trigger, List<Identifier> prerequisiteIds, List<Identifier> recipeUnlocks, IconRenderer display) {
-        this.titleText = titleText;
-        this.descriptionText = descriptionText;
-        this.trigger = trigger;
-        this.prerequisiteIds = prerequisiteIds;
-        this.recipeUnlocks = recipeUnlocks;
-        this.display = display == null || display.isBlank() ? DEFAULT_ICON : display;
-    }
-
     public String getTranslationKey(ResearchHolder researchManager) {
         return researchManager.getId(this).toTranslationKey(ResearchManager.PATH);
     }
@@ -87,7 +78,7 @@ public record Research(Optional<Text> titleText, Optional<Text> descriptionText,
             hoverText = hoverText.append("\n").append(getDescription(researchManager));
         }
         HoverEvent hoverEvent = new HoverEvent.ShowText(hoverText.formatted(Formatting.GREEN));
-        ClickEvent clickEvent = new ClickEvent.RunCommand("/research_show " + researchManager.getId(this));
+        ClickEvent clickEvent = new ClickEvent.RunCommand("/researcher_client show " + researchManager.getId(this));
         Text researchText = Texts.bracketed(titleText).styled(style -> style.withHoverEvent(hoverEvent).withClickEvent(clickEvent)).formatted(Formatting.GREEN);
         return Text.translatable("chat.researcher.research", player.getDisplayName(), researchText);
     }

@@ -3,7 +3,7 @@
 A (mostly) data-driven research system for Minecraft inspired by Factorio.
 
 > [!NOTE]
-> This mod does nothing on its own, a datapack or mod that adds research must be installed for this to have any effect.
+> This mod does nothing on its own, and is meant to be used by other mods or datapacks.
 
 ## Features
 
@@ -15,7 +15,7 @@ A (mostly) data-driven research system for Minecraft inspired by Factorio.
 
 ## Legal Stuff
 
-The mod icon and the default research texture are both a modified version of [this](https://commons.wikimedia.org/wiki/File:Le_Penseur_by_Rodin_(Kunsthalle_Bielefeld)_2014-04-10.JPG), and are therefore licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en). Everything else is licensed under the MIT license.
+The mod icon and the default research texture are both a modified version of [this](<https://commons.wikimedia.org/wiki/File:Le_Penseur_by_Rodin_(Kunsthalle_Bielefeld)_2014-04-10.JPG>), and are therefore licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en). Everything else is licensed under the MIT license.
 
 ## Why not use advancements?
 
@@ -25,14 +25,3 @@ Sure, you could use the `doLimitedCrafting` gamerule with advancements to lock r
 
 This mod takes advantage of Minecraft's criteria system, which is used by advancements. Unlike advancements, to complete a research, the criterion must be triggered a set number of times.
 Research progress is saved per-world, alongside stuff like advancements.
-
-## Roadmap
-
-- Hide locked recipes from recipe book
-- Show that recipes are locked when trying to craft
-- Actually test research syncing
-- Proper javadocs
-- Proper documentation (for both players and devs)
-- More API features?
-- Json schema
-- Support locking other types of recipes (maybe)

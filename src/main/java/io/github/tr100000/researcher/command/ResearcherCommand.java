@@ -24,7 +24,7 @@ public final class ResearcherCommand {
     }
 
     private static int printInfo(CommandContext<ServerCommandSource> context) {
-        Text message = Text.literal("Researcher v").append(Text.literal(Researcher.getVersion().getFriendlyString()).formatted(Formatting.GOLD));
+        Text message = Text.literal("Researcher").append(Text.literal("v" + Researcher.getVersion().getFriendlyString()).formatted(Formatting.GOLD));
         context.getSource().sendMessage(message);
         return 0;
     }

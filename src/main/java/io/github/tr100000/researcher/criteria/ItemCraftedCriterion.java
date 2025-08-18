@@ -13,7 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Optional;
 
-public class ItemCraftedCriteria extends AbstractCriterion<ItemCraftedCriteria.Conditions> {
+public class ItemCraftedCriterion extends AbstractCriterion<ItemCraftedCriterion.Conditions> {
     @Override
     public Codec<Conditions> getConditionsCodec() {
         return Conditions.CODEC;

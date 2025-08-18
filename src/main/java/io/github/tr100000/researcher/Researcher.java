@@ -8,8 +8,10 @@ import io.github.tr100000.researcher.networking.ResearcherNetworking;
 import io.github.tr100000.trutils.TrUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,12 @@ public class Researcher implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register(ResearcherCommand::register);
         CommandRegistrationCallback.EVENT.register(ResearchCommand::register);
+
+        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+            if (player instanceof ServerPlayerEntity serverPlayer) {
+                ResearcherCriteria.BLOCK_BROKEN.trigger(serverPlayer, state.getBlock());
+            }
+        });
 
         ResearcherNetworking.registerPayloads();
         ResearcherNetworking.registerServerRecievers();

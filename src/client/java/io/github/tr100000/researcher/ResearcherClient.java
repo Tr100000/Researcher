@@ -1,19 +1,21 @@
 package io.github.tr100000.researcher;
 
 import io.github.tr100000.researcher.api.RecipeUnlockDisplayRegistry;
+import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
 import io.github.tr100000.researcher.screen.ResearchHud;
 import io.github.tr100000.researcher.screen.ResearchScreen;
 import io.github.tr100000.trutils.TrUtils;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
@@ -29,7 +31,11 @@ public class ResearcherClient implements ClientModInitializer {
         Registry.register(Registries.SOUND_EVENT, Researcher.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
         ResearcherClientNetworking.registerClientRecievers();
 
-        RecipeUnlockDisplayRegistry.register(RecipeType.CRAFTING, CraftingRecipeUnlockDisplay::create);
+        ClientCommandRegistrationCallback.EVENT.register(ResearcherClientCommand::register);
+
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPED, CraftingRecipeUnlockDisplay::createShaped);
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPELESS, CraftingRecipeUnlockDisplay::createShapeless);
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.CRAFTING_TRANSMUTE, CraftingRecipeUnlockDisplay::createTransmute);
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, ResearchHud.LAYER_ID, ResearchHud::render);
 

@@ -30,9 +30,8 @@ public final class ResearchCommand {
     private ResearchCommand() {}
 
     private static final DynamicCommandExceptionType EXCEPTION = new DynamicCommandExceptionType(Message.class::cast);
-    public static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> {
-        return CommandSource.suggestIdentifiers(context.getSource().getServer().researcher$getServerManager().listAllIds(), builder);
-    };
+    public static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder)
+            -> CommandSource.suggestIdentifiers(context.getSource().getServer().researcher$getServerManager().listAllIds(), builder);
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, RegistrationEnvironment environment) {
         dispatcher.register(literal(ResearchManager.PATH)
@@ -164,14 +163,14 @@ public final class ResearchCommand {
                     throw EXCEPTION.create(
                             Text.translatable(
                                     operation.getCommandPrefix() + ".one.to.one.failure",
-                                    Text.translatable(selected.iterator().next().getTranslationKey(researchManager)),
+                                    selected.iterator().next().getTitle(researchManager),
                                     targets.iterator().next().getDisplayName()
                             )
                     );
                 } else {
                     throw EXCEPTION.create(
                             Text.translatable(
-                                    operation.getCommandPrefix() + ".one.to.many.failure", Text.translatable(selected.iterator().next().getTranslationKey(researchManager)), targets.size()
+                                    operation.getCommandPrefix() + ".one.to.many.failure", selected.iterator().next().getTitle(researchManager), targets.size()
                             )
                     );
                 }
@@ -191,7 +190,7 @@ public final class ResearchCommand {
                     context.getSource().sendFeedback(
                             () -> Text.translatable(
                                     operation.getCommandPrefix() + ".one.to.one.success",
-                                    Text.translatable(selected.iterator().next().getTranslationKey(researchManager)),
+                                    selected.iterator().next().getTitle(researchManager),
                                     targets.iterator().next().getDisplayName()
                             ),
                             true
@@ -199,7 +198,7 @@ public final class ResearchCommand {
                 } else {
                     context.getSource().sendFeedback(
                             () -> Text.translatable(
-                                    operation.getCommandPrefix() + ".one.to.many.success", Text.translatable(selected.iterator().next().getTranslationKey(researchManager)), targets.size()
+                                    operation.getCommandPrefix() + ".one.to.many.success", selected.iterator().next().getTitle(researchManager), targets.size()
                             ),
                             true
                     );

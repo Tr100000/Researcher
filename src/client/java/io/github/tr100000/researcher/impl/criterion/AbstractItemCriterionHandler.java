@@ -14,12 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
-public abstract class AbstractCraftCriterionHandler<T extends CriterionConditions> implements CriterionHandler<T> {
+public abstract class AbstractItemCriterionHandler<T extends CriterionConditions> implements CriterionHandler<T> {
     private final String textBeforeKey;
     private final String textAfterKey;
     private final String countTextKey;
 
-    protected AbstractCraftCriterionHandler(String textBeforeKey, String textAfterKey, String countTextKey) {
+    protected AbstractItemCriterionHandler(String textBeforeKey, String textAfterKey, String countTextKey) {
         this.textBeforeKey = textBeforeKey;
         this.textAfterKey = textAfterKey;
         this.countTextKey = countTextKey;
