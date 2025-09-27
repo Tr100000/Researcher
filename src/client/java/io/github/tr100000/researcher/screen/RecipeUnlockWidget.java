@@ -1,17 +1,20 @@
 package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.researcher.Researcher;
+import io.github.tr100000.researcher.ResearcherClient;
 import io.github.tr100000.researcher.api.RecipeUnlockDisplay;
 import io.github.tr100000.researcher.api.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.trutils.TrUtilsClient;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import io.github.tr100000.trutils.api.gui.IconRenderer;
+import io.github.tr100000.trutils.api.gui.ItemIconRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.sound.SoundManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -70,7 +73,11 @@ public class RecipeUnlockWidget extends ClickableWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        // TODO proper recipe viewer support
+        if (!ResearcherClient.recipeViewerDelegate.showRecipe(id)) ResearcherClient.recipeViewerDelegate.showRecipes(tryGetResult());
+    }
+
+    private ItemStack tryGetResult() {
+        return icon instanceof ItemIconRenderer(ItemStack stack) ? stack : ItemStack.EMPTY;
     }
 
     @Override

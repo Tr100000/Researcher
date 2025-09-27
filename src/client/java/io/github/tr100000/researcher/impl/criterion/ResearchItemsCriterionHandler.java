@@ -19,7 +19,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class ResearchItemsCriterionHandler implements CriterionHandler<ResearchItemsCriterion.Conditions> {
     @Override
-    public CriterionDisplay prepare(ResearchCriterion<ResearchItemsCriterion.Conditions> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<ResearchItemsCriterion.Conditions> criterion) {
         List<CriterionDisplayElement> elements = new ObjectArrayList<>();
 
         ResearchItemsCriterion.Conditions conditions = criterion.conditions();

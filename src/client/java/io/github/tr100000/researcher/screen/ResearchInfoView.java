@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.ResearchProgress;
-import io.github.tr100000.researcher.api.CriterionDisplay;
+import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
 import io.github.tr100000.researcher.api.CriterionHandlerRegistry;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -25,7 +25,7 @@ public class ResearchInfoView extends AbstractResearchView {
     private boolean showUnlocks = true;
     private ClientResearchTracker researchTracker;
 
-    private @Nullable CriterionDisplay currentDisplay;
+    private @Nullable CriterionDisplayElement currentDisplay;
 
     public ResearchInfoView(ResearchScreen parent) {
         super(parent, 0, 0, ResearchScreen.sidebarWidth, ResearchScreen.infoViewHeight);
@@ -80,12 +80,12 @@ public class ResearchInfoView extends AbstractResearchView {
         super.renderView(draw, mouseX, mouseY, delta);
     }
 
-    public static <T extends CriterionConditions> CriterionDisplay prepareDisplay(ResearchCriterion<T> criterion) {
+    public static <T extends CriterionConditions> CriterionDisplayElement prepareDisplay(ResearchCriterion<T> criterion) {
         CriterionHandler<T> handler = CriterionHandlerRegistry.get(criterion.trigger());
         return handler.prepare(criterion);
     }
 
-    public static void drawCriterion(CriterionDisplay display, ResearchCriterion<?> criterion, ResearchProgress progress, DrawContext draw, int mouseX, int mouseY, int x, int y, float delta) {
+    public static void drawCriterion(CriterionDisplayElement display, ResearchCriterion<?> criterion, ResearchProgress progress, DrawContext draw, int mouseX, int mouseY, int x, int y, float delta) {
         int criterionWidth = display.getWidth();
         draw.fill(x, y, x + criterionWidth + 4, y + 18, CRITERION_BACKGROUND);
         draw.fill(x, y, x + getScaledProgress(criterion, progress, criterionWidth + 4), y + 18, CRITERION_PROGRESS);

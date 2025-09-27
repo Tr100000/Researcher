@@ -26,6 +26,13 @@ repositories {
             includeGroup "me.fzzyhmstrs"
         }
     }
+    maven {
+        url = "https://maven.shedaniel.me/"
+        content {
+            includeGroupAndSubgroups "me.shedaniel"
+            includeGroup "dev.architectury"
+        }
+    }
     flatDir {
         dirs "libs"
     }
@@ -40,6 +47,12 @@ dependencies {
     modImplementation ":trutils:${project.trutils_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    if (project.recipe_viewer == "rei") {
+        modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+    }
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${project.rei_version}"
 }
 
 apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
@@ -66,6 +79,7 @@ spotless {
         endWithNewline()
     }
     java {
+        removeUnusedImports()
         trimTrailingWhitespace()
         leadingTabsToSpaces(4)
         endWithNewline()
@@ -81,22 +95,27 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
     it.options.release = 21
 }
 
-java {
-    withSourcesJar()
-//    withJavadocJar()
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
 
+java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+
+    withSourcesJar()
 }
 
 jar {
     inputs.property "archivesName", project.base.archivesName
 
     from("LICENSE") {
-        rename { "${it}_${inputs.properties.archivesName}"}
+        rename { "${it}_${inputs.properties.archivesName}" }
     }
 }
 
@@ -106,9 +125,5 @@ publishing {
             artifactId = project.archives_base_name
             from components.java
         }
-    }
-
-    repositories {
-
     }
 }

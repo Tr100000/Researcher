@@ -2,6 +2,7 @@ package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.CriterionDisplay;
+import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.element.ItemCriterionDisplayElement;
 import io.github.tr100000.researcher.impl.criterion.element.SpacingCriterionDisplayElement;
@@ -28,11 +29,11 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
     }
 
     @Override
-    public CriterionDisplay prepare(ResearchCriterion<T> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<T> criterion) {
         return prepare();
     }
 
-    public CriterionDisplay prepare() {
+    public CriterionDisplayElement prepare() {
         return new CriterionDisplay(
                 new ItemCriterionDisplayElement(stack, false),
                 new SpacingCriterionDisplayElement(4),
@@ -40,7 +41,7 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
         );
     }
 
-    public CriterionDisplay prepareWithErrorTooltip(Text errorText) {
+    public CriterionDisplayElement prepareWithErrorTooltip(Text errorText) {
         return new CriterionDisplay(
                 new ItemCriterionDisplayElement(stack, List.of(errorText)),
                 new SpacingCriterionDisplayElement(4),

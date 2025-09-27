@@ -55,5 +55,4 @@ public final class CraftingRecipeUnlockDisplay {
         ItemStack resultStack = recipeDisplay.result().getFirst(contextParameterMap);
         return new RecipeUnlockDisplay.Impl(new ItemIconRenderer(resultStack), tooltip);
     }
-
 }

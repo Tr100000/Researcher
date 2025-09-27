@@ -21,7 +21,7 @@ import java.util.Optional;
 @Environment(EnvType.CLIENT)
 public abstract class AbstractConsumeItemCriterionHandler<T extends CriterionConditions> implements CriterionHandler<T> {
     @Override
-    public CriterionDisplay prepare(ResearchCriterion<T> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<T> criterion) {
         Optional<Item> item = getItem(criterion.conditions());
         if (item.isEmpty()) {
             return ErrorCriterionHandler.ERROR.prepareWithErrorTooltip(Text.literal("Invalid unlock conditions!"));

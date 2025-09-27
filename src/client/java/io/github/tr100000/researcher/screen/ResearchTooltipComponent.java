@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.screen;
 import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
-import io.github.tr100000.researcher.api.CriterionDisplay;
+import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.trutils.api.gui.ExtendedTooltipComponent;
 import io.github.tr100000.trutils.api.utils.GameUtils;
 import net.fabricmc.api.EnvType;
@@ -24,7 +24,7 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
     private final OrderedText title;
     private final OrderedText idText;
     private final OrderedText modNameText;
-    private final CriterionDisplay criterionDisplay;
+    private final CriterionDisplayElement criterionDisplay;
 
     public ResearchTooltipComponent(Research research, boolean showStatus) {
         this.research = research;

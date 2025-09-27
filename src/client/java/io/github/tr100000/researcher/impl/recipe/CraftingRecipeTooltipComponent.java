@@ -26,7 +26,8 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
 
     private final int recipeWidth;
     private final List<List<ItemStack>> ingredients;
-    private final ItemStack reuslt;
+    private final ItemStack result;
+    private final OrderedText recipeText;
     private final OrderedText idText;
     private final OrderedText modNameText;
 
@@ -47,27 +48,30 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
         return new CraftingRecipeTooltipComponent(recipeId, recipeWidth, ingredients, resultStack);
     }
 
-    public CraftingRecipeTooltipComponent(Identifier recipeId, int recipeWidth, List<List<ItemStack>> ingredients, ItemStack reuslt) {
+    public CraftingRecipeTooltipComponent(Identifier recipeId, int recipeWidth, List<List<ItemStack>> ingredients, ItemStack result) {
         this.recipeWidth = recipeWidth;
         this.ingredients = ingredients;
-        this.reuslt = reuslt;
+        this.result = result;
+        this.recipeText = Text.translatableWithFallback(recipeId.toTranslationKey("recipe"), result.getName().getString()).asOrderedText();
         this.idText = Text.literal(recipeId.toString()).formatted(Formatting.DARK_GRAY).asOrderedText();
         this.modNameText = Text.literal(GameUtils.getModName(recipeId.getNamespace())).formatted(Formatting.BLUE, Formatting.ITALIC).asOrderedText();
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return longestText(textRenderer, 176, idText, modNameText);
+        return longestText(textRenderer, 176, recipeText, idText, modNameText);
     }
 
     @Override
     public int getHeight(TextRenderer textRenderer) {
         int textureHeight = 86;
-        return textureHeight + 2 + (client.options.advancedItemTooltips ? 20 : 10);
+        return 10 + textureHeight + 2 + (client.options.advancedItemTooltips ? 20 : 10);
     }
 
     @Override
     public void drawText(DrawContext draw, TextRenderer textRenderer, int x, int y) {
+        text(draw, textRenderer, recipeText, x, y);
+        y += 10;
         y += 86;
         y += 2;
         if (client.options.advancedItemTooltips) {
@@ -79,7 +83,7 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext draw) {
-        draw.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y, 0, 0, width, height, 256, 256);
+        draw.drawTexture(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y + 10, 0, 0, width, height, 256, 256);
 
         final long currentTick = System.currentTimeMillis() / 1000;
 
@@ -90,9 +94,9 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
             int column = i % recipeWidth;
 
             ItemStack stack = stacks.get((int)(currentTick % stacks.size()));
-            draw.drawItemWithoutEntity(stack, x + 30 + column * 18, y + 17 + row * 18);
+            draw.drawItemWithoutEntity(stack, x + 30 + column * 18, y + 27 + row * 18);
         }
 
-        draw.drawItemWithoutEntity(reuslt, x + 124, y + 35);
+        draw.drawItemWithoutEntity(result, x + 124, y + 45);
     }
 }
