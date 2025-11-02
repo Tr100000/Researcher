@@ -144,7 +144,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         Map<Identifier, ResearchProgress> progressMapById = new Object2ObjectOpenHashMap<>();
         progressMap.forEach((research, progress) -> {
             if (progress.hasProgress()) {
-                progressMapById.put(researchManager.getId(research), progress);
+                progressMapById.put(researchManager.getIdOrThrow(research), progress);
             }
         });
         return new Data(progressMapById, Optional.ofNullable(currentResearching), pinnedResearches);
@@ -184,21 +184,22 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
 
     public void syncWith(PlayerResearchTracker other) {
         if (other == this) return;
-        this.progressMap.forEach((other::combineProgress));
-        other.progressMap.forEach((this::combineProgress));
+        this.progressMap.forEach(other::combineProgress);
         this.syncedTrackers.add(other);
-        other.syncedTrackers.add(this);
         this.dirty = true;
+
+        other.progressMap.forEach(this::combineProgress);
+        other.syncedTrackers.add(this);
         other.dirty = true;
     }
 
     private void combineProgress(Research research, ResearchProgress otherProgress) {
         ResearchProgress ourProgress = progressMap.get(research);
-        progressMap.put(research, ResearchProgress.compare(ourProgress, otherProgress));
+        progressMap.put(research, ResearchProgress.combine(ourProgress, otherProgress));
 
         if (!ourProgress.isFinished() && otherProgress.isFinished()) {
             // This prevents things like advancements not triggering when syncing settings are changed
-            ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchManager.getId(research));
+            ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchManager.getIdOrThrow(research));
         }
     }
 
@@ -241,14 +242,16 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     }
 
     private void onResearchFinished(Research research) {
+        Identifier researchId = researchManager.getIdOrThrow(research);
+
         progressUpdates.add(research);
         endTracking(research);
         playerManager.broadcast(research.getChatAnnouncementText(researchManager, owner), false);
-        ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchManager.getId(research));
-        if (researchManager.getId(research).equals(currentResearching)) {
+        ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchId);
+        if (researchId.equals(currentResearching)) {
             currentResearching = null;
         }
-        pinnedResearches.remove(researchManager.getId(research));
+        pinnedResearches.remove(researchId);
     }
 
     public boolean incrementCriterion(Research research) {
@@ -298,6 +301,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
             }
             return true;
         }
+
         else {
             return false;
         }
@@ -306,7 +310,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     public void sendUpdate() {
         if (dirty || !progressUpdates.isEmpty() || forceNextUpdate) {
             Map<Identifier, ResearchProgress> updatedProgressMap = new HashMap<>();
-            progressUpdates.forEach(research -> updatedProgressMap.put(researchManager.getId(research), getProgress(research)));
+            progressUpdates.forEach(research -> updatedProgressMap.put(researchManager.getIdOrThrow(research), getProgress(research)));
 
             progressUpdates.clear();
             if (dirty || !updatedProgressMap.isEmpty() || forceNextUpdate) {

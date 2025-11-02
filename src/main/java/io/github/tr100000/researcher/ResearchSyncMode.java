@@ -11,6 +11,6 @@ public enum ResearchSyncMode implements EnumTranslatable {
 
     @Override
     public @NotNull String prefix() {
-        return Researcher.MODID + ".research_sync_mode";
+        return "config." + Researcher.MODID + ".sync_mode";
     }
 }

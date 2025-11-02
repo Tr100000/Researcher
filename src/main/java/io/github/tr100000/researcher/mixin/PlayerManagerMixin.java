@@ -3,6 +3,7 @@ package io.github.tr100000.researcher.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.tr100000.researcher.PlayerResearchTracker;
 import io.github.tr100000.researcher.ResearchManager;
+import io.github.tr100000.researcher.ResearchSyncMode;
 import io.github.tr100000.researcher.api.ServerResearchTrackerGetter;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -23,6 +24,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin implements ServerResearchTrackerGetter {
@@ -53,11 +55,18 @@ public abstract class PlayerManagerMixin implements ServerResearchTrackerGetter 
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        switch (ResearcherConfigs.server.researchSyncMode.get()) {
-            case GLOBAL -> players.stream().map(ServerPlayerEntity::researcher$getPlayerTracker).forEach(player.researcher$getPlayerTracker()::syncWith);
-            case TEAM -> players.stream().filter(player::isTeammate).map(ServerPlayerEntity::researcher$getPlayerTracker).forEach(player.researcher$getPlayerTracker()::syncWith);
-            default -> {} // do nothing by default
-        }
+        playersToSyncWith(player, ResearcherConfigs.server.researchSyncMode.get())
+                .map(ServerPlayerEntity::researcher$getPlayerTracker)
+                .forEach(player.researcher$getPlayerTracker()::syncWith);
+    }
+
+    @Unique
+    private Stream<ServerPlayerEntity> playersToSyncWith(ServerPlayerEntity player, ResearchSyncMode syncMode) {
+        return switch (ResearcherConfigs.server.researchSyncMode.get()) {
+            case GLOBAL -> players.stream();
+            case TEAM -> players.stream().filter(player::isTeammate);
+            default -> Stream.empty(); // Don't sync with anyone by default
+        };
     }
 
     @Override @Unique

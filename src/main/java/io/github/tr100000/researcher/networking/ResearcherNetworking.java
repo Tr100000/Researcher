@@ -12,7 +12,7 @@ public class ResearcherNetworking {
     protected ResearcherNetworking() {}
 
     public static void registerPayloads() {
-        PayloadTypeRegistry.playS2C().register(ResearchUpdateS2CPacket.ID, ResearchUpdateS2CPacket.CODEC);
+        PayloadTypeRegistry.playS2C().registerLarge(ResearchUpdateS2CPacket.ID, ResearchUpdateS2CPacket.CODEC, Integer.MAX_VALUE);
         PayloadTypeRegistry.playC2S().register(StartResearchC2SPacket.ID, StartResearchC2SPacket.CODEC);
     }
 

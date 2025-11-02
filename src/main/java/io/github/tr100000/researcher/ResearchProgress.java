@@ -101,7 +101,7 @@ public class ResearchProgress {
         }
     }
 
-    public static ResearchProgress compare(ResearchProgress a, ResearchProgress b) {
+    public static ResearchProgress combine(ResearchProgress a, ResearchProgress b) {
         if (a.finished) return a;
         if (b.finished) return b;
         return a.count > b.count ? a : b;

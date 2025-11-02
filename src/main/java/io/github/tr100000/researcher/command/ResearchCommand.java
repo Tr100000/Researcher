@@ -279,7 +279,7 @@ public final class ResearchCommand {
         LIST("list") {
             @Override
             protected boolean processEach(ServerPlayerEntity player, Research research) {
-                player.sendMessage(Text.literal(player.getServer().researcher$getServerManager().getId(research).toString()));
+                player.sendMessage(Text.literal(player.getServer().researcher$getServerManager().getIdOrEmpty(research).toString()));
                 return true;
             }
         };

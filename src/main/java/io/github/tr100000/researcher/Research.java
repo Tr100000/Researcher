@@ -51,11 +51,11 @@ public record Research(Optional<Text> titleText, Optional<Text> descriptionText,
     );
 
     public String getTranslationKey(ResearchHolder researchManager) {
-        return researchManager.getId(this).toTranslationKey(ResearchManager.PATH);
+        return researchManager.getIdOrEmpty(this).toTranslationKey(ResearchManager.PATH);
     }
 
     public String getDescriptionTranslationKey(ResearchHolder researchManager) {
-        return researchManager.getId(this).toTranslationKey(ResearchManager.PATH, "desc");
+        return researchManager.getIdOrEmpty(this).toTranslationKey(ResearchManager.PATH, "desc");
     }
 
     public Text getTitle(ResearchHolder researchManager) {

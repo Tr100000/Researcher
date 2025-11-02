@@ -9,6 +9,7 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
+import org.jetbrains.annotations.NotNull;
 
 @Translation(prefix = "config.researcher.server")
 public class ResearcherServerConfig extends Config {
@@ -19,6 +20,11 @@ public class ResearcherServerConfig extends Config {
     @RequiresAction(action = Action.RELOAD_DATA)
     public ValidatedFloat researchCostMultiplier = new ValidatedFloat(1, 100000, 0.1F, ValidatedNumber.WidgetType.TEXTBOX);
     public ValidatedEnum<ResearchSyncMode> researchSyncMode = new ValidatedEnum<>(ResearchSyncMode.NONE);
+
+    @Override
+    public @NotNull String translationKey() {
+        return getId().toTranslationKey("config");
+    }
 
     @Override
     public int defaultPermLevel() {

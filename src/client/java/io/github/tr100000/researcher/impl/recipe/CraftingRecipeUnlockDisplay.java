@@ -2,7 +2,6 @@ package io.github.tr100000.researcher.impl.recipe;
 
 import io.github.tr100000.researcher.api.RecipeUnlockDisplay;
 import io.github.tr100000.trutils.api.gui.ItemIconRenderer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeEntry;
@@ -10,7 +9,6 @@ import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.recipe.TransmuteRecipe;
 import net.minecraft.recipe.display.RecipeDisplay;
-import net.minecraft.recipe.display.SlotDisplayContexts;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.context.ContextParameterMap;
 
@@ -29,7 +27,7 @@ public final class CraftingRecipeUnlockDisplay {
         if (recipe.getDisplays().isEmpty()) return RecipeUnlockDisplay.ERROR;
         if (recipe.getIngredientPlacement().hasNoPlacement()) return RecipeUnlockDisplay.ERROR;
 
-        ContextParameterMap contextParameterMap = SlotDisplayContexts.createParameters(MinecraftClient.getInstance().world);
+        ContextParameterMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
         RecipeDisplay recipeDisplay = recipe.getDisplays().getFirst();
         CraftingRecipeTooltipComponent tooltip = CraftingRecipeTooltipComponent.create(
                 recipeId,
@@ -43,12 +41,16 @@ public final class CraftingRecipeUnlockDisplay {
     }
 
     public static RecipeUnlockDisplay createTransmute(RecipeEntry<TransmuteRecipe> entry) {
-        ContextParameterMap contextParameterMap = SlotDisplayContexts.createParameters(MinecraftClient.getInstance().world);
-        RecipeDisplay recipeDisplay = entry.value().getDisplays().getFirst();
+        TransmuteRecipe recipe = entry.value();
+        if (recipe.getDisplays().isEmpty()) return RecipeUnlockDisplay.ERROR;
+        if (recipe.getIngredientPlacement().hasNoPlacement()) return RecipeUnlockDisplay.ERROR;
+
+        ContextParameterMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
+        RecipeDisplay recipeDisplay = recipe.getDisplays().getFirst();
         CraftingRecipeTooltipComponent tooltip = CraftingRecipeTooltipComponent.create(
                 entry.id().getValue(),
                 2,
-                entry.value().getIngredientPlacement(),
+                recipe.getIngredientPlacement(),
                 recipeDisplay.result(),
                 contextParameterMap
         );

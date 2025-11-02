@@ -76,7 +76,7 @@ public class ResearchBuilder {
         return display(ItemIconRenderer.of(item));
     }
 
-    public Identifier export(ResearchExporter exporter) {
+    public Identifier exportTo(ResearchExporter exporter) {
         exporter.accept(id, build());
         return id;
     }

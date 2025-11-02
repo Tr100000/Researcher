@@ -13,7 +13,7 @@ A (mostly) data-driven research system for Minecraft inspired by Factorio.
   - Sync research progress between teams or across all players!
 - It's like advancements, but with a count
 
-## Legal Stuff
+## Boring Legal Stuff
 
 The mod icon and the default research texture are both a modified version of [this](<https://commons.wikimedia.org/wiki/File:Le_Penseur_by_Rodin_(Kunsthalle_Bielefeld)_2014-04-10.JPG>), and are therefore licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en). Everything else is licensed under the MIT license.
 

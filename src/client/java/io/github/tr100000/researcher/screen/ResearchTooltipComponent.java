@@ -37,7 +37,7 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
             title = research.getTitle(researchManager).asOrderedText();
         }
 
-        Identifier researchId = researchManager.getId(research);
+        Identifier researchId = researchManager.getIdOrEmpty(research);
         idText = Text.literal(researchId.toString()).formatted(Formatting.DARK_GRAY).asOrderedText();
         modNameText = Text.literal(GameUtils.getModName(researchId)).formatted(Formatting.BLUE, Formatting.ITALIC).asOrderedText();
 

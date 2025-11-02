@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -43,6 +44,11 @@ public interface ResearchHolder {
         Identifier id = getId(research);
         if (id == null) id = Researcher.id("");
         return id;
+    }
+
+    default Identifier getIdOrThrow(Research research) {
+        Identifier id = getId(research);
+        return Objects.requireNonNull(id, "id must not be null");
     }
 
     @Nullable

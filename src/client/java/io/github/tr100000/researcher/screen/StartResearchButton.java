@@ -28,7 +28,7 @@ public class StartResearchButton extends PressableWidget {
     }
 
     public static StartResearchButton create(int x, int y, ClientResearchTracker researchTracker, Research research, boolean pin, boolean isCurrent) {
-        StartResearchButton button = new StartResearchButton(x, y, 0, 20, Text.empty(), researchTracker.getId(research), pin, isCurrent);
+        StartResearchButton button = new StartResearchButton(x, y, 0, 20, Text.empty(), researchTracker.getIdOrEmpty(research), pin, isCurrent);
         button.updateText(isCurrent);
         return button;
     }

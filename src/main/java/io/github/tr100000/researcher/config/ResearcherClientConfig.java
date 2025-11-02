@@ -25,6 +25,11 @@ public class ResearcherClientConfig extends Config {
     public ValidatedInt researchScreenSidebarWidth = new ValidatedInt(230);
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140);
 
+    @Override
+    public @NotNull String translationKey() {
+        return getId().toTranslationKey("config");
+    }
+
     public enum ResearchTreeMode implements EnumTranslatable {
         DIRECTLY_RELATED,
         ALL_RELATED,
@@ -32,7 +37,7 @@ public class ResearcherClientConfig extends Config {
 
         @Override
         public @NotNull String prefix() {
-            return Researcher.MODID + ".research_tree_mode";
+            return "config." + Researcher.MODID + ".tree_mode";
         }
     }
 }

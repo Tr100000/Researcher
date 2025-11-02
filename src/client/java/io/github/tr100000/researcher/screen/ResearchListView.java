@@ -31,7 +31,10 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
         researchList.sort(Research.statusComparator(parent.researchManager).thenComparing(Research.idComparator(parent.researchManager)));
         for (Research research : researchList) {
-            if (ResearcherConfigs.client.discoveryResearchMode.get() && !parent.researchManager.isAvailableOrFinished(research)) continue;
+            if (ResearcherConfigs.client.discoveryResearchMode.get() && !parent.researchManager.isAvailableOrFinished(research)) {
+                continue;
+            }
+
             ResearchNodeWidget widget = addDrawableChild(new ResearchNodeWidget(parent, this, 0, 0, 30, 30, research));
             researchWidgets.add(widget);
             researchTitles.put(widget, research.getTitle(parent.researchManager).getString().toUpperCase());
