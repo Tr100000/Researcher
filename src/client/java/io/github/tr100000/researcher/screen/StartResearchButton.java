@@ -5,9 +5,9 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -34,9 +34,9 @@ public class StartResearchButton extends PressableWidget {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         if (isCurrent) {
-            if (Screen.hasShiftDown() && MinecraftClient.getInstance().player.isInCreativeMode()) {
+            if (input.hasShift() && MinecraftClient.getInstance().player.isInCreativeMode()) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.REVOKE, Optional.of(researchId)));
             }
             else if (pin) {
@@ -48,7 +48,7 @@ public class StartResearchButton extends PressableWidget {
             isCurrent = false;
         }
         else {
-            if (Screen.hasShiftDown() && MinecraftClient.getInstance().player.isInCreativeMode()) {
+            if (input.hasShift() && MinecraftClient.getInstance().player.isInCreativeMode()) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.GRANT, Optional.of(researchId)));
             }
             else if (pin) {

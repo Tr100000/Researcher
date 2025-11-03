@@ -10,8 +10,6 @@ import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -24,13 +22,11 @@ import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.profiler.Profiler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public class ResearchManager extends JsonDataLoader<Research> implements IdentifiableResourceReloadListener, ResearchHolder {
+public class ResearchManager extends JsonDataLoader<Research> implements ResearchHolder {
     public static final String PATH = "research";
     public static final Identifier ID = Researcher.id(PATH);
     private final DataPackContents parent;
@@ -91,6 +87,9 @@ public class ResearchManager extends JsonDataLoader<Research> implements Identif
         research.values().forEach(researchEntry -> {
             graphBuilder.addNode(researchEntry);
             researchEntry.prerequisiteIds().forEach(prerequisite -> {
+                if (!research.containsKey(prerequisite)) {
+                    Researcher.LOGGER.warn("Research with id {} was not found!", prerequisite);
+                }
                 graphBuilder.putEdge(research.get(prerequisite), researchEntry);
             });
         });
@@ -125,15 +124,5 @@ public class ResearchManager extends JsonDataLoader<Research> implements Identif
 
     public boolean isRecipeUnlockable(Identifier recipeId) {
         return unlockableRecipes.contains(recipeId);
-    }
-
-    @Override
-    public Identifier getFabricId() {
-        return ID;
-    }
-
-    @Override
-    public Collection<Identifier> getFabricDependencies() {
-        return List.of(ResourceReloadListenerKeys.RECIPES);
     }
 }

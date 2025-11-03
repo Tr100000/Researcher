@@ -4,6 +4,7 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -23,23 +24,23 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "mouseClicked", at = @At("TAIL"))
-    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
         ClientResearchTracker researchTracker = client.getNetworkHandler().researcher$getClientTracker();
 
         int y = 0;
         if (researchTracker.getCurrentResearching() != null) {
-            unsetResearchIfTouching(y + 1, researchTracker.getCurrentResearchingId(), false, mouseX, mouseY);
+            unsetResearchIfTouching(y + 1, researchTracker.getCurrentResearchingId(), false, click);
             y += 27;
         }
         for (Identifier id : researchTracker.getPinnedResearches()) {
-            unsetResearchIfTouching(y + 1, id, true, mouseX, mouseY);
+            unsetResearchIfTouching(y + 1, id, true, click);
             y += 27;
         }
     }
 
     @Unique
-    private void unsetResearchIfTouching(int y, Identifier id, boolean pin, double mouseX, double mouseY) {
-        if (GuiHelper.isMouseTouching(0, y, 150, 26, mouseX, mouseY)) {
+    private void unsetResearchIfTouching(int y, Identifier id, boolean pin, Click click) {
+        if (GuiHelper.isMouseTouching(0, y, 150, 26, click.x(), click.y())) {
             if (pin) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.UNPIN, Optional.of(id)));
             }

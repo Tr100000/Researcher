@@ -3,13 +3,16 @@ package io.github.tr100000.researcher.screen;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
+import io.github.tr100000.trutils.api.gui.IconRenderers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.util.Colors;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -53,15 +56,16 @@ public class ResearchNodeWidget extends PressableWidget {
         int iconSize = (int)(getWidth() * 0.85F);
         if (iconSize % 2 == 1) iconSize++;
         int iconOffset = (getWidth() - iconSize) / 2;
-        research.display().drawWithSize(draw, getX() + iconOffset, getY() + iconOffset - (showProgressBar ? 1 : 0), iconSize, delta);
+        IconRenderers.drawWithSize(research.display(), draw, getX() + iconOffset, getY() + iconOffset - (showProgressBar ? 1 : 0), iconSize, delta);
         if (showProgressBar) {
             draw.fill(getX(), getY() + getHeight() - 2, getX() + getWidth(), getY() + getHeight(), FILL_PROGRESS_BACKGROUND);
             draw.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
         }
 
-        if (GuiHelper.isMouseTouching(this, mouseX, mouseY) && draw.scissorContains(mouseX + parentView.getOffsetX(), mouseY + parentView.getOffsetY())) {
+        if (isHovered() && draw.scissorContains(mouseX + parentView.getOffsetX(), mouseY + parentView.getOffsetY())) {
             GuiHelper.drawSlotHighlight(draw, this);
             GuiHelper.drawTooltip(draw, client.textRenderer, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
+            draw.setCursor(StandardCursors.POINTING_HAND);
         }
     }
 
@@ -71,7 +75,7 @@ public class ResearchNodeWidget extends PressableWidget {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         screen.initWith(research);
     }
 

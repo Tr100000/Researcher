@@ -40,10 +40,10 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}"
     modImplementation ":trutils:${project.trutils_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -57,9 +57,23 @@ dependencies {
 
 apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
 
-loom {
-    splitEnvironmentSourceSets()
+loom.splitEnvironmentSourceSets()
 
+sourceSets {
+    testmod {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+
+        compileClasspath += client.compileClasspath
+        runtimeClasspath += client.runtimeClasspath
+        compileClasspath += client.output
+        runtimeClasspath += client.output
+    }
+}
+
+loom {
     mods {
         "researcher" {
             sourceSet sourceSets.main
@@ -68,6 +82,17 @@ loom {
     }
 
     accessWidenerPath = file("src/main/resources/researcher.accesswidener")
+
+    runs {
+        testmod {
+            client()
+            name = "Testmod Client"
+            source = sourceSets.testmod
+            ideConfigGenerated = true
+            programArgs "--launch_target", "net.fabricmc.loader.impl.launch.knot.KnotClient"
+            mainClass.set "net.covers1624.devlogin.DevLogin"
+        }
+    }
 }
 
 spotless {

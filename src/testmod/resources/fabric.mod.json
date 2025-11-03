@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "researcher-testmod",
+  "name": "Researcher Test Mod",
+  "version": "1.0.0",
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.tr100000.researcher.testmod.ResearcherTestmod"],
+    "trutils:datagen": ["io.github.tr100000.researcher.testmod.datagen.ResearcherTestmodDatagen"]
+  },
+  "depends": {
+    "researcher": "*"
+  }
+}

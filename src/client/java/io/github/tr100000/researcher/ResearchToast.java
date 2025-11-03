@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher;
 
+import io.github.tr100000.trutils.api.gui.IconRenderers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -69,7 +70,7 @@ public class ResearchToast implements Toast {
             }
         }
 
-        research.display().draw(draw, 8, 8);
+        IconRenderers.draw(research.display(), draw, 8, 8);
     }
 
     @Override

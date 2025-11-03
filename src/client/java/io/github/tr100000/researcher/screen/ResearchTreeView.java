@@ -8,6 +8,7 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import org.jetbrains.annotations.Nullable;
@@ -195,27 +196,30 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     private void drawHighlight(DrawContext draw, ResearchNodeWidget node) {
-        draw.drawBorder(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
+        // FIXME doesn't get offset properly for some reason
+        draw.drawStrokedRectangle(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (button == 0 || button == 2) {
-            offsetX += deltaX;
-            offsetY += deltaY;
+    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+        if (click.button() == 0) {
+            this.offsetX += offsetX;
+            this.offsetY += offsetY;
             return true;
         }
-        return super.mouseDragged(mouseX - (int)offsetX, mouseY - (int)offsetY, button, deltaX, deltaY);
+        else {
+            return super.mouseDragged(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), offsetX, offsetY);
+        }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX - (int)offsetX, mouseY - (int)offsetY, button);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        return super.mouseClicked(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), doubled);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return super.mouseReleased(mouseX - (int)offsetX, mouseY - (int)offsetY, button);
+    public boolean mouseReleased(Click click) {
+        return super.mouseReleased(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()));
     }
 
     @Override

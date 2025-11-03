@@ -39,7 +39,7 @@
     "fabricloader": ">=0.17",
     "minecraft": "~1.21.8",
     "java": ">=21",
-    "fabric-api": ">=0.136",
+    "fabric-api": ">=0.137",
     "trutils": "*",
     "fzzy_config": ">=0.7"
   }

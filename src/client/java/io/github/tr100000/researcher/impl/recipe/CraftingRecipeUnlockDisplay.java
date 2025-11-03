@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.impl.recipe;
 
 import io.github.tr100000.researcher.api.RecipeUnlockDisplay;
-import io.github.tr100000.trutils.api.gui.ItemIconRenderer;
+import io.github.tr100000.trutils.api.gui.ItemIcon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeEntry;
@@ -37,7 +37,7 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().getFirst(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIconRenderer(resultStack), tooltip);
+        return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
     }
 
     public static RecipeUnlockDisplay createTransmute(RecipeEntry<TransmuteRecipe> entry) {
@@ -55,6 +55,6 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().getFirst(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIconRenderer(resultStack), tooltip);
+        return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
     }
 }

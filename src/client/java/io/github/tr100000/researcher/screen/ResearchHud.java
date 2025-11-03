@@ -54,7 +54,7 @@ public final class ResearchHud {
         boolean hovered = client.currentScreen instanceof ChatScreen && GuiHelper.isMouseTouching(0, y + 1, 150, 26);
 
         draw.fill(0, y, 150, y + 28, BACKGROUND_COLOR);
-        draw.drawBorder(0, y, 150, 28, hovered ? BORDER_COLOR_HOVERED : BORDER_COLOR);
+        draw.drawStrokedRectangle(0, y, 150, 28, hovered ? BORDER_COLOR_HOVERED : BORDER_COLOR);
         draw.drawText(client.textRenderer, research.getTitle(researchTracker), 4, y + 4, Colors.WHITE, true);
 
         Text progressText = Text.literal(String.format("%s%%", getProgressPercentage(researchTracker, research)));

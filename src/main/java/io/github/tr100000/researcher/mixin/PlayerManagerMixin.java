@@ -3,7 +3,6 @@ package io.github.tr100000.researcher.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.tr100000.researcher.PlayerResearchTracker;
 import io.github.tr100000.researcher.ResearchManager;
-import io.github.tr100000.researcher.ResearchSyncMode;
 import io.github.tr100000.researcher.api.ServerResearchTrackerGetter;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -55,13 +54,13 @@ public abstract class PlayerManagerMixin implements ServerResearchTrackerGetter 
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
-        playersToSyncWith(player, ResearcherConfigs.server.researchSyncMode.get())
+        playersToSyncWith(player)
                 .map(ServerPlayerEntity::researcher$getPlayerTracker)
                 .forEach(player.researcher$getPlayerTracker()::syncWith);
     }
 
     @Unique
-    private Stream<ServerPlayerEntity> playersToSyncWith(ServerPlayerEntity player, ResearchSyncMode syncMode) {
+    private Stream<ServerPlayerEntity> playersToSyncWith(ServerPlayerEntity player) {
         return switch (ResearcherConfigs.server.researchSyncMode.get()) {
             case GLOBAL -> players.stream();
             case TEAM -> players.stream().filter(player::isTeammate);

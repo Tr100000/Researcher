@@ -66,7 +66,7 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
     @Override
     public void renderView(DrawContext draw, int mouseX, int mouseY, float delta) {
         draw.fill(0, getY() - 1, getWidth(), parent.height, BACKGROUND_COLOR);
-        draw.drawBorder(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
+        draw.drawStrokedRectangle(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
         super.renderView(draw, mouseX, mouseY, delta);
     }
 }

@@ -9,8 +9,10 @@ import io.github.tr100000.trutils.TrUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -39,7 +41,14 @@ public class Researcher implements ModInitializer {
         ResearcherNetworking.registerPayloads();
         ResearcherNetworking.registerServerRecievers();
 
-        TrUtils.requireRecipesOnClient();
+//        ResourceLoader.get(ResourceType.SERVER_DATA).addReloaderOrdering(
+//                ResourceReloaderKeys.Server.RECIPES,
+//                ResearchManager.ID
+//        );
+
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPED);
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPELESS);
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.CRAFTING_TRANSMUTE);
     }
 
     public static Version getVersion() {

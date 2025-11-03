@@ -76,7 +76,7 @@ public class ResearchInfoView extends AbstractResearchView {
         if (showUnlocks) {
             draw.drawTextWithShadow(client.textRenderer, Text.translatable("screen.researcher.unlocks"), 12, 42, Colors.WHITE);
         }
-        draw.drawBorder(0, 0, width, height, BORDER_COLOR);
+        draw.drawStrokedRectangle(0, 0, width, height, BORDER_COLOR);
         super.renderView(draw, mouseX, mouseY, delta);
     }
 
@@ -89,7 +89,7 @@ public class ResearchInfoView extends AbstractResearchView {
         int criterionWidth = display.getWidth();
         draw.fill(x, y, x + criterionWidth + 4, y + 18, CRITERION_BACKGROUND);
         draw.fill(x, y, x + getScaledProgress(criterion, progress, criterionWidth + 4), y + 18, CRITERION_PROGRESS);
-        draw.drawBorder(x, y, criterionWidth + 4, 18, CRITERION_BORDER);
+        draw.drawStrokedRectangle(x, y, criterionWidth + 4, 18, CRITERION_BORDER);
         display.render(draw, x + 1, y + 1, mouseX, mouseY, delta);
     }
 

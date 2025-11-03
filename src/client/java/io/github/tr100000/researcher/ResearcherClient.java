@@ -7,15 +7,16 @@ import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
 import io.github.tr100000.researcher.screen.ResearchHud;
 import io.github.tr100000.researcher.screen.ResearchScreen;
-import io.github.tr100000.trutils.TrUtils;
 import io.github.tr100000.trutils.api.utils.RecipeViewerDelegate;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.recipe.RecipeSerializer;
@@ -25,10 +26,14 @@ import net.minecraft.sound.SoundEvent;
 import org.lwjgl.glfw.GLFW;
 
 public class ResearcherClient implements ClientModInitializer {
-    public static final KeyBinding OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(Researcher.id("open_research_screen").toTranslationKey("key"), GLFW.GLFW_KEY_R, "mod." + Researcher.MODID));
+    public static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(Researcher.id("main"));
+    public static final KeyBinding OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(Researcher.id("open_research_screen").toTranslationKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
+
     public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.of(Researcher.id("ui.toast.research_finished"));
 
     public static RecipeViewerDelegate recipeViewerDelegate;
+
+    public static SynchronizedRecipes syncedRecipes;
 
     @Override
     public void onInitializeClient() {
@@ -57,7 +62,7 @@ public class ResearcherClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ResearchScreen.setSelected(null));
 
-        TrUtils.requireRecipesOnClient();
+        ClientRecipeSynchronizedEvent.EVENT.register(((client, recipes) -> syncedRecipes = recipes));
 
         if (FabricLoader.getInstance().isModLoaded("rei")) {
             recipeViewerDelegate = new ReiDelegate();

@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
 import io.github.tr100000.researcher.api.ResearchHolder;
-import io.github.tr100000.trutils.api.gui.IconRenderer;
-import io.github.tr100000.trutils.api.gui.TextureIconRenderer;
+import io.github.tr100000.trutils.api.gui.Icon;
+import io.github.tr100000.trutils.api.gui.TextureIcon;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.network.RegistryByteBuf;
@@ -26,8 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public record Research(Optional<Text> titleText, Optional<Text> descriptionText, ResearchCriterion<?> trigger, List<Identifier> prerequisiteIds, List<Identifier> recipeUnlocks, IconRenderer display) {
-    public static final IconRenderer DEFAULT_ICON = new TextureIconRenderer(Researcher.id("textures/research/default.png"));
+public record Research(Optional<Text> titleText, Optional<Text> descriptionText, ResearchCriterion<?> trigger, List<Identifier> prerequisiteIds, List<Identifier> recipeUnlocks, Icon display) {
+    public static final Icon DEFAULT_ICON = new TextureIcon(Researcher.id("textures/research/default.png"));
 
     public static final Codec<Research> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
@@ -36,7 +36,7 @@ public record Research(Optional<Text> titleText, Optional<Text> descriptionText,
                 ResearchCriterion.CODEC.optionalFieldOf("toUnlock", ResearchCriterion.IMPOSSIBLE).forGetter(Research::trigger),
                 Identifier.CODEC.listOf().optionalFieldOf("prerequisites", Collections.emptyList()).forGetter(Research::prerequisiteIds),
                 Identifier.CODEC.listOf().optionalFieldOf("recipeUnlocks", Collections.emptyList()).forGetter(Research::recipeUnlocks),
-                IconRenderer.CODEC.optionalFieldOf("display", DEFAULT_ICON).forGetter(Research::display)
+                Icon.CODEC.optionalFieldOf("display", DEFAULT_ICON).forGetter(Research::display)
         ).apply(instance, Research::new)
     );
 
@@ -46,7 +46,7 @@ public record Research(Optional<Text> titleText, Optional<Text> descriptionText,
             ResearchCriterion.PACKET_CODEC, Research::trigger,
             Identifier.PACKET_CODEC.collect(PacketCodecs.toList()), Research::prerequisiteIds,
             Identifier.PACKET_CODEC.collect(PacketCodecs.toList()), Research::recipeUnlocks,
-            IconRenderer.PACKET_CODEC, Research::display,
+            Icon.PACKET_CODEC, Research::display,
             Research::new
     );
 

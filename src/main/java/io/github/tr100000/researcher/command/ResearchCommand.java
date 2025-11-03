@@ -264,7 +264,7 @@ public final class ResearchCommand {
         GRANT("grant") {
             @Override
             protected boolean processEach(ServerPlayerEntity player, Research research) {
-                research.prerequisites(player.getServer().researcher$getServerManager()).forEach(research1 -> {
+                research.prerequisites(player.getEntityWorld().getServer().researcher$getServerManager()).forEach(research1 -> {
                     processEach(player, research1);
                 });
                 return player.researcher$getPlayerTracker().grantCriterion(research);
@@ -279,7 +279,7 @@ public final class ResearchCommand {
         LIST("list") {
             @Override
             protected boolean processEach(ServerPlayerEntity player, Research research) {
-                player.sendMessage(Text.literal(player.getServer().researcher$getServerManager().getIdOrEmpty(research).toString()));
+                player.sendMessage(Text.literal(player.getEntityWorld().getServer().researcher$getServerManager().getIdOrEmpty(research).toString()));
                 return true;
             }
         };
