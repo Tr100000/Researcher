@@ -1,6 +1,6 @@
 plugins {
     id "fabric-loom" version "${loom_version}"
-    id "com.diffplug.spotless" version "7.+"
+    id "com.diffplug.spotless" version "8.+"
     id "maven-publish"
 }
 
@@ -27,6 +27,13 @@ repositories {
         }
     }
     maven {
+        name = "Jared's Maven"
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
+    maven {
         url = "https://maven.shedaniel.me/"
         content {
             includeGroupAndSubgroups "me.shedaniel"
@@ -47,6 +54,11 @@ dependencies {
     modImplementation ":trutils:${project.trutils_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    if (project.recipe_viewer == "jei") {
+        modRuntimeOnly "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
+    }
+    modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
 
     if (project.recipe_viewer == "rei") {
         modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"

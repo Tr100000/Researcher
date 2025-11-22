@@ -70,6 +70,7 @@ public class RecipeUnlockWidget extends ClickableWidget {
 
     @Override
     public void onClick(Click click, boolean doubled) {
+        if (isError) return;
         if (!ResearcherClient.recipeViewerDelegate.showRecipe(id)) ResearcherClient.recipeViewerDelegate.showRecipes(tryGetResult());
     }
 

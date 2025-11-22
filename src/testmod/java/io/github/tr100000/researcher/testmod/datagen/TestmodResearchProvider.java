@@ -77,7 +77,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("diamond_boots"),
                         Identifier.ofVanilla("brown_shulker_box")
                 )
-                .toUnlock(ResearcherCriteria.BLOCK_BROKEN, new BlockBrokenCriterion.Conditions(Blocks.BEDROCK), 20)
+                .toUnlock(ResearcherCriteria.BLOCK_BROKEN, new BlockBrokenCriterion.Conditions(Blocks.OBSIDIAN), 20)
                 .export(exporter);
     }
 }

@@ -2,6 +2,7 @@ package io.github.tr100000.researcher;
 
 import io.github.tr100000.researcher.api.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
+import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.ReiDelegate;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
@@ -66,6 +67,9 @@ public class ResearcherClient implements ClientModInitializer {
 
         if (FabricLoader.getInstance().isModLoaded("rei")) {
             recipeViewerDelegate = new ReiDelegate();
+        }
+        else if (FabricLoader.getInstance().isModLoaded("jei")) {
+            recipeViewerDelegate = new JeiDelegate();
         }
         else {
             recipeViewerDelegate = RecipeViewerDelegate.NONE;
