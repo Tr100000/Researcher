@@ -4,9 +4,9 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.CriterionDisplay;
 import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
-import io.github.tr100000.researcher.impl.criterion.element.ItemCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.SpacingCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.TextCriterionDisplayElement;
+import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
+import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;
+import io.github.tr100000.researcher.impl.criterion.element.TextElement;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,13 +30,13 @@ public abstract class AbstractConsumeItemCriterionHandler<T extends CriterionCon
         List<CriterionDisplayElement> elements = new ObjectArrayList<>();
         Text[] text = getText(criterion, item.get());
 
-        elements.add(new SpacingCriterionDisplayElement(2));
-        elements.add(new TextCriterionDisplayElement(text[0]));
-        elements.add(new SpacingCriterionDisplayElement(2));
-        elements.add(new ItemCriterionDisplayElement(item.get().getDefaultStack(), true));
-        elements.add(new SpacingCriterionDisplayElement(2));
-        elements.add(new TextCriterionDisplayElement(text[1]));
-        elements.add(new TextCriterionDisplayElement(text[2]));
+        elements.add(new SpacingElement(2));
+        elements.add(new TextElement(text[0]));
+        elements.add(new SpacingElement(2));
+        elements.add(new ItemElement(item.get().getDefaultStack(), true));
+        elements.add(new SpacingElement(2));
+        elements.add(new TextElement(text[1]));
+        elements.add(new TextElement(text[2]));
 
         return new CriterionDisplay(elements);
     }

@@ -3,10 +3,10 @@ package io.github.tr100000.researcher.impl.criterion.element;
 import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import net.minecraft.client.gui.DrawContext;
 
-public class SpacingCriterionDisplayElement implements CriterionDisplayElement {
+public class SpacingElement implements CriterionDisplayElement {
     protected final int width;
 
-    public SpacingCriterionDisplayElement(int width) {
+    public SpacingElement(int width) {
         this.width = width;
     }
 

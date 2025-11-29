@@ -7,7 +7,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
-public class TextCriterionDisplayElement implements CriterionDisplayElement {
+public class TextElement implements CriterionDisplayElement {
     protected static final MinecraftClient client = MinecraftClient.getInstance();
 
     protected final OrderedText text;
@@ -16,21 +16,21 @@ public class TextCriterionDisplayElement implements CriterionDisplayElement {
 
     protected int cachedWidth = -1;
 
-    public TextCriterionDisplayElement(OrderedText text, int color, boolean shadow) {
+    public TextElement(OrderedText text, int color, boolean shadow) {
         this.text = text;
         this.color = color;
         this.shadow = shadow;
     }
 
-    public TextCriterionDisplayElement(OrderedText text) {
+    public TextElement(OrderedText text) {
         this(text, Colors.WHITE, true);
     }
 
-    public TextCriterionDisplayElement(Text text, int color, boolean shadow) {
+    public TextElement(Text text, int color, boolean shadow) {
         this(text.asOrderedText(), color, shadow);
     }
 
-    public TextCriterionDisplayElement(Text text) {
+    public TextElement(Text text) {
         this(text.asOrderedText());
     }
 

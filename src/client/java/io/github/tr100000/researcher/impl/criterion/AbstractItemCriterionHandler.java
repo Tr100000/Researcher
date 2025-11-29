@@ -4,9 +4,9 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.CriterionDisplay;
 import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
-import io.github.tr100000.researcher.impl.criterion.element.ItemCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.SpacingCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.TextCriterionDisplayElement;
+import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
+import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;
+import io.github.tr100000.researcher.impl.criterion.element.TextElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -31,13 +31,13 @@ public abstract class AbstractItemCriterionHandler<T extends CriterionConditions
         ItemStack stack = getItem(criterion).getDefaultStack();
 
         return new CriterionDisplay(
-                new SpacingCriterionDisplayElement(2),
-                new TextCriterionDisplayElement(Text.translatable(textBeforeKey)),
-                new SpacingCriterionDisplayElement(2),
-                new ItemCriterionDisplayElement(stack, true),
-                new SpacingCriterionDisplayElement(2),
-                new TextCriterionDisplayElement(Text.translatable(countTextKey, criterion.count(), stack.getName().getString())),
-                new TextCriterionDisplayElement(Text.translatable(textAfterKey))
+                new SpacingElement(2),
+                new TextElement(Text.translatable(textBeforeKey)),
+                new SpacingElement(2),
+                new ItemElement(stack, true),
+                new SpacingElement(2),
+                new TextElement(Text.translatable(countTextKey, criterion.count(), stack.getName().getString())),
+                new TextElement(Text.translatable(textAfterKey))
         );
     }
 

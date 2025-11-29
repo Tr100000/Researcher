@@ -4,9 +4,9 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.CriterionDisplay;
 import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
-import io.github.tr100000.researcher.impl.criterion.element.ItemCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.SpacingCriterionDisplayElement;
-import io.github.tr100000.researcher.impl.criterion.element.TextCriterionDisplayElement;
+import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
+import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;
+import io.github.tr100000.researcher.impl.criterion.element.TextElement;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -35,17 +35,17 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
 
     public CriterionDisplayElement prepare() {
         return new CriterionDisplay(
-                new ItemCriterionDisplayElement(stack, false),
-                new SpacingCriterionDisplayElement(4),
-                new TextCriterionDisplayElement(text)
+                new ItemElement(stack, false),
+                new SpacingElement(4),
+                new TextElement(text)
         );
     }
 
     public CriterionDisplayElement prepareWithErrorTooltip(Text errorText) {
         return new CriterionDisplay(
-                new ItemCriterionDisplayElement(stack, List.of(errorText)),
-                new SpacingCriterionDisplayElement(4),
-                new TextCriterionDisplayElement(text)
+                new ItemElement(stack, List.of(errorText)),
+                new SpacingElement(4),
+                new TextElement(text)
         );
     }
 }

@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.CriterionHandler;
-import io.github.tr100000.researcher.impl.criterion.element.TextCriterionDisplayElement;
+import io.github.tr100000.researcher.impl.criterion.element.TextElement;
 import net.minecraft.advancement.criterion.TickCriterion;
 import net.minecraft.text.Text;
 
@@ -51,10 +51,10 @@ public class TickCriterionHandler implements CriterionHandler<TickCriterion.Cond
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<TickCriterion.Conditions> criterion) {
         if (criterion.count() == 1) {
-            return new TextCriterionDisplayElement(Text.translatable(oneTextKey));
+            return new TextElement(Text.translatable(oneTextKey));
         }
         else {
-            return new TextCriterionDisplayElement(Text.translatable(manyTextKey, criterion.count() * (countIsTime ? 20 : 1)));
+            return new TextElement(Text.translatable(manyTextKey, criterion.count() * (countIsTime ? 20 : 1)));
         }
     }
 }

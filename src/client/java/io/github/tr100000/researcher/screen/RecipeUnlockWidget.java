@@ -34,7 +34,7 @@ public class RecipeUnlockWidget extends ClickableWidget {
     public final boolean isError;
 
     public static RecipeUnlockWidget fromId(int x, int y, Identifier id) {
-        RecipeEntry<?> entry = ResearcherClient.syncedRecipes.get(RegistryKey.of(RegistryKeys.RECIPE, id));
+        RecipeEntry<?> entry = client.world.getRecipeManager().getSynchronizedRecipes().get(RegistryKey.of(RegistryKeys.RECIPE, id));
         if (entry != null) {
             RecipeUnlockDisplay display = RecipeUnlockDisplayRegistry.getDisplay(entry);
             if (display != null) {

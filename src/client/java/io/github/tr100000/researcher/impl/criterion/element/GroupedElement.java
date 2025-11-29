@@ -1,34 +1,40 @@
-package io.github.tr100000.researcher.api;
+package io.github.tr100000.researcher.impl.criterion.element;
 
+import io.github.tr100000.researcher.api.CriterionDisplayElement;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.List;
 
-public class CriterionDisplay implements CriterionDisplayElement {
+public class GroupedElement implements CriterionDisplayElement {
     private final List<CriterionDisplayElement> elements;
 
-    public CriterionDisplay(List<CriterionDisplayElement> elements) {
+    public GroupedElement(List<CriterionDisplayElement> elements) {
         this.elements = elements;
     }
 
-    public CriterionDisplay(CriterionDisplayElement... elements) {
-        this(List.of(elements));
+    public GroupedElement(CriterionDisplayElement... elements) {
+        this.elements = List.of(elements);
     }
 
+    @Override
     public int render(DrawContext draw, int x, int y, int mouseX, int mouseY, float delta) {
         int totalWidth = 0;
+
         for (CriterionDisplayElement element : elements) {
-            element.render(draw, x + totalWidth, y, mouseX, mouseY, delta);
-            totalWidth += element.getWidth();
+            totalWidth += element.render(draw, x, y, mouseX, mouseY, delta);
         }
+
         return totalWidth;
     }
 
+    @Override
     public int getWidth() {
         int totalWidth = 0;
+
         for (CriterionDisplayElement element : elements) {
             totalWidth += element.getWidth();
         }
+
         return totalWidth;
     }
 }

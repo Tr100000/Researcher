@@ -9,17 +9,17 @@ import net.minecraft.text.Text;
 import java.util.Collections;
 import java.util.List;
 
-public final class ItemCriterionDisplayElement implements CriterionDisplayElement {
+public final class ItemElement implements CriterionDisplayElement {
     private final ItemStack stack;
     private final List<Text> tooltip;
     private boolean useStackTooltip = false;
 
-    public ItemCriterionDisplayElement(ItemStack stack, List<Text> tooltip) {
+    public ItemElement(ItemStack stack, List<Text> tooltip) {
         this.stack = stack;
         this.tooltip = tooltip;
     }
 
-    public ItemCriterionDisplayElement(ItemStack stack, boolean useStackTooltip) {
+    public ItemElement(ItemStack stack, boolean useStackTooltip) {
         this(stack, Collections.emptyList());
         this.useStackTooltip = useStackTooltip;
     }
@@ -32,6 +32,7 @@ public final class ItemCriterionDisplayElement implements CriterionDisplayElemen
         else {
             GuiHelper.drawItemWithoutEntityAndTooltip(draw, stack, x, y, mouseX, mouseY, tooltip);
         }
+
         return 16;
     }
 
