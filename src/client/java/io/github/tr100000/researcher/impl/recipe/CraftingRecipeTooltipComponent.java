@@ -1,6 +1,6 @@
 package io.github.tr100000.researcher.impl.recipe;
 
-import io.github.tr100000.researcher.Researcher;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.trutils.api.gui.ExtendedTooltipComponent;
 import io.github.tr100000.trutils.api.utils.GameUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static final Identifier BACKGROUND = Researcher.id("textures/gui/crafting.png");
+    private static final Identifier BACKGROUND = ModUtils.id("textures/gui/crafting.png");
 
     private final int recipeWidth;
     private final List<List<ItemStack>> ingredients;

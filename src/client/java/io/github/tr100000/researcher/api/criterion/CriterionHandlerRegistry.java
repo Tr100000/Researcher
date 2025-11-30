@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.api;
+package io.github.tr100000.researcher.api.criterion;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancement.criterion.Criterion;

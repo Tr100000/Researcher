@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.graph.Graph;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
-import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -42,7 +42,7 @@ public interface ResearchHolder {
 
     default Identifier getIdOrEmpty(Research research) {
         Identifier id = getId(research);
-        if (id == null) id = Researcher.id("");
+        if (id == null) id = ModUtils.id("");
         return id;
     }
 

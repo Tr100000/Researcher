@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.api;
+package io.github.tr100000.researcher.api.recipe;
 
 import io.github.tr100000.trutils.api.gui.Icon;
 import net.minecraft.client.MinecraftClient;

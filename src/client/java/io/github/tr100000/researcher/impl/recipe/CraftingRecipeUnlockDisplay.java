@@ -1,6 +1,6 @@
 package io.github.tr100000.researcher.impl.recipe;
 
-import io.github.tr100000.researcher.api.RecipeUnlockDisplay;
+import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplay;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;

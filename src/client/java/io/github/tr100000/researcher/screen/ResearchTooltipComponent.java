@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.screen;
 import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.trutils.api.gui.ExtendedTooltipComponent;
 import io.github.tr100000.trutils.api.utils.GameUtils;
 import net.fabricmc.api.EnvType;

@@ -2,8 +2,8 @@ package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.ResearcherClient;
-import io.github.tr100000.researcher.api.RecipeUnlockDisplay;
-import io.github.tr100000.researcher.api.RecipeUnlockDisplayRegistry;
+import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplay;
+import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.IconRenderers;

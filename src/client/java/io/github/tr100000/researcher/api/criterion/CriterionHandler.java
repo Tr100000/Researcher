@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.api;
+package io.github.tr100000.researcher.api.criterion;
 
 import io.github.tr100000.researcher.ResearchCriterion;
 import net.minecraft.advancement.criterion.CriterionConditions;

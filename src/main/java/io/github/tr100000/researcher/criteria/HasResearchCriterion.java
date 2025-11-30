@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.criteria;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.tr100000.researcher.Researcher;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearcherCriteria;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterion;
@@ -34,7 +34,7 @@ public class HasResearchCriterion extends AbstractCriterion<HasResearchCriterion
         }
 
         public static AdvancementCriterion<Conditions> of(String researchId) {
-            return of(Researcher.id(researchId));
+            return of(ModUtils.id(researchId));
         }
 
         public boolean matches(Identifier id) {

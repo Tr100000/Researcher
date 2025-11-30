@@ -1,9 +1,9 @@
 package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.researcher.ClientResearchTracker;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
-import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier;
 public final class ResearchHud {
     private ResearchHud() {}
 
-    public static final Identifier LAYER_ID = Researcher.id("hud");
+    public static final Identifier LAYER_ID = ModUtils.id("hud");
 
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static int percentageTextMaxWidth;

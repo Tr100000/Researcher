@@ -1,9 +1,9 @@
 package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.CriterionDisplay;
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
-import io.github.tr100000.researcher.api.CriterionHandler;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
 import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
 import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;

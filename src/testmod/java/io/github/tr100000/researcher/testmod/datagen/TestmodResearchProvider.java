@@ -7,9 +7,18 @@ import io.github.tr100000.researcher.api.data.ResearchProvider;
 import io.github.tr100000.researcher.criteria.BlockBrokenCriterion;
 import io.github.tr100000.researcher.criteria.ItemCraftedCriterion;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
+import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.TagPredicate;
+import net.minecraft.predicate.entity.DamageSourcePredicate;
+import net.minecraft.predicate.entity.DistancePredicate;
+import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -34,7 +43,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .toUnlock(ResearcherCriteria.ITEM_CRAFTED, new ItemCraftedCriterion.Conditions(Items.FURNACE), 2)
                 .export(exporter);
 
-        new ResearchBuilder(id("iron_tools"))
+        Identifier ironTools = new ResearchBuilder(id("iron_tools"))
                 .title(Text.literal("Iron Tools"))
                 .display(Items.IRON_PICKAXE)
                 .prerequisites(blastFurnace)
@@ -52,7 +61,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .toUnlock(ResearcherCriteria.ITEM_CRAFTED, new ItemCraftedCriterion.Conditions(Items.IRON_INGOT), 10)
                 .export(exporter);
 
-        new ResearchBuilder(id("testing"))
+        Identifier testing = new ResearchBuilder(id("testing"))
                 .title(Text.literal("Testing"))
                 .prerequisites(blastFurnace)
                 .recipeUnlocks(
@@ -66,11 +75,6 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("stone_pickaxe"),
                         Identifier.ofVanilla("stone_shovel"),
                         Identifier.ofVanilla("stone_hoe"),
-                        Identifier.ofVanilla("diamond_sword"),
-                        Identifier.ofVanilla("diamond_axe"),
-                        Identifier.ofVanilla("diamond_pickaxe"),
-                        Identifier.ofVanilla("diamond_shovel"),
-                        Identifier.ofVanilla("diamond_hoe"),
                         Identifier.ofVanilla("diamond_helmet"),
                         Identifier.ofVanilla("diamond_chestplate"),
                         Identifier.ofVanilla("diamond_leggings"),
@@ -78,6 +82,16 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("brown_shulker_box")
                 )
                 .toUnlock(ResearcherCriteria.BLOCK_BROKEN, new BlockBrokenCriterion.Conditions(Blocks.OBSIDIAN), 20)
+                .export(exporter);
+
+        new ResearchBuilder(id("kill_test"))
+                .title(Text.literal("Kill Test"))
+                .description(Text.literal("Kill a skeleton from at least 50 meters away!"))
+                .prerequisites(ironTools, testing)
+                .toUnlock(OnKilledCriterion.Conditions.createPlayerKilledEntity(
+                        EntityPredicate.Builder.create().type(lookup.getOrThrow(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(NumberRange.DoubleRange.atLeast(50.0))),
+                        DamageSourcePredicate.Builder.create().tag(TagPredicate.expected(DamageTypeTags.IS_PROJECTILE))
+                ), 5)
                 .export(exporter);
     }
 }

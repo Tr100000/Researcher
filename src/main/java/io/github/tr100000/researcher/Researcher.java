@@ -14,7 +14,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,9 +52,5 @@ public class Researcher implements ModInitializer {
 
     public static Version getVersion() {
         return FabricLoader.getInstance().getModContainer(MODID).orElseThrow().getMetadata().getVersion();
-    }
-
-    public static Identifier id(String path) {
-        return Identifier.of(MODID, path);
     }
 }

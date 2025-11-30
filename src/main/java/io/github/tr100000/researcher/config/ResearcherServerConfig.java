@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.config;
 
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchSyncMode;
-import io.github.tr100000.researcher.Researcher;
 import me.fzzyhmstrs.fzzy_config.annotations.Action;
 import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
 import me.fzzyhmstrs.fzzy_config.annotations.Translation;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 @Translation(prefix = "config.researcher.server")
 public class ResearcherServerConfig extends Config {
     public ResearcherServerConfig() {
-        super(Researcher.id("server"));
+        super(ModUtils.id("server"));
     }
 
     @RequiresAction(action = Action.RELOAD_DATA)

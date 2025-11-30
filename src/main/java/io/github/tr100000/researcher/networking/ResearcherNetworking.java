@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.networking;
 
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.PlayerResearchTracker;
-import io.github.tr100000.researcher.Researcher;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.CustomPayload;
@@ -26,6 +26,6 @@ public class ResearcherNetworking {
     }
 
     public static <T extends CustomPayload> CustomPayload.Id<T> payloadId(String path) {
-        return new CustomPayload.Id<>(Researcher.id(path));
+        return new CustomPayload.Id<>(ModUtils.id(path));
     }
 }

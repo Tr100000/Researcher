@@ -1,6 +1,6 @@
 package io.github.tr100000.researcher.impl.criterion.element;
 
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import net.minecraft.client.gui.DrawContext;
 
 public class SpacingElement implements CriterionDisplayElement {

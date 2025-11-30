@@ -1,9 +1,9 @@
 package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.CriterionDisplay;
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
-import io.github.tr100000.researcher.api.CriterionHandler;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
 import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.impl.criterion.element.TextElement;
@@ -13,8 +13,6 @@ import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
-
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class ErrorCriterionHandler<T extends CriterionConditions> implements CriterionHandler<T> {
@@ -43,7 +41,7 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
 
     public CriterionDisplayElement prepareWithErrorTooltip(Text errorText) {
         return new CriterionDisplay(
-                new ItemElement(stack, List.of(errorText)),
+                new ItemElement(stack, false).withTextTooltip(errorText),
                 new SpacingElement(4),
                 new TextElement(text)
         );

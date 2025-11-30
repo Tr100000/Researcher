@@ -27,7 +27,7 @@ public class DataPackContentsMixin implements ResearchManagerGetter {
 
     @Inject(method = "<init>", at = @At(("TAIL")))
     private void init(CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, RegistryWrapper.WrapperLookup registries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, List<Registry.PendingTagLoad<?>> pendingTagLoads, int functionPermissionLevel, CallbackInfo ci) {
-        researchManager = new ResearchManager((DataPackContents)(Object)this);
+        researchManager = new ResearchManager(registries, (DataPackContents)(Object)this);
     }
 
     @Inject(method = "getContents", at = @At("RETURN"), cancellable = true)

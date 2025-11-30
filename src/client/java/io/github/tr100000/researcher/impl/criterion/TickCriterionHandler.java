@@ -1,8 +1,8 @@
 package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
-import io.github.tr100000.researcher.api.CriterionHandler;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.element.TextElement;
 import net.minecraft.advancement.criterion.TickCriterion;
 import net.minecraft.text.Text;

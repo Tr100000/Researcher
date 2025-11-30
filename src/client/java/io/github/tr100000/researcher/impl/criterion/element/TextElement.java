@@ -1,6 +1,6 @@
 package io.github.tr100000.researcher.impl.criterion.element;
 
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;

@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
+import com.mojang.serialization.JsonOps;
 import io.github.tr100000.researcher.api.ResearchHolder;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
@@ -13,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourceManager;
@@ -28,7 +30,7 @@ import java.util.Set;
 @SuppressWarnings("UnstableApiUsage")
 public class ResearchManager extends JsonDataLoader<Research> implements ResearchHolder {
     public static final String PATH = "research";
-    public static final Identifier ID = Researcher.id(PATH);
+    public static final Identifier ID = ModUtils.id(PATH);
     private final DataPackContents parent;
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
@@ -37,8 +39,8 @@ public class ResearchManager extends JsonDataLoader<Research> implements Researc
 
     public static final WorldSavePath WORLD_SAVE_PATH = new WorldSavePath(PATH);
 
-    public ResearchManager(DataPackContents parent) {
-        super(Research.CODEC, ResourceFinder.json(PATH));
+    public ResearchManager(RegistryWrapper.WrapperLookup lookup, DataPackContents parent) {
+        super(lookup.getOps(JsonOps.INSTANCE), Research.CODEC, ResourceFinder.json(PATH));
         this.parent = parent;
     }
 

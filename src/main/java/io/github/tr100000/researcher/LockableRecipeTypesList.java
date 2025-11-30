@@ -28,7 +28,7 @@ public final class LockableRecipeTypesList {
 
     public static void reload(ResourceManager manager) {
         List<RecipeSerializer<?>> lockable = new ObjectArrayList<>();
-        List<Resource> resources = manager.getAllResources(Researcher.id("lockable_recipe_types.json"));
+        List<Resource> resources = manager.getAllResources(ModUtils.id("lockable_recipe_types.json"));
         resources.forEach(resource -> {
             try (Reader reader = resource.getReader()) {
                 JsonElement json = JsonParser.parseReader(reader);

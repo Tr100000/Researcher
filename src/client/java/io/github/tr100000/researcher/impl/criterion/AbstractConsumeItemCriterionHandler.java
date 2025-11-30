@@ -1,9 +1,10 @@
 package io.github.tr100000.researcher.impl.criterion;
 
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.CriterionDisplay;
-import io.github.tr100000.researcher.api.CriterionDisplayElement;
-import io.github.tr100000.researcher.api.CriterionHandler;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
 import io.github.tr100000.researcher.impl.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.impl.criterion.element.TextElement;
@@ -11,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.CriterionConditions;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 
@@ -45,15 +45,20 @@ public abstract class AbstractConsumeItemCriterionHandler<T extends CriterionCon
         String textBeforeKey;
         String textAfterKey;
         String consumeKey;
-        if (item.getComponents().get(DataComponentTypes.FOOD) != null) {
-            textBeforeKey = "research.criterion.consume.food.before";
-            textAfterKey = "research.criterion.consume.food.after";
-            consumeKey = "research.criterion.consume.food.count";
+        if (ModUtils.isEdibleItem(item)) {
+            textBeforeKey = ModUtils.getScreenTranslationKey("criterion.consume.food.before");
+            textAfterKey = ModUtils.getScreenTranslationKey("criterion.consume.food.after");
+            consumeKey = ModUtils.getScreenTranslationKey("criterion.consume.food.count");
+        }
+        else if (ModUtils.isDrinkableItem(item)) {
+            textBeforeKey = ModUtils.getScreenTranslationKey("criterion.consume.drink.before");
+            textAfterKey = ModUtils.getScreenTranslationKey("criterion.consume.drink.after");
+            consumeKey = ModUtils.getScreenTranslationKey("criterion.consume.drink.count");
         }
         else {
-            textBeforeKey = "research.criterion.consume.before";
-            textAfterKey = "research.criterion.consume.after";
-            consumeKey = "research.criterion.consume.count";
+            textBeforeKey = ModUtils.getScreenTranslationKey("criterion.consume.before");
+            textAfterKey = ModUtils.getScreenTranslationKey("criterion.consume.after");
+            consumeKey = ModUtils.getScreenTranslationKey("criterion.consume.count");
         }
         Text textBefore = Text.translatable(textBeforeKey);
         Text textAfter = Text.translatable(textAfterKey);

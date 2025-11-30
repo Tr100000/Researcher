@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.api;
+package io.github.tr100000.researcher.api.recipe;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.recipe.Recipe;

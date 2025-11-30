@@ -1,6 +1,6 @@
 package io.github.tr100000.researcher;
 
-import io.github.tr100000.researcher.api.RecipeUnlockDisplayRegistry;
+import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.ReiDelegate;
@@ -25,17 +25,17 @@ import net.minecraft.sound.SoundEvent;
 import org.lwjgl.glfw.GLFW;
 
 public class ResearcherClient implements ClientModInitializer {
-    public static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(Researcher.id("main"));
-    public static final KeyBinding OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(Researcher.id("open_research_screen").toTranslationKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
+    public static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(ModUtils.id("main"));
+    public static final KeyBinding OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(ModUtils.id("open_research_screen").toTranslationKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
 
-    public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.of(Researcher.id("ui.toast.research_finished"));
+    public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.of(ModUtils.id("ui.toast.research_finished"));
 
     public static RecipeViewerDelegate recipeViewerDelegate;
 
     @Override
     public void onInitializeClient() {
         ResearcherCriterionHandlers.register();
-        Registry.register(Registries.SOUND_EVENT, Researcher.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
+        Registry.register(Registries.SOUND_EVENT, ModUtils.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
         ResearcherClientNetworking.registerClientRecievers();
 
         ClientCommandRegistrationCallback.EVENT.register(ResearcherClientCommand::register);

@@ -1,5 +1,10 @@
 accessWidener v2 named
 
 accessible class net/minecraft/server/MinecraftServer$ResourceManagerHolder
-accessible field net/minecraft/advancement/PlayerAdvancementTracker owner Lnet/minecraft/server/network/ServerPlayerEntity;
+
 accessible method net/minecraft/util/WorldSavePath <init> (Ljava/lang/String;)V
+accessible method net/minecraft/resource/JsonDataLoader <init> (Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Lnet/minecraft/resource/ResourceFinder;)V
+
+accessible field net/minecraft/advancement/PlayerAdvancementTracker owner Lnet/minecraft/server/network/ServerPlayerEntity;
+accessible field net/minecraft/predicate/entity/LootContextPredicate conditions Ljava/util/List;
+
