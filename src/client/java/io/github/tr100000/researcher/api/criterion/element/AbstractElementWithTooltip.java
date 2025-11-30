@@ -1,5 +1,6 @@
-package io.github.tr100000.researcher.api.criterion;
+package io.github.tr100000.researcher.api.criterion.element;
 
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

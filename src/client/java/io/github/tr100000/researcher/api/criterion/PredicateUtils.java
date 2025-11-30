@@ -1,10 +1,10 @@
 package io.github.tr100000.researcher.api.criterion;
 
 import io.github.tr100000.researcher.ModUtils;
+import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
+import io.github.tr100000.researcher.api.criterion.element.TextElement;
+import io.github.tr100000.researcher.api.criterion.element.TimedSwitchingElement;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import io.github.tr100000.researcher.impl.criterion.element.GroupedElement;
-import io.github.tr100000.researcher.impl.criterion.element.TextElement;
-import io.github.tr100000.researcher.impl.criterion.element.TimedSwitchingElement;
 import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.predicate.NumberRange;

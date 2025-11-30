@@ -1,8 +1,8 @@
 package io.github.tr100000.researcher.api.criterion;
 
-import io.github.tr100000.researcher.impl.criterion.element.GroupedElement;
-import io.github.tr100000.researcher.impl.criterion.element.ItemElement;
-import io.github.tr100000.researcher.impl.criterion.element.TextElement;
+import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
+import io.github.tr100000.researcher.api.criterion.element.ItemElement;
+import io.github.tr100000.researcher.api.criterion.element.TextElement;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;

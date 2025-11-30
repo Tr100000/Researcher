@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.impl.criterion.element;
+package io.github.tr100000.researcher.api.criterion.element;
 
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import net.minecraft.client.gui.DrawContext;

@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher.api.criterion;
 
+import io.github.tr100000.researcher.api.criterion.element.ElementWithComponentTooltip;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.text.Text;
