@@ -1,5 +1,6 @@
-package io.github.tr100000.researcher.api.criterion;
+package io.github.tr100000.researcher.api.criterion.util;
 
+import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
 import io.github.tr100000.researcher.api.criterion.element.ItemElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;

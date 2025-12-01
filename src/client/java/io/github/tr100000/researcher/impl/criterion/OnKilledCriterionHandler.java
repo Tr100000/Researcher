@@ -5,9 +5,10 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
-import io.github.tr100000.researcher.api.criterion.PredicateUtils;
 import io.github.tr100000.researcher.api.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
+import io.github.tr100000.researcher.api.criterion.util.DamageSourcePredicateHelper;
+import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
@@ -53,13 +54,13 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         playerPredicate.ifPresent(predicate -> {
             killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.player"));
             killConditionTextHolder.push();
-            PredicateUtils.entityTooltip(predicate, killConditionTextHolder);
+            EntityPredicateHelper.tooltip(predicate, killConditionTextHolder);
             killConditionTextHolder.pop();
         });
         killingBlowPredicate.ifPresent(predicate -> {
             killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.kill.damageSource"));
             killConditionTextHolder.push();
-            PredicateUtils.damageSourceTooltip(predicate, killConditionTextHolder);
+            DamageSourcePredicateHelper.tooltip(predicate, killConditionTextHolder);
             killConditionTextHolder.pop();
         });
 
@@ -69,8 +70,12 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         CriterionDisplayElement afterText = new TextElement(ModUtils.getScreenTranslated(hasKillConditions ? afterWithConditionsKey : afterKey));
         if (hasKillConditions) afterText = afterText.withTextTooltip(killConditionTextHolder.getText());
 
-        // This handles condition tooltips for us
-        CriterionDisplayElement entityElement = PredicateUtils.entityElement(entityPredicate.orElse(null), true);
+        CriterionDisplayElement entityElement = EntityPredicateHelper.element(entityPredicate.orElse(null));
+        IndentedTextHolder entityConditionTextHolder = new IndentedTextHolder();
+        EntityPredicateHelper.tooltip(entityPredicate.orElse(null), entityConditionTextHolder);
+        if (!entityConditionTextHolder.isEmpty()) {
+            entityElement = entityElement.withTextTooltip(entityConditionTextHolder.getText());
+        }
 
         return new CriterionDisplay(
                 new SpacingElement(2),
