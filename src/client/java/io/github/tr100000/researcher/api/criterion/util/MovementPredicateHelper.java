@@ -11,7 +11,7 @@ public final class MovementPredicateHelper {
     private static final Text MOVEMENT_ABSOLUTE = ModUtils.getScreenTranslated("predicate.movement.absolute");
     private static final Text MOVEMENT_HORIZONTAL = ModUtils.getScreenTranslated("predicate.movement.horizontal");
     private static final Text MOVEMENT_VERTICAL = ModUtils.getScreenTranslated("predicate.movement.vertical");
-    private static final Text MOVEMENT_FALL_DISTANCE = ModUtils.getScreenTranslated("predicate.movement.fallDistance");
+    private static final Text MOVEMENT_FALL_DISTANCE = ModUtils.getScreenTranslated("predicate.movement.fall_distance");
     private static final Text MOVEMENT_X = ModUtils.getScreenTranslated("predicate.movement.x");
     private static final Text MOVEMENT_Y = ModUtils.getScreenTranslated("predicate.movement.y");
     private static final Text MOVEMENT_Z = ModUtils.getScreenTranslated("predicate.movement.z");

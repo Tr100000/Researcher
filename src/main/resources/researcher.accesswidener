@@ -2,6 +2,14 @@ accessWidener v2 named
 
 accessible class net/minecraft/server/MinecraftServer$ResourceManagerHolder
 accessible class net/minecraft/predicate/entity/LocationPredicate$PositionRange
+accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$AdvancementCriteriaPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$CompletedAdvancementPredicate
+accessible class net/minecraft/predicate/entity/PlayerPredicate$StatMatcher
+accessible class net/minecraft/predicate/StatePredicate$Condition
+accessible class net/minecraft/predicate/StatePredicate$ValueMatcher
+accessible class net/minecraft/predicate/StatePredicate$ExactValueMatcher
+accessible class net/minecraft/predicate/StatePredicate$RangedValueMatcher
 
 accessible method net/minecraft/util/WorldSavePath <init> (Ljava/lang/String;)V
 accessible method net/minecraft/resource/JsonDataLoader <init> (Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Lnet/minecraft/resource/ResourceFinder;)V

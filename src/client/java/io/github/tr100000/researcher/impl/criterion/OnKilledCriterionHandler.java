@@ -5,16 +5,17 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
-import io.github.tr100000.researcher.api.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
 import io.github.tr100000.researcher.api.criterion.util.DamageSourcePredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.Optional;
 
 public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriterion.Conditions> {
@@ -58,7 +59,7 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
             killConditionTextHolder.pop();
         });
         killingBlowPredicate.ifPresent(predicate -> {
-            killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.kill.damageSource"));
+            killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.kill.damage_source"));
             killConditionTextHolder.push();
             DamageSourcePredicateHelper.tooltip(predicate, killConditionTextHolder);
             killConditionTextHolder.pop();
@@ -72,18 +73,20 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(entityPredicate.orElse(null));
         IndentedTextHolder entityConditionTextHolder = new IndentedTextHolder();
+        entityConditionTextHolder.push();
         EntityPredicateHelper.tooltip(entityPredicate.orElse(null), entityConditionTextHolder);
         if (!entityConditionTextHolder.isEmpty()) {
-            entityElement = entityElement.withTextTooltip(entityConditionTextHolder.getText());
+            List<Text> text = new ObjectArrayList<>();
+            text.add(ModUtils.getScreenTranslated("predicate.entity"));
+            text.addAll(entityConditionTextHolder.getText());
+            entityElement = entityElement.withTextTooltip(text);
         }
 
         return new CriterionDisplay(
-                new SpacingElement(2),
-                beforeText,
                 new TextElement(Text.literal(criterion.count() + "x")),
+                beforeText,
                 entityElement,
-                afterText,
-                new SpacingElement(2)
+                afterText
         );
     }
 }

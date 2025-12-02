@@ -8,10 +8,10 @@ import net.minecraft.text.Text;
 public final class DamageSourcePredicateHelper {
     private DamageSourcePredicateHelper() {}
 
-    private static final Text DAMAGE_DIRECT_HEADER = ModUtils.getScreenTranslated("predicate.damage.directEntityHeader");
-    private static final Text DAMAGE_SOURCE_HEADER = ModUtils.getScreenTranslated("predicate.damage.sourceEntityHeader");
-    private static final Text DAMAGE_DIRECT = ModUtils.getScreenTranslated("predicate.damage.mustBeDirect");
-    private static final Text DAMAGE_INDIRECT = ModUtils.getScreenTranslated("predicate.damage.mustBeIndirect");
+    private static final Text DAMAGE_DIRECT_HEADER = ModUtils.getScreenTranslated("predicate.damage.direct_entity_header");
+    private static final Text DAMAGE_SOURCE_HEADER = ModUtils.getScreenTranslated("predicate.damage.source_entity_header");
+    private static final Text DAMAGE_DIRECT = ModUtils.getScreenTranslated("predicate.damage.must_be_direct");
+    private static final Text DAMAGE_INDIRECT = ModUtils.getScreenTranslated("predicate.damage.must_be_indirect");
 
     public static void tooltip(DamageSourcePredicate predicate, IndentedTextHolder textHolder) {
         predicate.isDirect().ifPresent(mustBeDirect -> textHolder.accept(mustBeDirect ? DAMAGE_DIRECT : DAMAGE_INDIRECT));

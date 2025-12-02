@@ -19,6 +19,8 @@ public final class LocationPredicateHelper {
     private static final Text LOCATION_SMOKEY = ModUtils.getScreenTranslated("predicate.location.smokey");
     private static final Text LOCATION_NOT_SMOKEY = ModUtils.getScreenTranslated("predicate.location.not_smokey");
     private static final Text LOCATION_LIGHT = ModUtils.getScreenTranslated("predicate.location.light");
+    private static final Text LOCATION_BLOCK = ModUtils.getScreenTranslated("predicate.location.block");
+    private static final Text LOCATION_FLUID = ModUtils.getScreenTranslated("predicate.location.fluid");
     private static final Text LOCATION_SKY_VISIBLE = ModUtils.getScreenTranslated("predicate.location.sky_visible");
     private static final Text LOCATION_SKY_NOT_VISIBLE = ModUtils.getScreenTranslated("predicate.location.sky_not_visible");
 
@@ -57,12 +59,16 @@ public final class LocationPredicateHelper {
             NumberRangeUtils.tooltip(predicate.light().get().range(), LOCATION_LIGHT, textHolder);
         }
         if (predicate.block().isPresent()) {
-            // TODO
-            textHolder.accept(Text.literal("Unknown block conditions"));
+            textHolder.accept(LOCATION_BLOCK);
+            textHolder.push();
+            BlockPredicateHelper.tooltip(predicate.block().get(), textHolder);
+            textHolder.pop();
         }
         if (predicate.fluid().isPresent()) {
-            // TODO
-            textHolder.accept(Text.literal("Unknown fluid conditions"));
+            textHolder.accept(LOCATION_FLUID);
+            textHolder.push();
+            FluidPredicateHelper.tooltip(predicate.fluid().get(), textHolder);
+            textHolder.pop();
         }
         PredicateHelper.optionalBooleanTooltip(predicate.canSeeSky(), LOCATION_SKY_VISIBLE, LOCATION_SKY_NOT_VISIBLE, textHolder);
     }

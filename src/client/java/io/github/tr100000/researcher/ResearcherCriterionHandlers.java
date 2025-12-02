@@ -4,6 +4,7 @@ import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
 import io.github.tr100000.researcher.impl.criterion.BlockBrokenCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ConsumeItemCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.EnterBlockCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ErrorCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.OnKilledCriterionHandler;
@@ -23,6 +24,8 @@ public final class ResearcherCriterionHandlers {
 
         register(Criteria.PLAYER_KILLED_ENTITY, OnKilledCriterionHandler.PLAYER_KILLED_ENTITY);
         register(Criteria.ENTITY_KILLED_PLAYER, OnKilledCriterionHandler.ENTITY_KILLED_PLAYER);
+        register(Criteria.ENTER_BLOCK, new EnterBlockCriterionHandler());
+
         register(Criteria.SLEPT_IN_BED, TickCriterionHandler.SLEPT_IN_BED);
         register(Criteria.TICK, TickCriterionHandler.TICK);
         register(Criteria.CONSUME_ITEM, new ConsumeItemCriterionHandler());

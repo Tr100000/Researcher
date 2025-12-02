@@ -3,11 +3,13 @@ package io.github.tr100000.researcher.api.util;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class IndentedTextHolder implements Consumer<Text> {
+public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText> {
     private static final int DEFAULT_INDENT = 2;
 
     private final List<MutableText> text = new ObjectArrayList<>();
@@ -45,5 +47,14 @@ public class IndentedTextHolder implements Consumer<Text> {
 
     public boolean isEmpty() {
         return text.isEmpty();
+    }
+
+    public int count() {
+        return text.size();
+    }
+
+    @Override
+    public @NotNull Iterator<MutableText> iterator() {
+        return text.iterator();
     }
 }

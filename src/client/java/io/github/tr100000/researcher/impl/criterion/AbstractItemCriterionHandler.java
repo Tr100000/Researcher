@@ -31,7 +31,6 @@ public abstract class AbstractItemCriterionHandler<T extends CriterionConditions
         ItemStack stack = getItem(criterion).getDefaultStack();
 
         return new CriterionDisplay(
-                new SpacingElement(2),
                 new TextElement(Text.translatable(textBeforeKey)),
                 new SpacingElement(2),
                 new ItemElement(stack, true),
