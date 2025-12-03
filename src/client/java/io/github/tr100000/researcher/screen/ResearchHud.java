@@ -30,7 +30,7 @@ public final class ResearchHud {
 
     public static void render(DrawContext draw, RenderTickCounter tickCounter) {
         if (client.world == null || client.player == null || !ResearcherConfigs.client.researchHud.get()) return;
-        if (client.getDebugHud().shouldShowDebugHud()) return; // Don't show when F3 is open
+        if (client.debugHudEntryList.isF3Enabled()) return; // Don't show when F3 is open
         if (client.getNetworkHandler() == null) return;
 
         ClientResearchTracker researchTracker = client.getNetworkHandler().researcher$getClientTracker();

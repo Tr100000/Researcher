@@ -9,6 +9,7 @@ import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
 import io.github.tr100000.researcher.api.criterion.util.BlockPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
+import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancement.criterion.EnterBlockCriterion;
 import net.minecraft.block.Block;
@@ -26,6 +27,9 @@ public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCr
     private static final Text AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.enter_block.after_with_conditions");
     private static final Text ANY_BLOCK = ModUtils.getScreenTranslated("criterion.enter_block.any");
 
+    private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
+    private static final Text BLOCK_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.block");
+
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<EnterBlockCriterion.Conditions> criterion) {
         Optional<LootContextPredicate> playerPredicate = criterion.conditions().player();
@@ -35,7 +39,7 @@ public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCr
         boolean playerHasConditions = false;
         IndentedTextHolder playerConditionTextHolder = new IndentedTextHolder();
         if (playerPredicate.isPresent()) {
-            playerConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.player"));
+            playerConditionTextHolder.accept(PLAYER_CONDITIONS_HEADER);
             playerConditionTextHolder.push();
             EntityPredicateHelper.tooltip(playerPredicate.get(), playerConditionTextHolder);
             playerConditionTextHolder.pop();
@@ -53,9 +57,9 @@ public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCr
         boolean blockHasConditions = false;
         IndentedTextHolder blockConditionTextHolder = new IndentedTextHolder();
         if (statePredicate.isPresent()) {
-            blockConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.block"));
+            blockConditionTextHolder.accept(BLOCK_CONDITIONS_HEADER);
             blockConditionTextHolder.push();
-            BlockPredicateHelper.stateTooltip(statePredicate.get(), blockConditionTextHolder);
+            PredicateHelper.stateTooltip(statePredicate.get(), blockConditionTextHolder);
             blockConditionTextHolder.pop();
             if (blockConditionTextHolder.count() > 1) blockHasConditions = true;
         }

@@ -18,6 +18,7 @@ import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityEffectPredicate;
+import net.minecraft.predicate.entity.EntityEquipmentPredicate;
 import net.minecraft.predicate.entity.EntityFlagsPredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.EntitySubPredicate;
@@ -33,6 +34,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameModeList;
@@ -83,6 +85,14 @@ public final class EntityPredicateHelper {
     private static final Text FLAGS_NOT_FLYING = ModUtils.getScreenTranslated("predicate.entity.flags.not_flying");
     private static final Text FLAGS_BABY = ModUtils.getScreenTranslated("predicate.entity.flags.baby");
     private static final Text FLAGS_NOT_BABY = ModUtils.getScreenTranslated("predicate.entity.flags.not_baby");
+
+    private static final Text EQUIPMENT_HEAD = ModUtils.getScreenTranslated("predicate.entity.equipment.head");
+    private static final Text EQUIPMENT_CHEST = ModUtils.getScreenTranslated("predicate.entity.equipment.chest");
+    private static final Text EQUIPMENT_LEGS = ModUtils.getScreenTranslated("predicate.entity.equipment.legs");
+    private static final Text EQUIPMENT_FEET = ModUtils.getScreenTranslated("predicate.entity.equipment.feet");
+    private static final Text EQUIPMENT_BODY = ModUtils.getScreenTranslated("predicate.entity.equipment.body");
+    private static final Text EQUIPMENT_MAINHAND = ModUtils.getScreenTranslated("predicate.entity.equipment.mainhand");
+    private static final Text EQUIPMENT_OFFHAND = ModUtils.getScreenTranslated("predicate.entity.equipment.offhand");
 
     private static final Text LIGHTNING_BLOCKS_SET_ON_FIRE = ModUtils.getScreenTranslated("predicate.entity.lightning.blocks_set_on_fire");
     private static final Text LIGHTNING_ENTITY_STRUCK = ModUtils.getScreenTranslated("predicate.entity.lightning.entity_struck");
@@ -165,8 +175,7 @@ public final class EntityPredicateHelper {
             flagsTooltip(predicate.flags().get(), textHolder);
         }
         if (predicate.equipment().isPresent()) {
-            // TODO
-            textHolder.accept(Text.literal("TODO equipment conditions"));
+            equipmentTooltip(predicate.equipment().get(), textHolder);
         }
         if (predicate.typeSpecific().isPresent()) {
             typeSpecificTooltip(predicate.typeSpecific().get(), textHolder);
@@ -208,6 +217,10 @@ public final class EntityPredicateHelper {
     public static void tooltip(@Nullable LootContextPredicate predicate, IndentedTextHolder textHolder) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
         entityPredicate.ifPresentOrElse(p -> tooltip(p, textHolder), () -> textHolder.accept(PREDICATE_MISSING));
+    }
+
+    public static Optional<List<MutableText>> tooltip(Optional<LootContextPredicate> predicate, @Nullable Text headerText) {
+        return PredicateHelper.tooltip(predicate, EntityPredicateHelper::tooltip, headerText);
     }
 
     public static CriterionDisplayElement element(EntityType<?> entityType) {
@@ -268,6 +281,51 @@ public final class EntityPredicateHelper {
         PredicateHelper.optionalBooleanTooltip(predicate.isSwimming(), FLAGS_SWIMMING, FLAGS_NOT_SWIMMING, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.isFlying(), FLAGS_FLYING, FLAGS_NOT_FLYING, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.isBaby(), FLAGS_BABY, FLAGS_NOT_BABY, textHolder);
+    }
+
+    public static void equipmentTooltip(EntityEquipmentPredicate predicate, IndentedTextHolder textHolder) {
+        if (predicate.head().isPresent()) {
+            textHolder.accept(EQUIPMENT_HEAD);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.head().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.chest().isPresent()) {
+            textHolder.accept(EQUIPMENT_CHEST);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.chest().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.legs().isPresent()) {
+            textHolder.accept(EQUIPMENT_LEGS);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.legs().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.feet().isPresent()) {
+            textHolder.accept(EQUIPMENT_FEET);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.feet().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.body().isPresent()) {
+            textHolder.accept(EQUIPMENT_BODY);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.body().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.mainhand().isPresent()) {
+            textHolder.accept(EQUIPMENT_MAINHAND);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.mainhand().get(), textHolder);
+            textHolder.pop();
+        }
+        if (predicate.offhand().isPresent()) {
+            textHolder.accept(EQUIPMENT_OFFHAND);
+            textHolder.push();
+            ItemPredicateHelper.tooltip(predicate.offhand().get(), textHolder);
+            textHolder.pop();
+        }
     }
 
     public static void typeSpecificTooltip(EntitySubPredicate predicate, IndentedTextHolder textHolder) {

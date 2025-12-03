@@ -5,9 +5,13 @@ import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.predicate.TagPredicate;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public final class PredicateHelper {
@@ -23,6 +27,22 @@ public final class PredicateHelper {
     private static final String STATE_VALUE_BETWEEN_KEY = ModUtils.getScreenTranslationKey("predicate.state.between");
     private static final String STATE_VALUE_LESS_THAN_KEY = ModUtils.getScreenTranslationKey("predicate.state.less_than");
     private static final String STATE_VALUE_GREATER_THAN_KEY = ModUtils.getScreenTranslationKey("predicate.state.greater_than");
+
+    public static <T> Optional<List<MutableText>> tooltip(Optional<T> optional, BiConsumer<T, IndentedTextHolder> tooltipProvider, @Nullable Text headerText) {
+        if (optional.isPresent()) {
+            IndentedTextHolder textHolder = new IndentedTextHolder();
+            if (headerText != null) {
+                textHolder.accept(headerText);
+                textHolder.push();
+            }
+            tooltipProvider.accept(optional.get(), textHolder);
+
+            if (textHolder.count() > (headerText != null ? 1 : 0)) {
+                return Optional.of(textHolder.getText());
+            }
+        }
+        return Optional.empty();
+    }
 
     public static void optionalBooleanTooltip(Optional<Boolean> optional, Text trueText, Text falseText, IndentedTextHolder textHolder) {
         optional.ifPresent(value -> textHolder.accept(value ? trueText : falseText));

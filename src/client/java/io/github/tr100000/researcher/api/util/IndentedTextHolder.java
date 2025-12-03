@@ -37,6 +37,14 @@ public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText>
         this.text.add(getIndentText().append(text));
     }
 
+    public void accept(List<MutableText> text) {
+        text.forEach(this);
+    }
+
+    public void accept(IndentedTextHolder textHolder) {
+        textHolder.forEach(this);
+    }
+
     private MutableText getIndentText() {
         return Text.literal(" ".repeat(indent));
     }

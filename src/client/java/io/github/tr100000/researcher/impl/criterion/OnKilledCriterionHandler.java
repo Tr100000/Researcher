@@ -6,37 +6,40 @@ import io.github.tr100000.researcher.api.criterion.CriterionDisplay;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
-import io.github.tr100000.researcher.api.criterion.util.DamageSourcePredicateHelper;
+import io.github.tr100000.researcher.api.criterion.util.DamagePredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
+import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.text.Text;
 
-import java.util.List;
 import java.util.Optional;
 
 public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriterion.Conditions> {
     public static final OnKilledCriterionHandler PLAYER_KILLED_ENTITY = new OnKilledCriterionHandler(
             "criterion.player_killed_entity.before",
-            "criterion.player_killed_entity.beforeWithCondition",
+            "criterion.player_killed_entity.before_with_conditions",
             "criterion.player_killed_entity.after",
-            "criterion.player_killed_entity.afterWithCondition"
+            "criterion.player_killed_entity.after_with_conditions"
     );
 
     public static final OnKilledCriterionHandler ENTITY_KILLED_PLAYER = new OnKilledCriterionHandler(
             "criterion.player_killed_entity.before",
-            "criterion.player_killed_entity.beforeWithCondition",
+            "criterion.player_killed_entity.before_with_conditions",
             "criterion.player_killed_entity.after",
-            "criterion.player_killed_entity.afterWithCondition"
+            "criterion.player_killed_entity.after_with_conditions"
     );
 
     private final String beforeKey;
     private final String beforeWithConditionsKey;
     private final String afterKey;
     private final String afterWithConditionsKey;
+
+    private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
+    private static final Text KILLING_BLOW_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.kill.damage_source");
+    private static final Text ENTITY_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.entity");
 
     public OnKilledCriterionHandler(String beforeKey, String beforeWithConditionsKey, String afterKey, String afterWithConditionsKey) {
         this.beforeKey = beforeKey;
@@ -52,34 +55,25 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         Optional<LootContextPredicate> entityPredicate = criterion.conditions().entity();
 
         IndentedTextHolder killConditionTextHolder = new IndentedTextHolder();
-        playerPredicate.ifPresent(predicate -> {
-            killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.player"));
-            killConditionTextHolder.push();
-            EntityPredicateHelper.tooltip(predicate, killConditionTextHolder);
-            killConditionTextHolder.pop();
-        });
-        killingBlowPredicate.ifPresent(predicate -> {
-            killConditionTextHolder.accept(ModUtils.getScreenTranslated("predicate.kill.damage_source"));
-            killConditionTextHolder.push();
-            DamageSourcePredicateHelper.tooltip(predicate, killConditionTextHolder);
-            killConditionTextHolder.pop();
-        });
+        PredicateHelper.tooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+                .ifPresent(killConditionTextHolder::accept);
+        PredicateHelper.tooltip(killingBlowPredicate, DamagePredicateHelper::tooltip, KILLING_BLOW_CONDITIONS_HEADER)
+                .ifPresent(killConditionTextHolder::accept);
 
         boolean hasKillConditions = !killConditionTextHolder.isEmpty();
         CriterionDisplayElement beforeText = new TextElement(ModUtils.getScreenTranslated(hasKillConditions ? beforeWithConditionsKey : beforeKey));
-        if (hasKillConditions) beforeText = beforeText.withTextTooltip(killConditionTextHolder.getText());
         CriterionDisplayElement afterText = new TextElement(ModUtils.getScreenTranslated(hasKillConditions ? afterWithConditionsKey : afterKey));
-        if (hasKillConditions) afterText = afterText.withTextTooltip(killConditionTextHolder.getText());
+        if (hasKillConditions) {
+            beforeText = beforeText.withTextTooltip(killConditionTextHolder.getText());
+            afterText = afterText.withTextTooltip(killConditionTextHolder.getText());
+        }
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(entityPredicate.orElse(null));
         IndentedTextHolder entityConditionTextHolder = new IndentedTextHolder();
-        entityConditionTextHolder.push();
-        EntityPredicateHelper.tooltip(entityPredicate.orElse(null), entityConditionTextHolder);
+        PredicateHelper.tooltip(entityPredicate, EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+                .ifPresent(entityConditionTextHolder::accept);
         if (!entityConditionTextHolder.isEmpty()) {
-            List<Text> text = new ObjectArrayList<>();
-            text.add(ModUtils.getScreenTranslated("predicate.entity"));
-            text.addAll(entityConditionTextHolder.getText());
-            entityElement = entityElement.withTextTooltip(text);
+            entityElement = entityElement.withTextTooltip(entityConditionTextHolder.getText());
         }
 
         return new CriterionDisplay(

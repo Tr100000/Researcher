@@ -7,19 +7,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public final class CriterionHandlerRegistry {
     private CriterionHandlerRegistry() {}
 
-    private static final Map<Criterion<?>, CriterionHandler<?>> REGISTRY = new Object2ObjectOpenHashMap<>();
+    private static final Map<Criterion<?>, Supplier<CriterionHandler<?>>> REGISTRY = new Object2ObjectOpenHashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends CriterionConditions> CriterionHandler<T> get(@NotNull Criterion<?> criterion) {
         return (CriterionHandler<T>)REGISTRY.getOrDefault(criterion, REGISTRY.get(null));
     }
 
-    public static <T extends CriterionConditions> void register(Criterion<T> criterion, CriterionHandler<T> handler) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <T extends CriterionConditions> void register(Criterion<T> criterion, Supplier<CriterionHandler<T>> handler) {
         Objects.requireNonNull(handler, "handler is null");
-        REGISTRY.put(criterion, handler);
+        REGISTRY.put(criterion, (Supplier)handler);
     }
 }

@@ -6,7 +6,6 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
-// TODO think of a better name
 public class TimedSwitchingElement implements CriterionDisplayElement {
     private final List<CriterionDisplayElement> elements;
     private final float switchTime;
