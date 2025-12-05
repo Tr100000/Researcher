@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 
 public class ItemCraftedCriterionHandler extends AbstractItemCriterionHandler<ItemCraftedCriterion.Conditions> {
     public ItemCraftedCriterionHandler() {
-        super("screen.researcher.criterion.item_crafted.before", "screen.researcher.criterion.item_crafted.after", "screen.researcher.criterion.item_crafted.count");
+        super("screen.researcher.criterion.item_crafted.before", "screen.researcher.criterion.item_crafted.after");
     }
 
     @Override

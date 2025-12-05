@@ -8,8 +8,7 @@ public class BlockBrokenCriterionHandler extends AbstractItemCriterionHandler<Bl
     public BlockBrokenCriterionHandler() {
         super(
                 "screen.researcher.criterion.block_broken.before",
-                "screen.researcher.criterion.block_broken.after",
-                "screen.researcher.criterion.block_broken.count"
+                "screen.researcher.criterion.block_broken.after"
         );
     }
 

@@ -71,7 +71,7 @@ public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCr
         }
 
         return new CriterionDisplay(
-                new TextElement(Text.literal(criterion.count() + "x")),
+                CriterionDisplay.getCountElement(criterion),
                 textBefore,
                 block,
                 textAfter

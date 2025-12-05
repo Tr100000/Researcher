@@ -1,12 +1,18 @@
 package io.github.tr100000.researcher;
 
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.potion.Potion;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+// TODO move some of these to TrUtils
 public final class ModUtils {
     private ModUtils() {}
 
@@ -50,5 +56,17 @@ public final class ModUtils {
 
     public static boolean isDrinkableItem(Item item) {
         return itemHasConsumableAction(item, UseAction.DRINK);
+    }
+
+    public static String getPotionTranslationKey(RegistryEntry<Potion> potion) {
+        String id = potion.value().getBaseName();
+        if (id == null) id = "empty";
+        return String.format("item.minecraft.potion.effect.%s", id);
+    }
+
+    public static ItemStack getPotionStack(RegistryEntry<Potion> potion) {
+        ItemStack stack = Items.POTION.getDefaultStack();
+        stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(potion));
+        return stack;
     }
 }

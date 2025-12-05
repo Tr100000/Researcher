@@ -46,7 +46,7 @@ public class InventoryChangedCriterionHandler implements CriterionHandler<Invent
         if (hasConditions) element = element.withTextTooltip(textHolder.getText());
 
         return new CriterionDisplay(
-                new TextElement(Text.literal(criterion.count() + "x")),
+                CriterionDisplay.getCountElement(criterion),
                 element
         );
     }

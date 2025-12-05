@@ -40,7 +40,7 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
     public CriterionDisplayElement prepare() {
         return new CriterionDisplay(
                 new ItemElement(stack, false),
-                new SpacingElement(4),
+                new SpacingElement(2),
                 new TextElement(text)
         );
     }
@@ -48,7 +48,7 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
     public CriterionDisplayElement prepareWithErrorTooltip(Text errorText) {
         return new CriterionDisplay(
                 new ItemElement(stack, false).withTextTooltip(errorText),
-                new SpacingElement(4),
+                new SpacingElement(2),
                 new TextElement(text)
         );
     }

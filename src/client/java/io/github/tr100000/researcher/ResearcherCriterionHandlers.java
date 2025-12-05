@@ -3,10 +3,13 @@ package io.github.tr100000.researcher;
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
 import io.github.tr100000.researcher.impl.criterion.BlockBrokenCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.BrewedPotionCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ConsumeItemCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.EnchantedItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EnterBlockCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EntityHurtPlayerCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ErrorCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.FilledBucketCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.InventoryChangedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.OnKilledCriterionHandler;
@@ -33,6 +36,9 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.RECIPE_UNLOCKED, () -> ErrorCriterionHandler.WARN_RECIPE_UNLOCKED_AS_CONDITION);
         register(Criteria.PLAYER_HURT_ENTITY, PlayerHurtEntityCriterionHandler::new);
         register(Criteria.ENTITY_HURT_PLAYER, EntityHurtPlayerCriterionHandler::new);
+        register(Criteria.ENCHANTED_ITEM, EnchantedItemCriterionHandler::new);
+        register(Criteria.FILLED_BUCKET, FilledBucketCriterionHandler::new);
+        register(Criteria.BREWED_POTION, BrewedPotionCriterionHandler::new);
 
         register(Criteria.SLEPT_IN_BED, () -> TickCriterionHandler.SLEPT_IN_BED);
         register(Criteria.TICK, () -> TickCriterionHandler.TICK);

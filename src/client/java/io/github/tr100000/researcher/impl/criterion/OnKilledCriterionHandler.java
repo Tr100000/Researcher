@@ -77,7 +77,7 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         }
 
         return new CriterionDisplay(
-                new TextElement(Text.literal(criterion.count() + "x")),
+                CriterionDisplay.getCountElement(criterion),
                 beforeText,
                 entityElement,
                 afterText

@@ -2,23 +2,24 @@ package io.github.tr100000.researcher.api.criterion.element;
 
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
 public class TimedSwitchingElement implements CriterionDisplayElement {
     private final List<CriterionDisplayElement> elements;
-    private final float switchTime;
+    private final float switchTimeSeconds;
 
-    private float time;
+    private float timeNanoseconds;
 
-    public TimedSwitchingElement(float switchTime, List<CriterionDisplayElement> elements) {
+    public TimedSwitchingElement(float switchTimeSeconds, List<CriterionDisplayElement> elements) {
         this.elements = elements;
-        this.switchTime = switchTime;
+        this.switchTimeSeconds = switchTimeSeconds;
     }
 
-    public TimedSwitchingElement(float switchTime, CriterionDisplayElement... elements) {
-        this(switchTime, List.of(elements));
+    public TimedSwitchingElement(float switchTimeSeconds, CriterionDisplayElement... elements) {
+        this(switchTimeSeconds, List.of(elements));
     }
 
     public TimedSwitchingElement(List<CriterionDisplayElement> elements) {
@@ -30,15 +31,14 @@ public class TimedSwitchingElement implements CriterionDisplayElement {
     }
 
     private CriterionDisplayElement getCurrentElement() {
-        int index = MathHelper.floor(time / (switchTime * 20)) % elements.size();
+        final long timeMilliseconds = Util.getMeasuringTimeMs();
+        int index = MathHelper.floor((double)timeMilliseconds / 1000L / switchTimeSeconds) % elements.size();
         return elements.get(index);
     }
 
     @Override
     public int render(DrawContext draw, int x, int y, int mouseX, int mouseY, float delta) {
-        int width = getCurrentElement().render(draw, x, y, mouseX, mouseY, delta);
-        time += delta;
-        return width;
+        return getCurrentElement().render(draw, x, y, mouseX, mouseY, delta);
     }
 
     @Override

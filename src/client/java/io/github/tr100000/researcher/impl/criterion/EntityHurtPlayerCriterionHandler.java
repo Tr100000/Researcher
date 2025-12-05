@@ -41,7 +41,7 @@ public class EntityHurtPlayerCriterionHandler implements CriterionHandler<Entity
         }
 
         return new CriterionDisplay(
-                new TextElement(Text.literal(criterion.count() + "x")),
+                CriterionDisplay.getCountElement(criterion),
                 textElement
         );
     }

@@ -7,9 +7,13 @@ import io.github.tr100000.researcher.api.data.ResearchProvider;
 import io.github.tr100000.researcher.criteria.BlockBrokenCriterion;
 import io.github.tr100000.researcher.criteria.ItemCraftedCriterion;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.advancement.criterion.BrewedPotionCriterion;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potions;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.TagPredicate;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
@@ -22,6 +26,8 @@ import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static io.github.tr100000.researcher.testmod.ResearcherTestmod.id;
@@ -84,7 +90,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .toUnlock(ResearcherCriteria.BLOCK_BROKEN, new BlockBrokenCriterion.Conditions(Blocks.OBSIDIAN), 20)
                 .export(exporter);
 
-        new ResearchBuilder(id("kill_test"))
+        Identifier killTest = new ResearchBuilder(id("kill_test"))
                 .title(Text.literal("Kill Test"))
                 .description(Text.literal("Kill a skeleton from at least 50 meters away!"))
                 .prerequisites(ironTools, testing)
@@ -92,6 +98,26 @@ public class TestmodResearchProvider extends ResearchProvider {
                         EntityPredicate.Builder.create().type(lookup.getOrThrow(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(NumberRange.DoubleRange.atLeast(50.0))),
                         DamageSourcePredicate.Builder.create().tag(TagPredicate.expected(DamageTypeTags.IS_PROJECTILE))
                 ), 5)
+                .export(exporter);
+
+        new ResearchBuilder(id("inventory_change"))
+                .title(Text.literal("Change Your Inventory"))
+                .prerequisites(ironTools)
+                .toUnlock(Criteria.INVENTORY_CHANGED, new InventoryChangedCriterion.Conditions(
+                        Optional.empty(),
+                        InventoryChangedCriterion.Conditions.Slots.ANY,
+                        List.of()
+                ), 1000)
+                .export(exporter);
+
+        new ResearchBuilder(id("brew_potion"))
+                .title(Text.literal("Potion Brewing Test"))
+                .prerequisites(killTest)
+                .toUnlock(
+                        Criteria.BREWED_POTION,
+                        new BrewedPotionCriterion.Conditions(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
+                        10
+                )
                 .export(exporter);
     }
 }

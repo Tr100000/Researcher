@@ -18,12 +18,10 @@ import net.minecraft.text.Text;
 public abstract class AbstractItemCriterionHandler<T extends CriterionConditions> implements CriterionHandler<T> {
     private final String textBeforeKey;
     private final String textAfterKey;
-    private final String countTextKey;
 
-    protected AbstractItemCriterionHandler(String textBeforeKey, String textAfterKey, String countTextKey) {
+    protected AbstractItemCriterionHandler(String textBeforeKey, String textAfterKey) {
         this.textBeforeKey = textBeforeKey;
         this.textAfterKey = textAfterKey;
-        this.countTextKey = countTextKey;
     }
 
     @Override
@@ -31,11 +29,12 @@ public abstract class AbstractItemCriterionHandler<T extends CriterionConditions
         ItemStack stack = getItem(criterion).getDefaultStack();
 
         return new CriterionDisplay(
+                CriterionDisplay.getCountElement(criterion),
+                new TextElement(stack.getName()),
                 new TextElement(Text.translatable(textBeforeKey)),
                 new SpacingElement(2),
                 new ItemElement(stack, true),
                 new SpacingElement(2),
-                new TextElement(Text.translatable(countTextKey, criterion.count(), stack.getName().getString())),
                 new TextElement(Text.translatable(textAfterKey))
         );
     }

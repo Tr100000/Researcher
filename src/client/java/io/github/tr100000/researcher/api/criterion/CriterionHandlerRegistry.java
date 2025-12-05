@@ -16,7 +16,7 @@ public final class CriterionHandlerRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends CriterionConditions> CriterionHandler<T> get(@NotNull Criterion<?> criterion) {
-        return (CriterionHandler<T>)REGISTRY.getOrDefault(criterion, REGISTRY.get(null));
+        return (CriterionHandler<T>)REGISTRY.getOrDefault(criterion, REGISTRY.get(null)).get();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

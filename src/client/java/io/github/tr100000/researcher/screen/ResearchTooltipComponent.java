@@ -71,7 +71,7 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
         if (client.options.advancedItemTooltips) {
             longest = longestText(textRenderer, longest, idText);
         }
-        int criterionWidth = criterionDisplay.getWidth() + 2;
+        int criterionWidth = criterionDisplay.getWidth() + 5;
         return Math.max(longest, criterionWidth);
     }
 }
