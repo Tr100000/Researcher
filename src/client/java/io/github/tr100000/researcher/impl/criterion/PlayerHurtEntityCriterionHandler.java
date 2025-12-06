@@ -56,7 +56,7 @@ public class PlayerHurtEntityCriterionHandler implements CriterionHandler<Player
         }
 
         return new CriterionDisplay(
-                CriterionDisplay.getCountElement(criterion),
+                CriterionDisplay.makeCountElement(criterion),
                 beforeText,
                 entityElement,
                 afterText

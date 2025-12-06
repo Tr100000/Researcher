@@ -29,7 +29,7 @@ public abstract class AbstractItemCriterionHandler<T extends CriterionConditions
         ItemStack stack = getItem(criterion).getDefaultStack();
 
         return new CriterionDisplay(
-                CriterionDisplay.getCountElement(criterion),
+                CriterionDisplay.makeCountElement(criterion),
                 new TextElement(stack.getName()),
                 new TextElement(Text.translatable(textBeforeKey)),
                 new SpacingElement(2),

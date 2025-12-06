@@ -56,7 +56,7 @@ public class BrewedPotionCriterionHandler implements CriterionHandler<BrewedPoti
         }
 
         return new CriterionDisplay(
-                CriterionDisplay.getCountElement(criterion),
+                CriterionDisplay.makeCountElement(criterion),
                 element
         );
     }

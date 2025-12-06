@@ -3,7 +3,9 @@ package io.github.tr100000.researcher;
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
 import io.github.tr100000.researcher.impl.criterion.BlockBrokenCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.BredAnimalsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.BrewedPotionCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.ConstructBeaconCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ConsumeItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EnchantedItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EnterBlockCriterionHandler;
@@ -15,7 +17,9 @@ import io.github.tr100000.researcher.impl.criterion.ItemCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.OnKilledCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.PlayerHurtEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ResearchItemsCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.SummonedEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TickCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeCriterionHandler;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -39,8 +43,13 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.ENCHANTED_ITEM, EnchantedItemCriterionHandler::new);
         register(Criteria.FILLED_BUCKET, FilledBucketCriterionHandler::new);
         register(Criteria.BREWED_POTION, BrewedPotionCriterionHandler::new);
-
+        register(Criteria.CONSTRUCT_BEACON, ConstructBeaconCriterionHandler::new);
+        register(Criteria.USED_ENDER_EYE, UsedEnderEyeCriterionHandler::new);
+        register(Criteria.SUMMONED_ENTITY, SummonedEntityCriterionHandler::new);
+        register(Criteria.BRED_ANIMALS, BredAnimalsCriterionHandler::new);
+        register(Criteria.LOCATION, () -> TickCriterionHandler.LOCATION);
         register(Criteria.SLEPT_IN_BED, () -> TickCriterionHandler.SLEPT_IN_BED);
+
         register(Criteria.TICK, () -> TickCriterionHandler.TICK);
         register(Criteria.CONSUME_ITEM, ConsumeItemCriterionHandler::new);
         register(Criteria.HERO_OF_THE_VILLAGE, () -> TickCriterionHandler.HERO_OF_THE_VILLAGE);

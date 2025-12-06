@@ -4,7 +4,6 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
 import io.github.tr100000.researcher.api.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
@@ -40,10 +39,12 @@ public class CriterionDisplay implements CriterionDisplayElement {
         return totalWidth + EDGE_PADDING;
     }
 
-    public static CriterionDisplayElement getCountElement(ResearchCriterion<?> criterion) {
+    public static CriterionDisplayElement makeCountElement(ResearchCriterion<?> criterion) {
         return new GroupedElement(
-                new TextElement(Text.literal(criterion.count() + "×")),
-                new SpacingElement(MinecraftClient.getInstance().textRenderer.getWidth(" "))
+                new TextElement(Text.literal(String.valueOf(criterion.count()))),
+                new SpacingElement(2),
+                new TextElement(Text.literal("×")),
+                new TextElement(Text.literal(" "))
         );
     }
 }

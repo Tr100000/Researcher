@@ -19,17 +19,13 @@ import java.util.Optional;
 
 public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriterion.Conditions> {
     public static final OnKilledCriterionHandler PLAYER_KILLED_ENTITY = new OnKilledCriterionHandler(
-            "criterion.player_killed_entity.before",
-            "criterion.player_killed_entity.before_with_conditions",
-            "criterion.player_killed_entity.after",
-            "criterion.player_killed_entity.after_with_conditions"
+            ModUtils.getScreenTranslationKey("criterion.player_killed_entity.before"),
+            ModUtils.getScreenTranslationKey("criterion.player_killed_entity.after")
     );
 
     public static final OnKilledCriterionHandler ENTITY_KILLED_PLAYER = new OnKilledCriterionHandler(
-            "criterion.player_killed_entity.before",
-            "criterion.player_killed_entity.before_with_conditions",
-            "criterion.player_killed_entity.after",
-            "criterion.player_killed_entity.after_with_conditions"
+            ModUtils.getScreenTranslationKey("criterion.player_killed_entity.before"),
+            ModUtils.getScreenTranslationKey("criterion.player_killed_entity.after")
     );
 
     private final String beforeKey;
@@ -48,6 +44,15 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         this.afterWithConditionsKey = afterWithConditionsKey;
     }
 
+    public OnKilledCriterionHandler(String beforeKey, String afterKey) {
+        this(
+                beforeKey,
+                beforeKey + ".with_conditions",
+                afterKey,
+                afterKey + ".with_conditions"
+        );
+    }
+
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<OnKilledCriterion.Conditions> criterion) {
         Optional<LootContextPredicate> playerPredicate = criterion.conditions().player();
@@ -61,8 +66,8 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
                 .ifPresent(killConditionTextHolder::accept);
 
         boolean hasKillConditions = !killConditionTextHolder.isEmpty();
-        CriterionDisplayElement beforeText = new TextElement(ModUtils.getScreenTranslated(hasKillConditions ? beforeWithConditionsKey : beforeKey));
-        CriterionDisplayElement afterText = new TextElement(ModUtils.getScreenTranslated(hasKillConditions ? afterWithConditionsKey : afterKey));
+        CriterionDisplayElement beforeText = new TextElement(Text.translatable(hasKillConditions ? beforeWithConditionsKey : beforeKey));
+        CriterionDisplayElement afterText = new TextElement(Text.translatable(hasKillConditions ? afterWithConditionsKey : afterKey));
         if (hasKillConditions) {
             beforeText = beforeText.withTextTooltip(killConditionTextHolder.getText());
             afterText = afterText.withTextTooltip(killConditionTextHolder.getText());
@@ -77,7 +82,7 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         }
 
         return new CriterionDisplay(
-                CriterionDisplay.getCountElement(criterion),
+                CriterionDisplay.makeCountElement(criterion),
                 beforeText,
                 entityElement,
                 afterText

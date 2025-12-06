@@ -22,9 +22,9 @@ import java.util.Optional;
 
 public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCriterion.Conditions> {
     private static final Text BEFORE_KEY = ModUtils.getScreenTranslated("criterion.enter_block.before");
-    private static final Text BEFORE_WITH_CONDITIONS_KEY = ModUtils.getScreenTranslated("criterion.enter_block.before_with_conditions");
+    private static final Text BEFORE_WITH_CONDITIONS_KEY = ModUtils.getScreenTranslated("criterion.enter_block.before.with_conditions");
     private static final Text AFTER_KEY = ModUtils.getScreenTranslated("criterion.enter_block.after");
-    private static final Text AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.enter_block.after_with_conditions");
+    private static final Text AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.enter_block.after.with_conditions");
     private static final Text ANY_BLOCK = ModUtils.getScreenTranslated("criterion.enter_block.any");
 
     private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
@@ -71,7 +71,7 @@ public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCr
         }
 
         return new CriterionDisplay(
-                CriterionDisplay.getCountElement(criterion),
+                CriterionDisplay.makeCountElement(criterion),
                 textBefore,
                 block,
                 textAfter
