@@ -10,24 +10,30 @@ import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancement.criterion.ConsumeItemCriterion;
+import net.minecraft.advancement.criterion.VillagerTradeCriterion;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-public class ConsumeItemCriterionHandler implements CriterionHandler<ConsumeItemCriterion.Conditions> {
+public class VillagerTradeCriterionHandler implements CriterionHandler<VillagerTradeCriterion.Conditions> {
+    private static final Text ITEM_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.villager_trade.item");
+    private static final Text VILLAGER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.villager_trade.villager");
     private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
-    private static final Text TEXT = ModUtils.getScreenTranslated("criterion.consume_item");
-    private static final Text TEXT_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.with_conditions");
-    private static final Text TEXT_SPECIFIC_BEFORE = ModUtils.getScreenTranslated("criterion.consume_item.specific.before");
-    private static final Text TEXT_SPECIFIC_BEFORE_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.specific.before.with_conditions");
-    private static final Text TEXT_SPECIFIC_AFTER = ModUtils.getScreenTranslated("criterion.consume_item.specific.after");
-    private static final Text TEXT_SPECIFIC_AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.specific.after.with_conditions");
+    private static final Text TEXT = ModUtils.getScreenTranslated("criterion.villager_trade");
+    private static final Text TEXT_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.villager_trade.with_conditions");
+    private static final Text TEXT_SPECIFIC_BEFORE = ModUtils.getScreenTranslated("criterion.villager_trade.specific.before");
+    private static final Text TEXT_SPECIFIC_BEFORE_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.villager_trade.specific.with_conditions.before");
+    private static final Text TEXT_SPECIFIC_AFTER = ModUtils.getScreenTranslated("criterion.villager_trade.specific.after");
+    private static final Text TEXT_SPECIFIC_AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.villager_trade.specific.with_conditions.after");
 
     @Override
-    public CriterionDisplayElement prepare(ResearchCriterion<ConsumeItemCriterion.Conditions> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<VillagerTradeCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
+        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
+                .ifPresent(textHolder::accept);
+        PredicateHelper.tooltip(criterion.conditions().villager(), EntityPredicateHelper::tooltip, VILLAGER_CONDITIONS_HEADER)
+                .ifPresent(textHolder::accept);
         PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 

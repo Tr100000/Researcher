@@ -202,6 +202,6 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         else {
             titleKey = "locked";
         }
-        return Text.translatable("screen.researcher." + titleKey, research.getTitle(this).getString(), (int)Math.floor(progressPercentage * 100));
+        return ModUtils.getScreenTranslated(titleKey, research.getTitle(this).getString(), (int)Math.floor(progressPercentage * 100));
     }
 }

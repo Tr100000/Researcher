@@ -1,8 +1,10 @@
 package io.github.tr100000.researcher.api.criterion;
 
+import io.github.tr100000.researcher.Researcher;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
+import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -23,5 +25,13 @@ public final class CriterionHandlerRegistry {
     public static <T extends CriterionConditions> void register(Criterion<T> criterion, Supplier<CriterionHandler<T>> handler) {
         Objects.requireNonNull(handler, "handler is null");
         REGISTRY.put(criterion, (Supplier)handler);
+    }
+
+    public static void printNonRegistered() {
+        Registries.CRITERION.forEach(criterion -> {
+            if (REGISTRY.get(criterion) == null) {
+                Researcher.LOGGER.warn("Criterion {} does not have a handler", Registries.CRITERION.getId(criterion));
+            }
+        });
     }
 }

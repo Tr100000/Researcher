@@ -35,7 +35,9 @@ public class ResearcherClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ResearcherCriterionHandlers.register();
+
         Registry.register(Registries.SOUND_EVENT, ModUtils.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
+
         ResearcherClientNetworking.registerClientRecievers();
 
         ClientCommandRegistrationCallback.EVENT.register(ResearcherClientCommand::register);

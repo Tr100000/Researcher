@@ -10,24 +10,30 @@ import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancement.criterion.ConsumeItemCriterion;
+import net.minecraft.advancement.criterion.FishingRodHookedCriterion;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
 
-public class ConsumeItemCriterionHandler implements CriterionHandler<ConsumeItemCriterion.Conditions> {
+public class FishingRodHookedCriterionHandler implements CriterionHandler<FishingRodHookedCriterion.Conditions> {
+    private static final Text ROD_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.rod");
+    private static final Text ENTITY_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.entity");
     private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
-    private static final Text TEXT = ModUtils.getScreenTranslated("criterion.consume_item");
-    private static final Text TEXT_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.with_conditions");
-    private static final Text TEXT_SPECIFIC_BEFORE = ModUtils.getScreenTranslated("criterion.consume_item.specific.before");
-    private static final Text TEXT_SPECIFIC_BEFORE_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.specific.before.with_conditions");
-    private static final Text TEXT_SPECIFIC_AFTER = ModUtils.getScreenTranslated("criterion.consume_item.specific.after");
-    private static final Text TEXT_SPECIFIC_AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.consume_item.specific.after.with_conditions");
+    private static final Text TEXT = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked");
+    private static final Text TEXT_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.with_conditions");
+    private static final Text TEXT_SPECIFIC_BEFORE = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.specific.before");
+    private static final Text TEXT_SPECIFIC_BEFORE_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.specific.with_conditions.before");
+    private static final Text TEXT_SPECIFIC_AFTER = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.specific.after");
+    private static final Text TEXT_SPECIFIC_AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.fishing_rod_hooked.specific.with_conditions.after");
 
     @Override
-    public CriterionDisplayElement prepare(ResearchCriterion<ConsumeItemCriterion.Conditions> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<FishingRodHookedCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
+        PredicateHelper.tooltip(criterion.conditions().rod(), ItemPredicateHelper::tooltip, ROD_CONDITIONS_HEADER)
+                .ifPresent(textHolder::accept);
+        PredicateHelper.tooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+                .ifPresent(textHolder::accept);
         PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 

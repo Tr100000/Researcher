@@ -231,19 +231,19 @@ public final class EntityPredicateHelper {
     }
 
     public static CriterionDisplayElement element(@Nullable EntityPredicate predicate) {
-        CriterionDisplayElement element;
         if (predicate != null && predicate.type().isPresent()) {
             List<CriterionDisplayElement> list = predicate.type().get().types().stream().map(RegistryEntry::value).map(EntityPredicateHelper::element).toList();
-            element = new GroupedElement(new TimedSwitchingElement(list), new TextElement(Text.literal("*")));
+            if (list.size() == 1) {
+                return list.getFirst();
+            }
+            else if (list.size() >= 2) {
+                return new GroupedElement(new TimedSwitchingElement(list), new TextElement(Text.literal("*")));
+            }
         }
-        else {
-            element = new TextElement(ANY_ENTITY);
-        }
-
-        return element;
+        return new TextElement(ANY_ENTITY);
     }
 
-    public static CriterionDisplayElement element(LootContextPredicate predicate) {
+    public static CriterionDisplayElement element(@Nullable LootContextPredicate predicate) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
         return entityPredicate.map(EntityPredicateHelper::element).orElseGet(() -> new TextElement(ANY_ENTITY));
     }
