@@ -19,6 +19,6 @@ public class FilledBucketCriterionHandler extends AbstractCriterionHandler<Fille
     protected void fillTooltip(ResearchCriterion<FilledBucketCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
     }
 }

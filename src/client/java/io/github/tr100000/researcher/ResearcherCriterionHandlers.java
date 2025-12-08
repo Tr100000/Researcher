@@ -2,13 +2,17 @@ package io.github.tr100000.researcher;
 
 import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
+import io.github.tr100000.researcher.impl.criterion.AnyBlockUseCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.BeeNestDestroyedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.BlockBrokenCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.BredAnimalsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.BrewedPotionCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ChangedDimensionCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.ChanneledLightningCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ConstructBeaconCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ConsumeItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.CuredZombieVillagerCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.DefaultBlockUseCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EffectsChangedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EnchantedItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EnterBlockCriterionHandler;
@@ -20,12 +24,17 @@ import io.github.tr100000.researcher.impl.criterion.InventoryChangedCriterionHan
 import io.github.tr100000.researcher.impl.criterion.ItemCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemDurabilityChangedCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.KilledByArrowCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.LevitationCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.OnKilledCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.PlayerGeneratesContainerLootCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.PlayerHurtEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ResearchItemsCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.ShotCrossbowCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.SlideDownBlockCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SummonedEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TameAnimalCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.TargetHitCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TickCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TravelCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeCriterionHandler;
@@ -73,9 +82,19 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.USED_TOTEM, UsedTotemCriterionHandler::new);
         register(Criteria.NETHER_TRAVEL, () -> TravelCriterionHandler.NETHER_TRAVEL);
         register(Criteria.FISHING_ROD_HOOKED, FishingRodHookedCriterionHandler::new);
-
+        register(Criteria.CHANNELED_LIGHTNING, ChanneledLightningCriterionHandler::new);
+        register(Criteria.SHOT_CROSSBOW, ShotCrossbowCriterionHandler::new);
+        register(Criteria.KILLED_BY_ARROW, KilledByArrowCriterionHandler::new);
         register(Criteria.HERO_OF_THE_VILLAGE, () -> TickCriterionHandler.HERO_OF_THE_VILLAGE);
         register(Criteria.VOLUNTARY_EXILE, () -> TickCriterionHandler.VOLUNTARY_EXILE);
+        register(Criteria.SLIDE_DOWN_BLOCK, SlideDownBlockCriterionHandler::new);
+        register(Criteria.BEE_NEST_DESTROYED, BeeNestDestroyedCriterionHandler::new);
+        register(Criteria.TARGET_HIT, TargetHitCriterionHandler::new);
+        register(Criteria.ITEM_USED_ON_BLOCK, () -> ItemCriterionHandler.ITEM_USED_ON_BLOCK);
+        register(Criteria.DEFAULT_BLOCK_USE, DefaultBlockUseCriterionHandler::new);
+        register(Criteria.ANY_BLOCK_USE, AnyBlockUseCriterionHandler::new);
+        register(Criteria.PLAYER_GENERATES_CONTAINER_LOOT, PlayerGeneratesContainerLootCriterionHandler::new);
+
         register(Criteria.AVOID_VIBRATION, () -> TickCriterionHandler.AVOID_VIBRATION);
 
         register(ResearcherCriteria.BLOCK_BROKEN, BlockBrokenCriterionHandler::new);

@@ -25,6 +25,6 @@ public class BredAnimalsCriterionHandler extends AbstractCriterionHandler<BredAn
                 .ifPresent(textHolder::accept);
         PredicateHelper.tooltip(criterion.conditions().child(), EntityPredicateHelper::tooltip, CHILD_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
     }
 }

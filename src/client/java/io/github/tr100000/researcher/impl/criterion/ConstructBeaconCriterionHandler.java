@@ -17,6 +17,6 @@ public class ConstructBeaconCriterionHandler extends AbstractCriterionHandler<Co
     @Override
     protected void fillTooltip(ResearchCriterion<ConstructBeaconCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         NumberRangeUtils.tooltip(criterion.conditions().level(), BEACON_LEVEL, textHolder);
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
     }
 }

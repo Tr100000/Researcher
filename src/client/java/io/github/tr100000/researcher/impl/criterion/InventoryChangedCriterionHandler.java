@@ -27,7 +27,7 @@ public class InventoryChangedCriterionHandler extends AbstractCriterionHandler<I
             textHolder.pop();
         }
 
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
 
         if (!criterion.conditions().items().isEmpty()) {
             slotConditionsTooltip(criterion.conditions().slots(), textHolder);

@@ -17,6 +17,6 @@ public class UsedEnderEyeCriterionHandler extends AbstractCriterionHandler<UsedE
     @Override
     protected void fillTooltip(ResearchCriterion<UsedEnderEyeCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         NumberRangeUtils.tooltip(criterion.conditions().distance(), STRONGHOLD_DISTANCE, textHolder);
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
     }
 }

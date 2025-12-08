@@ -22,6 +22,6 @@ public class EnchantedItemCriterionHandler extends AbstractCriterionHandler<Ench
         PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         NumberRangeUtils.tooltip(criterion.conditions().levels(), LEVEL_TEXT, textHolder);
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
     }
 }

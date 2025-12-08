@@ -17,7 +17,7 @@ public class EntityHurtPlayerCriterionHandler extends AbstractCriterionHandler<E
 
     @Override
     protected void fillTooltip(ResearchCriterion<EntityHurtPlayerCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        super.playerTooltip(criterion, textHolder);
+        playerTooltip(criterion, textHolder);
         PredicateHelper.tooltip(criterion.conditions().damage(), DamagePredicateHelper::tooltip, DAMAGE_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
     }

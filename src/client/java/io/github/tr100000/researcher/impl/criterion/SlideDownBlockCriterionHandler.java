@@ -11,20 +11,20 @@ import io.github.tr100000.researcher.api.criterion.util.BlockPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancement.criterion.EnterBlockCriterion;
+import net.minecraft.advancement.criterion.SlideDownBlockCriterion;
 import net.minecraft.text.Text;
 
-public class EnterBlockCriterionHandler implements CriterionHandler<EnterBlockCriterion.Conditions> {
+public class SlideDownBlockCriterionHandler implements CriterionHandler<SlideDownBlockCriterion.Conditions> {
     private static final Text PLAYER_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.player");
     private static final Text BLOCK_CONDITIONS_HEADER = ModUtils.getScreenTranslated("predicate.block");
-    private static final Text BEFORE_KEY = ModUtils.getScreenTranslated("criterion.enter_block.before");
-    private static final Text BEFORE_WITH_CONDITIONS_KEY = ModUtils.getScreenTranslated("criterion.enter_block.before.with_conditions");
-    private static final Text AFTER_KEY = ModUtils.getScreenTranslated("criterion.enter_block.after");
-    private static final Text AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.enter_block.after.with_conditions");
-    private static final Text ANY_BLOCK = ModUtils.getScreenTranslated("criterion.enter_block.any");
+    private static final Text BEFORE_KEY = ModUtils.getScreenTranslated("criterion.slide_down_block.before");
+    private static final Text BEFORE_WITH_CONDITIONS_KEY = ModUtils.getScreenTranslated("criterion.slide_down_block.before.with_conditions");
+    private static final Text AFTER_KEY = ModUtils.getScreenTranslated("criterion.slide_down_block.after");
+    private static final Text AFTER_WITH_CONDITIONS = ModUtils.getScreenTranslated("criterion.slide_down_block.after.with_conditions");
+    private static final Text ANY_BLOCK = ModUtils.getScreenTranslated("criterion.slide_down_block.any");
 
     @Override
-    public CriterionDisplayElement prepare(ResearchCriterion<EnterBlockCriterion.Conditions> criterion) {
+    public CriterionDisplayElement prepare(ResearchCriterion<SlideDownBlockCriterion.Conditions> criterion) {
         IndentedTextHolder playerConditionTextHolder = new IndentedTextHolder();
         PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(playerConditionTextHolder::accept);
