@@ -248,6 +248,12 @@ public final class EntityPredicateHelper {
         return entityPredicate.map(EntityPredicateHelper::element).orElseGet(() -> new TextElement(ANY_ENTITY));
     }
 
+    public static CriterionDisplayElement vehicleElement(@Nullable LootContextPredicate predicate) {
+        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
+        Optional<EntityPredicate> vehiclePredicate = entityPredicate.flatMap(EntityPredicate::vehicle);
+        return element(vehiclePredicate.orElse(null));
+    }
+
     private static Optional<EntityPredicate> entityPredicateFromLootContextPredicate(@Nullable LootContextPredicate predicate) {
         if (predicate == null) return Optional.empty();
 

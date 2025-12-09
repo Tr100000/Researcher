@@ -8,6 +8,7 @@ import io.github.tr100000.researcher.api.criterion.CriterionHandler;
 import io.github.tr100000.researcher.api.criterion.element.ItemElement;
 import io.github.tr100000.researcher.api.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
+import io.github.tr100000.researcher.criteria.HasResearchCriterion;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -24,6 +25,7 @@ public class ErrorCriterionHandler<T extends CriterionConditions> implements Cri
     public static final ErrorCriterionHandler<CriterionConditions> ERROR = new ErrorCriterionHandler<>(ModUtils.getScreenTranslated("criterion.error"));
 
     public static final ErrorCriterionHandler<RecipeUnlockedCriterion.Conditions> WARN_RECIPE_UNLOCKED_AS_CONDITION = new ErrorCriterionHandler<>(ModUtils.getScreenTranslated("criterion.warn.recipe_unlocked_as_condition"));
+    public static final ErrorCriterionHandler<HasResearchCriterion.Conditions> WARN_HAS_RESEARCH_AS_CONDITION = new ErrorCriterionHandler<>(ModUtils.getScreenTranslated("criterion.warn.has_research_as_condition"));
 
     private final ItemStack stack = Items.BARRIER.getDefaultStack();
     private final Text text;

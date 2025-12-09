@@ -20,6 +20,7 @@ import java.util.Optional;
 public class ItemCriterionHandler extends AbstractCriterionHandler<ItemCriterion.Conditions> {
     public static final ItemCriterionHandler PLACED_BLOCK = new ItemCriterionHandler(ModUtils.getScreenTranslationKey("criterion.placed_block"));
     public static final ItemCriterionHandler ITEM_USED_ON_BLOCK = new ItemCriterionHandler(ModUtils.getScreenTranslationKey("criterion.item_used_on_block"));
+    public static final ItemCriterionHandler ALLAY_DROP_ITEM_ON_BLOCK = new ItemCriterionHandler(ModUtils.getScreenTranslationKey("criterion.allay_drop_item_on_block"));
 
     private static final String BLOCK_TEXT = ModUtils.getScreenTranslationKey("criterion.item.block");
     private static final Text BLOCK_PROPERTIES_TEXT = ModUtils.getScreenTranslated("criterion.item.block_properties");

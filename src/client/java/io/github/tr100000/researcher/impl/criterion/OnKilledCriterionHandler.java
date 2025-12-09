@@ -28,6 +28,11 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
             ModUtils.getScreenTranslationKey("criterion.player_killed_entity.after")
     );
 
+    public static final OnKilledCriterionHandler KILL_MOB_NEAR_SKULK_CATALYST = new OnKilledCriterionHandler(
+            ModUtils.getScreenTranslationKey("criterion.kill_mob_near_skulk_catalyst.before"),
+            ModUtils.getScreenTranslationKey("criterion.kill_mob_near_skulk_catalyst.after")
+    );
+
     private final String beforeKey;
     private final String beforeWithConditionsKey;
     private final String afterKey;

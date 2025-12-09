@@ -11,6 +11,8 @@ import net.minecraft.text.Text;
 
 public class TravelCriterionHandler extends AbstractCriterionHandler<TravelCriterion.Conditions> {
     public static final TravelCriterionHandler NETHER_TRAVEL = new TravelCriterionHandler(ModUtils.getScreenTranslationKey("criterion.nether_travel"));
+    public static final TravelCriterionHandler FALL_FROM_HEIGHT = new TravelCriterionHandler(ModUtils.getScreenTranslationKey("criterion.fall_from_height"));
+    public static final TravelCriterionHandler RIDE_ENTITY_IN_LAVA = new TravelCriterionHandler(ModUtils.getScreenTranslationKey("criterion.ride_entity_in_lava"));
 
     private static final Text START_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.travel.start");
     private static final Text DISTANCE_CONDITIONS_HEADER = ModUtils.getScreenTranslated("criterion.travel.distance");

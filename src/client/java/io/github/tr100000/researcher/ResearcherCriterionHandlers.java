@@ -18,6 +18,7 @@ import io.github.tr100000.researcher.impl.criterion.EnchantedItemCriterionHandle
 import io.github.tr100000.researcher.impl.criterion.EnterBlockCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.EntityHurtPlayerCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ErrorCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.FallAfterExplosionCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.FilledBucketCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.FishingRodHookedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.InventoryChangedCriterionHandler;
@@ -26,19 +27,25 @@ import io.github.tr100000.researcher.impl.criterion.ItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemDurabilityChangedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.KilledByArrowCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.LevitationCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.LightningStrikeCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.OnKilledCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.PlayerGeneratesContainerLootCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.PlayerHurtEntityCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.PlayerInteractedWithEntityCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.RecipeCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ResearchItemsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ShotCrossbowCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SlideDownBlockCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.StartedRidingCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SummonedEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TameAnimalCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TargetHitCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.ThrownItemPickedUpByEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TickCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TravelCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.UsedTotemCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.UsingItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.VillagerTradeCriterionHandler;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.Criterion;
@@ -94,12 +101,26 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.DEFAULT_BLOCK_USE, DefaultBlockUseCriterionHandler::new);
         register(Criteria.ANY_BLOCK_USE, AnyBlockUseCriterionHandler::new);
         register(Criteria.PLAYER_GENERATES_CONTAINER_LOOT, PlayerGeneratesContainerLootCriterionHandler::new);
-
+        register(Criteria.THROWN_ITEM_PICKED_UP_BY_ENTITY, () -> ThrownItemPickedUpByEntityCriterionHandler.THROWN_ITEM_PICKED_UP_BY_ENTITY);
+        register(Criteria.THROWN_ITEM_PICKED_UP_BY_PLAYER, () -> ThrownItemPickedUpByEntityCriterionHandler.THROWN_ITEM_PICKED_UP_BY_PLAYER);
+        register(Criteria.PLAYER_INTERACTED_WITH_ENTITY, () -> PlayerInteractedWithEntityCriterionHandler.PLAYER_INTERACTED_WITH_ENTITY);
+        register(Criteria.PLAYER_SHEARED_EQUIPMENT, () -> PlayerInteractedWithEntityCriterionHandler.PLAYER_SHEARED_EQUIPMENT);
+        register(Criteria.STARTED_RIDING, StartedRidingCriterionHandler::new);
+        register(Criteria.LIGHTNING_STRIKE, LightningStrikeCriterionHandler::new);
+        register(Criteria.USING_ITEM, UsingItemCriterionHandler::new);
+        register(Criteria.FALL_FROM_HEIGHT, () -> TravelCriterionHandler.FALL_FROM_HEIGHT);
+        register(Criteria.RIDE_ENTITY_IN_LAVA, () -> TravelCriterionHandler.RIDE_ENTITY_IN_LAVA);
+        register(Criteria.KILL_MOB_NEAR_SCULK_CATALYST, () -> OnKilledCriterionHandler.KILL_MOB_NEAR_SKULK_CATALYST);
+        register(Criteria.ALLAY_DROP_ITEM_ON_BLOCK, () -> ItemCriterionHandler.ALLAY_DROP_ITEM_ON_BLOCK);
         register(Criteria.AVOID_VIBRATION, () -> TickCriterionHandler.AVOID_VIBRATION);
+        register(Criteria.RECIPE_CRAFTED, () -> RecipeCraftedCriterionHandler.RECIPE_CRAFTED);
+        register(Criteria.CRAFTER_RECIPE_CRAFTED, () -> RecipeCraftedCriterionHandler.CRAFTER_RECIPE_CRAFTED);
+        register(Criteria.FALL_AFTER_EXPLOSION, FallAfterExplosionCriterionHandler::new);
 
         register(ResearcherCriteria.BLOCK_BROKEN, BlockBrokenCriterionHandler::new);
         register(ResearcherCriteria.ITEM_CRAFTED, ItemCraftedCriterionHandler::new);
         register(ResearcherCriteria.RESEARCH_ITEMS, ResearchItemsCriterionHandler::new);
+        register(ResearcherCriteria.HAS_RESEARCH, () -> ErrorCriterionHandler.WARN_HAS_RESEARCH_AS_CONDITION);
 
         CriterionHandlerRegistry.printNonRegistered();
     }
