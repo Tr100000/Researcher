@@ -1,8 +1,6 @@
 package io.github.tr100000.researcher;
 
 import io.github.tr100000.trutils.api.gui.IconRenderers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -19,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class ResearchToast implements Toast {
     private static final Identifier TEXTURE = Identifier.ofVanilla("toast/advancement");
     private static final Text TOAST_TEXT = Text.translatable("chat.researcher.toast");

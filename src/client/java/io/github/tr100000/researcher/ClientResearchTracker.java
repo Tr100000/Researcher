@@ -11,8 +11,6 @@ import io.github.tr100000.researcher.networking.ResearchUpdateS2CPacket;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -27,7 +25,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-@Environment(EnvType.CLIENT)
 @SuppressWarnings("UnstableApiUsage")
 public class ClientResearchTracker implements ResearchHolder, PlayerResearchHolder {
     private static final MinecraftClient client = MinecraftClient.getInstance();

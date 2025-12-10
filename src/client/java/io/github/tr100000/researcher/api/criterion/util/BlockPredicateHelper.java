@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.predicate.BlockPredicate;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -45,7 +46,9 @@ public final class BlockPredicateHelper {
         }
     }
 
-    public static CriterionDisplayElement element(BlockPredicate predicate) {
+    public static CriterionDisplayElement element(@Nullable BlockPredicate predicate) {
+        if (predicate == null) return anyBlockElement();
+
         CriterionDisplayElement element;
         boolean shouldHaveTooltip = false;
         if (predicate.blocks().isPresent()) {
@@ -71,14 +74,22 @@ public final class BlockPredicateHelper {
         return element;
     }
 
-    public static CriterionDisplayElement element(Block block) {
+    public static CriterionDisplayElement element(@Nullable Block block) {
+        if (block == null) return anyBlockElement();
+
         return new GroupedElement(
                 new ItemElement(block.asItem().getDefaultStack(), false),
                 new TextElement(block.getName())
         );
     }
 
-    public static CriterionDisplayElement element(RegistryEntry<Block> block) {
+    public static CriterionDisplayElement element(@Nullable RegistryEntry<Block> block) {
+        if (block == null) return anyBlockElement();
+
         return element(block.value());
+    }
+
+    private static CriterionDisplayElement anyBlockElement() {
+        return new TextElement(ANY_BLOCK);
     }
 }

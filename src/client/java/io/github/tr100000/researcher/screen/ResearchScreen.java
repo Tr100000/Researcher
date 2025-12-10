@@ -4,15 +4,12 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
 public class ResearchScreen extends Screen {
     protected static final MinecraftClient client = MinecraftClient.getInstance();
 

@@ -1,6 +1,5 @@
 package io.github.tr100000.researcher.testmod.datagen;
 
-import io.github.tr100000.researcher.ResearcherCriteria;
 import io.github.tr100000.researcher.api.data.ResearchBuilder;
 import io.github.tr100000.researcher.api.data.ResearchExporter;
 import io.github.tr100000.researcher.api.data.ResearchProvider;
@@ -12,6 +11,7 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
 import net.minecraft.predicate.NumberRange;
@@ -19,6 +19,8 @@ import net.minecraft.predicate.TagPredicate;
 import net.minecraft.predicate.entity.DamageSourcePredicate;
 import net.minecraft.predicate.entity.DistancePredicate;
 import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.DamageTypeTags;
@@ -39,6 +41,8 @@ public class TestmodResearchProvider extends ResearchProvider {
 
     @Override
     protected void configure(ResearchExporter exporter, RegistryWrapper.WrapperLookup lookup) {
+        RegistryEntryLookup<Item> itemLookup = lookup.getOrThrow(RegistryKeys.ITEM);
+
         Identifier blastFurnace = new ResearchBuilder(id("blast_furnace"))
                 .title(Text.literal("Blast Furnace"))
                 .display(Items.BLAST_FURNACE)
@@ -46,7 +50,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("blast_furnace"),
                         Identifier.ofVanilla("this_recipe_does_not_exist")
                 )
-                .toUnlock(ResearcherCriteria.ITEM_CRAFTED, new ItemCraftedCriterion.Conditions(Items.FURNACE), 2)
+                .toUnlock(ItemCraftedCriterion.Conditions.of(ItemPredicate.Builder.create().items(itemLookup, Items.BLAST_FURNACE)), 2)
                 .export(exporter);
 
         Identifier ironTools = new ResearchBuilder(id("iron_tools"))
@@ -64,7 +68,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("iron_leggings"),
                         Identifier.ofVanilla("iron_boots")
                 )
-                .toUnlock(ResearcherCriteria.ITEM_CRAFTED, new ItemCraftedCriterion.Conditions(Items.IRON_INGOT), 10)
+                .toUnlock(ItemCraftedCriterion.Conditions.of(ItemPredicate.Builder.create().items(itemLookup, Items.IRON_INGOT)), 10)
                 .export(exporter);
 
         Identifier testing = new ResearchBuilder(id("testing"))
@@ -87,7 +91,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.ofVanilla("diamond_boots"),
                         Identifier.ofVanilla("brown_shulker_box")
                 )
-                .toUnlock(ResearcherCriteria.BLOCK_BROKEN, new BlockBrokenCriterion.Conditions(Blocks.OBSIDIAN), 20)
+                .toUnlock(BlockBrokenCriterion.Conditions.of(Blocks.OBSIDIAN), 20)
                 .export(exporter);
 
         Identifier killTest = new ResearchBuilder(id("kill_test"))

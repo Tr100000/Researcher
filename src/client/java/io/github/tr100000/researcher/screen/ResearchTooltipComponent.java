@@ -6,8 +6,6 @@ import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.trutils.api.gui.ExtendedTooltipComponent;
 import io.github.tr100000.trutils.api.utils.GameUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-@Environment(EnvType.CLIENT)
 public class ResearchTooltipComponent extends ExtendedTooltipComponent {
     private final MinecraftClient client = MinecraftClient.getInstance();
     public final Research research;

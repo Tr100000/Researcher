@@ -33,7 +33,7 @@ public class Researcher implements ModInitializer {
 
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
             if (player instanceof ServerPlayerEntity serverPlayer) {
-                ResearcherCriteria.BLOCK_BROKEN.trigger(serverPlayer, state.getBlock());
+                ResearcherCriteria.BLOCK_BROKEN.trigger(serverPlayer, state);
             }
         });
 

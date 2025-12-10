@@ -4,8 +4,6 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import io.github.tr100000.trutils.api.gui.IconRenderers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.cursor.StandardCursors;
@@ -17,7 +15,6 @@ import net.minecraft.util.Colors;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-@Environment(EnvType.CLIENT)
 public class ResearchNodeWidget extends PressableWidget {
     private final MinecraftClient client = MinecraftClient.getInstance();
     private final ResearchTooltipWrapper tooltipWrapper = new ResearchTooltipWrapper(true);

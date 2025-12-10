@@ -21,6 +21,7 @@ import io.github.tr100000.researcher.impl.criterion.ErrorCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.FallAfterExplosionCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.FilledBucketCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.FishingRodHookedCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.HasResearchCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.InventoryChangedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemCraftedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ItemCriterionHandler;
@@ -33,6 +34,7 @@ import io.github.tr100000.researcher.impl.criterion.PlayerGeneratesContainerLoot
 import io.github.tr100000.researcher.impl.criterion.PlayerHurtEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.PlayerInteractedWithEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.RecipeCraftedCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.RecipeUnlockedCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ResearchItemsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ShotCrossbowCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SlideDownBlockCriterionHandler;
@@ -64,7 +66,7 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.ENTITY_KILLED_PLAYER, () -> OnKilledCriterionHandler.ENTITY_KILLED_PLAYER);
         register(Criteria.ENTER_BLOCK, EnterBlockCriterionHandler::new);
         register(Criteria.INVENTORY_CHANGED, InventoryChangedCriterionHandler::new);
-        register(Criteria.RECIPE_UNLOCKED, () -> ErrorCriterionHandler.WARN_RECIPE_UNLOCKED_AS_CONDITION);
+        register(Criteria.RECIPE_UNLOCKED, RecipeUnlockedCriterionHandler::new);
         register(Criteria.PLAYER_HURT_ENTITY, PlayerHurtEntityCriterionHandler::new);
         register(Criteria.ENTITY_HURT_PLAYER, EntityHurtPlayerCriterionHandler::new);
         register(Criteria.ENCHANTED_ITEM, EnchantedItemCriterionHandler::new);
@@ -120,7 +122,7 @@ public final class ResearcherCriterionHandlers {
         register(ResearcherCriteria.BLOCK_BROKEN, BlockBrokenCriterionHandler::new);
         register(ResearcherCriteria.ITEM_CRAFTED, ItemCraftedCriterionHandler::new);
         register(ResearcherCriteria.RESEARCH_ITEMS, ResearchItemsCriterionHandler::new);
-        register(ResearcherCriteria.HAS_RESEARCH, () -> ErrorCriterionHandler.WARN_HAS_RESEARCH_AS_CONDITION);
+        register(ResearcherCriteria.HAS_RESEARCH, HasResearchCriterionHandler::new);
 
         CriterionHandlerRegistry.printNonRegistered();
     }

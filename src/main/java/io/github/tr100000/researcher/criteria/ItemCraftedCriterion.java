@@ -5,10 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.ResearcherCriteria;
 import net.minecraft.advancement.AdvancementCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
-import net.minecraft.registry.Registries;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Optional;
@@ -19,34 +19,30 @@ public class ItemCraftedCriterion extends AbstractCriterion<ItemCraftedCriterion
         return Conditions.CODEC;
     }
 
-    public void trigger(ServerPlayerEntity player, Item item) {
-        this.trigger(player, conditions -> conditions.matches(item));
-    }
-
     public void trigger(ServerPlayerEntity player, ItemStack stack) {
         for (int i = 0; i < stack.getCount(); i++) {
-            trigger(player, stack.getItem());
+            this.trigger(player, conditions -> conditions.matches(stack));
         }
     }
 
-    public record Conditions(Item item) implements AbstractCriterion.Conditions {
+    public record Conditions(Optional<LootContextPredicate> player, Optional<ItemPredicate> item) implements AbstractCriterion.Conditions {
         public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Registries.ITEM.getCodec().fieldOf("item").forGetter(Conditions::item)
+                        EntityPredicate.LOOT_CONTEXT_PREDICATE_CODEC.optionalFieldOf("player").forGetter(Conditions::player),
+                        ItemPredicate.CODEC.optionalFieldOf("item").forGetter(Conditions::item)
                 ).apply(instance, Conditions::new)
         );
 
-        public static AdvancementCriterion<Conditions> of(Item item) {
-            return ResearcherCriteria.ITEM_CRAFTED.create(new Conditions(item));
+        public static AdvancementCriterion<Conditions> any() {
+            return ResearcherCriteria.ITEM_CRAFTED.create(new Conditions(Optional.empty(), Optional.empty()));
         }
 
-        public boolean matches(Item item) {
-            return this.item.equals(item);
+        public static AdvancementCriterion<Conditions> of(ItemPredicate.Builder item) {
+            return ResearcherCriteria.ITEM_CRAFTED.create(new Conditions(Optional.empty(), Optional.of(item.build())));
         }
 
-        @Override
-        public Optional<LootContextPredicate> player() {
-            return Optional.empty();
+        public boolean matches(ItemStack stack) {
+            return this.item.map(itemPredicate -> itemPredicate.test(stack)).orElse(true);
         }
     }
 }

@@ -21,6 +21,8 @@ public final class ItemPredicateHelper {
     private static final Text ITEM_LIST = ModUtils.getScreenTranslated("predicate.item.list");
     private static final Text ITEM_COUNT = ModUtils.getScreenTranslated("predicate.item.count");
 
+    private static final Text ANY_ITEM = ModUtils.getScreenTranslated("predicate.item.any");
+
     public static void tooltip(ItemPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.items().isPresent()) {
             textHolder.accept(ITEM_LIST);
@@ -48,10 +50,18 @@ public final class ItemPredicateHelper {
         return Optional.empty();
     }
 
+    public static CriterionDisplayElement element(Optional<ItemPredicate> predicate) {
+        return predicate.flatMap(ItemPredicateHelper::element).orElseGet(ItemPredicateHelper::anyItemElement);
+    }
+
     public static CriterionDisplayElement entryElement(RegistryEntry<Item> item) {
         return new GroupedElement(
-                new ItemElement(item.value().getDefaultStack(), false),
+                new ItemElement(item.value().getDefaultStack(), true),
                 new TextElement(item.value().getName())
         );
+    }
+
+    private static CriterionDisplayElement anyItemElement() {
+        return new TextElement(ANY_ITEM);
     }
 }

@@ -9,14 +9,11 @@ import io.github.tr100000.researcher.api.criterion.element.SpacingElement;
 import io.github.tr100000.researcher.api.criterion.element.TextElement;
 import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class ResearchItemsCriterionHandler implements CriterionHandler<ResearchItemsCriterion.Conditions> {
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<ResearchItemsCriterion.Conditions> criterion) {
