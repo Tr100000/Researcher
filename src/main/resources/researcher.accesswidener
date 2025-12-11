@@ -16,3 +16,6 @@ accessible method net/minecraft/resource/JsonDataLoader <init> (Lcom/mojang/seri
 
 accessible field net/minecraft/advancement/PlayerAdvancementTracker owner Lnet/minecraft/server/network/ServerPlayerEntity;
 accessible field net/minecraft/predicate/entity/LootContextPredicate conditions Ljava/util/List;
+accessible field net/minecraft/item/BoatItem boatEntityType Lnet/minecraft/entity/EntityType;
+accessible field net/minecraft/item/MinecartItem type Lnet/minecraft/entity/EntityType;
+accessible field net/minecraft/item/DecorationItem entityType Lnet/minecraft/entity/EntityType;

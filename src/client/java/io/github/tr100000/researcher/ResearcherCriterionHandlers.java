@@ -38,6 +38,7 @@ import io.github.tr100000.researcher.impl.criterion.RecipeUnlockedCriterionHandl
 import io.github.tr100000.researcher.impl.criterion.ResearchItemsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.ShotCrossbowCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SlideDownBlockCriterionHandler;
+import io.github.tr100000.researcher.impl.criterion.SpearMobsCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.StartedRidingCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.SummonedEntityCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.TameAnimalCriterionHandler;
@@ -49,6 +50,7 @@ import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeCriterionHandler
 import io.github.tr100000.researcher.impl.criterion.UsedTotemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.UsingItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.VillagerTradeCriterionHandler;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -93,6 +95,7 @@ public final class ResearcherCriterionHandlers {
         register(Criteria.FISHING_ROD_HOOKED, FishingRodHookedCriterionHandler::new);
         register(Criteria.CHANNELED_LIGHTNING, ChanneledLightningCriterionHandler::new);
         register(Criteria.SHOT_CROSSBOW, ShotCrossbowCriterionHandler::new);
+        register(Criteria.SPEAR_MOBS, SpearMobsCriterionHandler::new);
         register(Criteria.KILLED_BY_ARROW, KilledByArrowCriterionHandler::new);
         register(Criteria.HERO_OF_THE_VILLAGE, () -> TickCriterionHandler.HERO_OF_THE_VILLAGE);
         register(Criteria.VOLUNTARY_EXILE, () -> TickCriterionHandler.VOLUNTARY_EXILE);
@@ -124,7 +127,9 @@ public final class ResearcherCriterionHandlers {
         register(ResearcherCriteria.RESEARCH_ITEMS, ResearchItemsCriterionHandler::new);
         register(ResearcherCriteria.HAS_RESEARCH, HasResearchCriterionHandler::new);
 
-        CriterionHandlerRegistry.printNonRegistered();
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            CriterionHandlerRegistry.printNonRegistered();
+        }
     }
 
     private static <T extends CriterionConditions> void register(Criterion<T> criterion, Supplier<CriterionHandler<T>> handler) {

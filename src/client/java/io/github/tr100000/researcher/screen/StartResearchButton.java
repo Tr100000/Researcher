@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.input.AbstractInput;
@@ -61,6 +62,11 @@ public class StartResearchButton extends PressableWidget {
         }
         setFocused(false);
         updateText(isCurrent);
+    }
+
+    @Override
+    protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        drawLabel(context.getTextConsumer());
     }
 
     public void updateText(boolean isCurrent) {

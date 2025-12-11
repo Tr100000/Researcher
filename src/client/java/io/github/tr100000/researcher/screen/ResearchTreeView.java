@@ -196,7 +196,6 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     private void drawHighlight(DrawContext draw, ResearchNodeWidget node) {
-        // FIXME doesn't get offset properly for some reason
         draw.drawStrokedRectangle(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
     }
 

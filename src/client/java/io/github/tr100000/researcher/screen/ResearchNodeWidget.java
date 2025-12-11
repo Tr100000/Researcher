@@ -45,7 +45,7 @@ public class ResearchNodeWidget extends PressableWidget {
     }
 
     @Override
-    public void renderWidget(DrawContext draw, int mouseX, int mouseY, float delta) {
+    public void drawIcon(DrawContext draw, int mouseX, int mouseY, float delta) {
         ResearchProgress progress = screen.researchManager.getProgress(research);
         boolean showProgressBar = !progress.isFinished() && progress.getCount() > 0;
         draw.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getFillColor(progress));

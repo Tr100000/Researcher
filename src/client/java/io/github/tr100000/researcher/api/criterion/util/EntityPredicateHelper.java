@@ -1,6 +1,7 @@
 package io.github.tr100000.researcher.api.criterion.util;
 
 import io.github.tr100000.researcher.ModUtils;
+import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
 import io.github.tr100000.researcher.api.criterion.element.GroupedElement;
 import io.github.tr100000.researcher.api.criterion.element.ItemElement;
@@ -9,11 +10,15 @@ import io.github.tr100000.researcher.api.criterion.element.TimedSwitchingElement
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.TypedEntityData;
+import net.minecraft.item.BoatItem;
+import net.minecraft.item.DecorationItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.MinecartItem;
 import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.predicate.NumberRange;
@@ -42,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class EntityPredicateHelper {
@@ -85,6 +91,10 @@ public final class EntityPredicateHelper {
     private static final Text FLAGS_NOT_FLYING = ModUtils.getScreenTranslated("predicate.entity.flags.not_flying");
     private static final Text FLAGS_BABY = ModUtils.getScreenTranslated("predicate.entity.flags.baby");
     private static final Text FLAGS_NOT_BABY = ModUtils.getScreenTranslated("predicate.entity.flags.not_baby");
+    private static final Text FLAGS_IN_WATER = ModUtils.getScreenTranslated("predicate.entity.flags.in_water");
+    private static final Text FLAGS_NOT_IN_WATER = ModUtils.getScreenTranslated("predicate.entity.flags.not_in_water");
+    private static final Text FLAGS_FALL_FLYING = ModUtils.getScreenTranslated("predicate.entity.flags.fall_flying");
+    private static final Text FLAGS_NOT_FALL_FLYING = ModUtils.getScreenTranslated("predicate.entity.flags.not_fall_flying");
 
     private static final Text EQUIPMENT_HEAD = ModUtils.getScreenTranslated("predicate.entity.equipment.head");
     private static final Text EQUIPMENT_CHEST = ModUtils.getScreenTranslated("predicate.entity.equipment.chest");
@@ -287,6 +297,8 @@ public final class EntityPredicateHelper {
         PredicateHelper.optionalBooleanTooltip(predicate.isSwimming(), FLAGS_SWIMMING, FLAGS_NOT_SWIMMING, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.isFlying(), FLAGS_FLYING, FLAGS_NOT_FLYING, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.isBaby(), FLAGS_BABY, FLAGS_NOT_BABY, textHolder);
+        PredicateHelper.optionalBooleanTooltip(predicate.isInWater(), FLAGS_IN_WATER, FLAGS_NOT_IN_WATER, textHolder);
+        PredicateHelper.optionalBooleanTooltip(predicate.isFallFlying(), FLAGS_FALL_FLYING, FLAGS_NOT_FALL_FLYING, textHolder);
     }
 
     public static void equipmentTooltip(EntityEquipmentPredicate predicate, IndentedTextHolder textHolder) {
@@ -426,14 +438,58 @@ public final class EntityPredicateHelper {
         }
     }
 
+    public static void registerItemForEntityType(EntityType<?> entityType, Item item) {
+        Objects.requireNonNull(entityType, "entityType is null");
+        Objects.requireNonNull(item, "item is null");
+        ENTITY_TYPE_ITEMS.put(entityType, item);
+    }
+
     static {
         Registries.ITEM.forEach(item -> {
             if (item.getComponents().contains(DataComponentTypes.ENTITY_DATA)) {
                 TypedEntityData<EntityType<?>> data = item.getComponents().get(DataComponentTypes.ENTITY_DATA);
                 if (data != null && data.getType() != null) {
-                    ENTITY_TYPE_ITEMS.put(data.getType(), item);
+                    registerItemForEntityType(data.getType(), item);
                 }
             }
+            else if (item instanceof BoatItem boatItem) {
+                registerItemForEntityType(boatItem.boatEntityType, item);
+            }
+            else if (item instanceof MinecartItem minecartItem) {
+                registerItemForEntityType(minecartItem.type, item);
+            }
+            else if (item instanceof DecorationItem decorationItem) {
+                registerItemForEntityType(decorationItem.entityType, item);
+            }
         });
+
+        registerItemForEntityType(EntityType.ARMOR_STAND, Items.ARMOR_STAND);
+        registerItemForEntityType(EntityType.ARROW, Items.ARROW);
+        registerItemForEntityType(EntityType.SPECTRAL_ARROW, Items.SPECTRAL_ARROW);
+        registerItemForEntityType(EntityType.BREEZE_WIND_CHARGE, Items.WIND_CHARGE);
+        registerItemForEntityType(EntityType.EGG, Items.EGG);
+        registerItemForEntityType(EntityType.ENDER_PEARL, Items.ENDER_PEARL);
+        registerItemForEntityType(EntityType.END_CRYSTAL, Items.END_CRYSTAL);
+        registerItemForEntityType(EntityType.EXPERIENCE_BOTTLE, Items.EXPERIENCE_BOTTLE);
+        registerItemForEntityType(EntityType.EXPERIENCE_ORB, Items.EXPERIENCE_BOTTLE);
+        registerItemForEntityType(EntityType.EYE_OF_ENDER, Items.ENDER_EYE);
+        registerItemForEntityType(EntityType.FIREBALL, Items.FIRE_CHARGE);
+        registerItemForEntityType(EntityType.FIREWORK_ROCKET, Items.FIREWORK_ROCKET);
+        registerItemForEntityType(EntityType.LEASH_KNOT, Items.LEAD);
+        registerItemForEntityType(EntityType.SMALL_FIREBALL, Items.FIRE_CHARGE);
+        registerItemForEntityType(EntityType.SPLASH_POTION, Items.SPLASH_POTION);
+        registerItemForEntityType(EntityType.LINGERING_POTION, Items.LINGERING_POTION);
+        registerItemForEntityType(EntityType.SNOWBALL, Items.SNOWBALL);
+        registerItemForEntityType(EntityType.TNT, Items.TNT);
+        registerItemForEntityType(EntityType.TRIDENT, Items.TRIDENT);
+        registerItemForEntityType(EntityType.WIND_CHARGE, Items.WIND_CHARGE);
+
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            Registries.ENTITY_TYPE.forEach(entityType -> {
+                if (!ENTITY_TYPE_ITEMS.containsKey(entityType)) {
+                    Researcher.LOGGER.warn("{} doesn't have a registered item", Registries.ENTITY_TYPE.getId(entityType));
+                }
+            });
+        }
     }
 }

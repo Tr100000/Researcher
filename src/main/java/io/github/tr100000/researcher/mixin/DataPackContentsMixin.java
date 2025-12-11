@@ -3,6 +3,7 @@ package io.github.tr100000.researcher.mixin;
 import io.github.tr100000.researcher.ResearchManager;
 import io.github.tr100000.researcher.api.ResearchManagerGetter;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.command.permission.PermissionPredicate;
 import net.minecraft.registry.CombinedDynamicRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryWrapper;
@@ -26,7 +27,15 @@ public class DataPackContentsMixin implements ResearchManagerGetter {
     private ResearchManager researchManager;
 
     @Inject(method = "<init>", at = @At(("TAIL")))
-    private void init(CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, RegistryWrapper.WrapperLookup registries, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, List<Registry.PendingTagLoad<?>> pendingTagLoads, int functionPermissionLevel, CallbackInfo ci) {
+    private void init(
+            CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries,
+            RegistryWrapper.WrapperLookup registries,
+            FeatureSet enabledFeatures,
+            CommandManager.RegistrationEnvironment environment,
+            List<Registry.PendingTagLoad<?>> pendingTagLoads,
+            PermissionPredicate permissions,
+            CallbackInfo ci
+    ) {
         researchManager = new ResearchManager(registries, (DataPackContents)(Object)this);
     }
 

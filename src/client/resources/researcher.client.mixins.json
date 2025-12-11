@@ -6,8 +6,7 @@
   "client": [
     "ChatScreenMixin",
     "ClientPlayNetworkHandlerMixin",
-    "jei.JeiStarterMixin",
-    "jei.RecipesGuiAccessor"
+    "jei.JeiStarterMixin"
   ],
   "injectors": {
     "defaultRequire": 1
