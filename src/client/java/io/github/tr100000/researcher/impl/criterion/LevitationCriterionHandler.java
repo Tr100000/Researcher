@@ -19,7 +19,7 @@ public class LevitationCriterionHandler extends AbstractCriterionHandler<Levitat
 
     @Override
     protected void fillTooltip(ResearchCriterion<LevitationCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().distance(), DistancePredicateHelper::tooltip, DISTANCE)
+        PredicateHelper.optionalTooltip(criterion.conditions().distance(), DistancePredicateHelper::tooltip, DISTANCE)
                 .ifPresent(textHolder::accept);
         NumberRangeUtils.tooltip(criterion.conditions().duration(), DURATION, textHolder);
         playerTooltip(criterion, textHolder);

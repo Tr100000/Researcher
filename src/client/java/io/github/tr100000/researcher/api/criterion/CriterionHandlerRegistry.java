@@ -29,7 +29,7 @@ public final class CriterionHandlerRegistry {
 
     public static void printNonRegistered() {
         Registries.CRITERION.forEach(criterion -> {
-            if (REGISTRY.get(criterion) == null) {
+            if (!REGISTRY.containsKey(criterion)) {
                 Researcher.LOGGER.warn("Criterion {} does not have a handler", Registries.CRITERION.getId(criterion));
             }
         });

@@ -59,7 +59,7 @@ public final class FluidPredicateHelper {
             tooltip(predicate, textHolder);
             textHolder.pop();
 
-            if (textHolder.count() > 1) element = new GroupedElement(element.withTextTooltip(), new TextElement(Text.literal("*")));
+            if (textHolder.count() > 1) element = new GroupedElement(element.withTextTooltip(textHolder.getText()), new TextElement(Text.literal("*")));
         }
 
         return element;
@@ -67,7 +67,7 @@ public final class FluidPredicateHelper {
 
     public static CriterionDisplayElement element(Fluid fluid) {
         return new GroupedElement(
-                new ItemElement(fluid.getBucketItem().getDefaultStack(), false),
+                new ItemElement(fluid.getBucketItem(), false),
                 new TextElement(getFluidName(fluid))
         );
     }

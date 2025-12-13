@@ -29,10 +29,10 @@ public class BeeNestDestroyedCriterionHandler implements CriterionHandler<BeeNes
     public CriterionDisplayElement prepare(ResearchCriterion<BeeNestDestroyedCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
-        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                     .ifPresent(textHolder::accept);
         NumberRangeUtils.tooltip(criterion.conditions().beesInside(), NUM_BEES_INSIDE, textHolder);
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement textBefore = new TextElement(textHolder.isEmpty() ? BEFORE_KEY : BEFORE_WITH_CONDITIONS_KEY);

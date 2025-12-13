@@ -25,10 +25,10 @@ public class RecipeUnlockedCriterionHandler implements CriterionHandler<RecipeUn
 
     private CriterionDisplayElement makeWarningElement(ResearchCriterion<RecipeUnlockedCriterion.Conditions> criterion) {
         if (criterion.count() != 1) {
-            return new ItemElement(Items.BARRIER.getDefaultStack(), false).withTextTooltip(Text.literal("Criterion count should not 1, not " + criterion.count()));
+            return new ItemElement(Items.BARRIER, false).withTextTooltip(Text.literal("Criterion count should not 1, not " + criterion.count()));
         }
         if (criterion.conditions().player().isPresent()) {
-            return new ItemElement(Items.BARRIER.getDefaultStack(), false).withTextTooltip(Text.literal("Criterion should not have player conditions"));
+            return new ItemElement(Items.BARRIER, false).withTextTooltip(Text.literal("Criterion should not have player conditions"));
         }
 
         return EmptyElement.INSTANCE;

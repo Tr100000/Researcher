@@ -10,7 +10,6 @@ import io.github.tr100000.researcher.api.criterion.element.TimedSwitchingElement
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.TypedEntityData;
@@ -219,8 +218,7 @@ public final class EntityPredicateHelper {
             textHolder.accept(Text.literal("TODO slot conditions"));
         }
         if (!predicate.components().isEmpty()) {
-            // TODO
-            textHolder.accept(Text.literal("TODO component conditions"));
+            ComponentsPredicateHelper.tooltip(predicate.components(), textHolder);
         }
     }
 
@@ -230,12 +228,12 @@ public final class EntityPredicateHelper {
     }
 
     public static Optional<List<MutableText>> tooltip(Optional<LootContextPredicate> predicate, @Nullable Text headerText) {
-        return PredicateHelper.tooltip(predicate, EntityPredicateHelper::tooltip, headerText);
+        return PredicateHelper.optionalTooltip(predicate, EntityPredicateHelper::tooltip, headerText);
     }
 
     public static CriterionDisplayElement element(EntityType<?> entityType) {
         return new GroupedElement(
-                new ItemElement(ENTITY_TYPE_ITEMS.getOrDefault(entityType, Items.BARRIER).getDefaultStack(), false),
+                new ItemElement(ENTITY_TYPE_ITEMS.getOrDefault(entityType, Items.BARRIER), false),
                 new TextElement(entityType.getName())
         );
     }
@@ -444,6 +442,14 @@ public final class EntityPredicateHelper {
         ENTITY_TYPE_ITEMS.put(entityType, item);
     }
 
+    public static void printNonRegistered() {
+        Registries.ENTITY_TYPE.forEach(entityType -> {
+            if (!ENTITY_TYPE_ITEMS.containsKey(entityType)) {
+                Researcher.LOGGER.warn("{} doesn't have a registered item", Registries.ENTITY_TYPE.getId(entityType));
+            }
+        });
+    }
+
     static {
         Registries.ITEM.forEach(item -> {
             if (item.getComponents().contains(DataComponentTypes.ENTITY_DATA)) {
@@ -483,13 +489,5 @@ public final class EntityPredicateHelper {
         registerItemForEntityType(EntityType.TNT, Items.TNT);
         registerItemForEntityType(EntityType.TRIDENT, Items.TRIDENT);
         registerItemForEntityType(EntityType.WIND_CHARGE, Items.WIND_CHARGE);
-
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            Registries.ENTITY_TYPE.forEach(entityType -> {
-                if (!ENTITY_TYPE_ITEMS.containsKey(entityType)) {
-                    Researcher.LOGGER.warn("{} doesn't have a registered item", Registries.ENTITY_TYPE.getId(entityType));
-                }
-            });
-        }
     }
 }

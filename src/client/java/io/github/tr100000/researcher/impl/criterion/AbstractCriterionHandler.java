@@ -45,7 +45,7 @@ public abstract class AbstractCriterionHandler<T extends AbstractCriterion.Condi
     protected abstract void fillTooltip(ResearchCriterion<T> criterion, IndentedTextHolder textHolder);
 
     protected void playerTooltip(ResearchCriterion<T> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
     }
 }

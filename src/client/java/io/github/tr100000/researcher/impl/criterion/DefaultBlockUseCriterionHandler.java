@@ -13,7 +13,7 @@ public class DefaultBlockUseCriterionHandler extends AbstractCriterionHandler<De
 
     @Override
     protected void fillTooltip(ResearchCriterion<DefaultBlockUseCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().location(), ItemCriterionHandler::locationTooltip, null)
+        PredicateHelper.optionalTooltip(criterion.conditions().location(), ItemCriterionHandler::locationTooltip, null)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
 

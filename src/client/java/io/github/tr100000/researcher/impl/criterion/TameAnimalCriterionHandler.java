@@ -24,7 +24,7 @@ public class TameAnimalCriterionHandler implements CriterionHandler<TameAnimalCr
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<TameAnimalCriterion.Conditions> criterion) {
         IndentedTextHolder playerTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(playerTextHolder::accept);
 
         CriterionDisplayElement beforeText = new TextElement(playerTextHolder.isEmpty() ? TEXT_BEFORE : TEXT_BEFORE_WITH_CONDITIONS);
@@ -36,7 +36,7 @@ public class TameAnimalCriterionHandler implements CriterionHandler<TameAnimalCr
         }
 
         IndentedTextHolder entityTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
                 .ifPresent(entityTextHolder::accept);
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(criterion.conditions().entity().orElse(null));

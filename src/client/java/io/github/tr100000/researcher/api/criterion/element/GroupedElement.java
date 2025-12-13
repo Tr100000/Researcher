@@ -6,7 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import java.util.List;
 
 public class GroupedElement implements CriterionDisplayElement {
-    private final List<CriterionDisplayElement> elements;
+    protected final List<CriterionDisplayElement> elements;
 
     public GroupedElement(List<CriterionDisplayElement> elements) {
         this.elements = elements;

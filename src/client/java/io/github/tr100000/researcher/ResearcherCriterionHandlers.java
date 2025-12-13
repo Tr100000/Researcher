@@ -50,7 +50,6 @@ import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeCriterionHandler
 import io.github.tr100000.researcher.impl.criterion.UsedTotemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.UsingItemCriterionHandler;
 import io.github.tr100000.researcher.impl.criterion.VillagerTradeCriterionHandler;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -126,10 +125,6 @@ public final class ResearcherCriterionHandlers {
         register(ResearcherCriteria.ITEM_CRAFTED, ItemCraftedCriterionHandler::new);
         register(ResearcherCriteria.RESEARCH_ITEMS, ResearchItemsCriterionHandler::new);
         register(ResearcherCriteria.HAS_RESEARCH, HasResearchCriterionHandler::new);
-
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            CriterionHandlerRegistry.printNonRegistered();
-        }
     }
 
     private static <T extends CriterionConditions> void register(Criterion<T> criterion, Supplier<CriterionHandler<T>> handler) {

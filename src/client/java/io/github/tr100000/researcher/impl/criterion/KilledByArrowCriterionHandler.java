@@ -22,7 +22,7 @@ public class KilledByArrowCriterionHandler extends AbstractCriterionHandler<Kill
     @Override
     protected void fillTooltip(ResearchCriterion<KilledByArrowCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         NumberRangeUtils.tooltip(criterion.conditions().uniqueEntityTypes(), NUM_ENTITY_TYPES, textHolder);
-        PredicateHelper.tooltip(criterion.conditions().firedFromWeapon(), ItemPredicateHelper::tooltip, WEAPON_CONDITIONS_HEADER);
+        PredicateHelper.optionalTooltip(criterion.conditions().firedFromWeapon(), ItemPredicateHelper::tooltip, WEAPON_CONDITIONS_HEADER);
         playerTooltip(criterion, textHolder);
         criterion.conditions().victims().forEach(victim -> {
             textHolder.accept(VICTIM_CONDITIONS_HEADER);

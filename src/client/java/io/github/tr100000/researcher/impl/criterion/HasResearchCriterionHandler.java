@@ -25,7 +25,7 @@ public class HasResearchCriterionHandler implements CriterionHandler<HasResearch
 
     private CriterionDisplayElement makeWarningElement(ResearchCriterion<HasResearchCriterion.Conditions> criterion) {
         if (criterion.count() != 1) {
-            return new ItemElement(Items.BARRIER.getDefaultStack(), false).withTextTooltip(Text.literal("Criterion count should not 1, not " + criterion.count()));
+            return new ItemElement(Items.BARRIER, false).withTextTooltip(Text.literal("Criterion count should not 1, not " + criterion.count()));
         }
 
         return EmptyElement.INSTANCE;

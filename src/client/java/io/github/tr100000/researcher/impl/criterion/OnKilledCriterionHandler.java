@@ -65,9 +65,9 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
         Optional<LootContextPredicate> entityPredicate = criterion.conditions().entity();
 
         IndentedTextHolder killConditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(killConditionTextHolder::accept);
-        PredicateHelper.tooltip(killingBlowPredicate, DamagePredicateHelper::tooltip, KILLING_BLOW_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(killingBlowPredicate, DamagePredicateHelper::tooltip, KILLING_BLOW_CONDITIONS_HEADER)
                 .ifPresent(killConditionTextHolder::accept);
 
         boolean hasKillConditions = !killConditionTextHolder.isEmpty();
@@ -80,7 +80,7 @@ public class OnKilledCriterionHandler implements CriterionHandler<OnKilledCriter
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(entityPredicate.orElse(null));
         IndentedTextHolder entityConditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(entityPredicate, EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(entityPredicate, EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
                 .ifPresent(entityConditionTextHolder::accept);
         if (!entityConditionTextHolder.isEmpty()) {
             entityElement = entityElement.withTextTooltip(entityConditionTextHolder.getText());

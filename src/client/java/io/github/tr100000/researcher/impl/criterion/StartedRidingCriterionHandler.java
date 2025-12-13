@@ -22,7 +22,7 @@ public class StartedRidingCriterionHandler implements CriterionHandler<StartedRi
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<StartedRidingCriterion.Conditions> criterion) {
         IndentedTextHolder playerTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(playerTextHolder::accept);
 
         CriterionDisplayElement beforeText = new TextElement(playerTextHolder.isEmpty() ? TEXT_BEFORE : TEXT_BEFORE_WITH_CONDITIONS);

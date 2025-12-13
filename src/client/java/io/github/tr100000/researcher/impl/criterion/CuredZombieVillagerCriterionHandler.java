@@ -18,9 +18,9 @@ public class CuredZombieVillagerCriterionHandler extends AbstractCriterionHandle
 
     @Override
     protected void fillTooltip(ResearchCriterion<CuredZombieVillagerCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().zombie(), EntityPredicateHelper::tooltip, ZOMBIE_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().zombie(), EntityPredicateHelper::tooltip, ZOMBIE_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().villager(), EntityPredicateHelper::tooltip, VILLAGER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().villager(), EntityPredicateHelper::tooltip, VILLAGER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

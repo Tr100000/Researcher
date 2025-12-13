@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.predicate.NbtPredicate;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.predicate.TagPredicate;
+import net.minecraft.predicate.collection.CollectionPredicate;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class PredicateHelper {
@@ -28,19 +30,27 @@ public final class PredicateHelper {
     private static final String STATE_VALUE_LESS_THAN_KEY = ModUtils.getScreenTranslationKey("predicate.state.less_than");
     private static final String STATE_VALUE_GREATER_THAN_KEY = ModUtils.getScreenTranslationKey("predicate.state.greater_than");
 
-    public static <T> Optional<List<MutableText>> tooltip(Optional<T> optional, BiConsumer<T, IndentedTextHolder> tooltipProvider, @Nullable Text headerText) {
-        if (optional.isPresent()) {
-            IndentedTextHolder textHolder = new IndentedTextHolder();
-            if (headerText != null) {
-                textHolder.accept(headerText);
-                textHolder.push();
-            }
-            tooltipProvider.accept(optional.get(), textHolder);
+    private static final Text COLLECTION_SIZE = ModUtils.getScreenTranslated("predicate.collection.size");
+    private static final Text COLLECTION_CONTAINS_HEADER = ModUtils.getScreenTranslated("predicate.collection.contains");
+    private static final Text COLLECTION_COUNT_HEADER = ModUtils.getScreenTranslated("predicate.collection.counts");
+    private static final Text COLLECTION_COUNT = ModUtils.getScreenTranslated("predicate.collection.counts.count");
 
-            if (textHolder.count() > (headerText != null ? 1 : 0)) {
-                return Optional.of(textHolder.getText());
-            }
+    public static <T> Optional<List<MutableText>> optionalTooltip(Optional<T> optional, BiConsumer<T, IndentedTextHolder> tooltipProvider, @Nullable Text headerText) {
+        return optional.flatMap(value -> tooltip(value, tooltipProvider, headerText));
+    }
+
+    public static <T> Optional<List<MutableText>> tooltip(T value, BiConsumer<T, IndentedTextHolder> tooltipProvider, @Nullable Text headerText) {
+        IndentedTextHolder textHolder = new IndentedTextHolder();
+        if (headerText != null) {
+            textHolder.accept(headerText);
+            textHolder.push();
         }
+        tooltipProvider.accept(value, textHolder);
+
+        if (textHolder.count() > (headerText != null ? 1 : 0)) {
+            return Optional.of(textHolder.getText());
+        }
+
         return Optional.empty();
     }
 
@@ -69,13 +79,31 @@ public final class PredicateHelper {
                 if (min.isPresent() && max.isPresent()) {
                     textHolder.accept(Text.translatable(STATE_VALUE_BETWEEN_KEY, condition.key(), min.get(), max.get()));
                 }
-                else if (!min.isPresent() && max.isPresent()) {
+                else if (min.isEmpty() && max.isPresent()) {
                     textHolder.accept(Text.translatable(STATE_VALUE_LESS_THAN_KEY, condition.key(), max.get()));
                 }
-                else if (min.isPresent() && !max.isPresent()) {
+                else if (min.isPresent()) {
                     textHolder.accept(Text.translatable(STATE_VALUE_GREATER_THAN_KEY, condition.key(), min.get()));
                 }
             }
         });
+    }
+
+    public static <T, P extends Predicate<T>> void collectionTooltip(CollectionPredicate<T, P> predicate, BiConsumer<P, IndentedTextHolder> handler, IndentedTextHolder textHolder) {
+        if (predicate.size().isPresent()) {
+            NumberRangeUtils.tooltip(predicate.size().get(), COLLECTION_SIZE, textHolder);
+        }
+        if (predicate.contains().isPresent()) {
+            List<P> containsPredicates = predicate.contains().get().getPredicates();
+            containsPredicates.forEach(p -> PredicateHelper.tooltip(p, handler, COLLECTION_CONTAINS_HEADER));
+        }
+        if (predicate.counts().isPresent()) {
+            predicate.counts().get().getEntries().forEach(entry -> {
+                PredicateHelper.tooltip(entry.test(), (p, t) -> {
+                    NumberRangeUtils.tooltip(entry.count(), COLLECTION_COUNT, t);
+                    handler.accept(p, t);
+                }, COLLECTION_COUNT_HEADER);
+            });
+        }
     }
 }

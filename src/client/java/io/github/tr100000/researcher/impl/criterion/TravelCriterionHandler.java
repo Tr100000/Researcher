@@ -23,9 +23,9 @@ public class TravelCriterionHandler extends AbstractCriterionHandler<TravelCrite
 
     @Override
     protected void fillTooltip(ResearchCriterion<TravelCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().startPosition(), LocationPredicateHelper::tooltip, START_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().startPosition(), LocationPredicateHelper::tooltip, START_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().distance(), DistancePredicateHelper::tooltip, DISTANCE_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().distance(), DistancePredicateHelper::tooltip, DISTANCE_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

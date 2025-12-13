@@ -37,7 +37,7 @@ public class RecipeCraftedCriterionHandler implements CriterionHandler<RecipeCra
             ItemPredicateHelper.tooltip(ingredient, textHolder);
             textHolder.pop();
         });
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement element = new TextElement(Text.translatable(textHolder.isEmpty() ? text : textWithConditions, criterion.conditions().recipeId().getValue()));

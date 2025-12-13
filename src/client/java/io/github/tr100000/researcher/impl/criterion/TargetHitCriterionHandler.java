@@ -20,7 +20,7 @@ public class TargetHitCriterionHandler extends AbstractCriterionHandler<TargetHi
     @Override
     protected void fillTooltip(ResearchCriterion<TargetHitCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         NumberRangeUtils.tooltip(criterion.conditions().signalStrength(), SIGNAL_STRENGTH, textHolder);
-        PredicateHelper.tooltip(criterion.conditions().projectile(), EntityPredicateHelper::tooltip, PROJECTILE_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().projectile(), EntityPredicateHelper::tooltip, PROJECTILE_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

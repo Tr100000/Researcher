@@ -8,10 +8,8 @@ import net.minecraft.util.math.MathHelper;
 import java.util.List;
 
 public class TimedSwitchingElement implements CriterionDisplayElement {
-    private final List<CriterionDisplayElement> elements;
-    private final float switchTimeSeconds;
-
-    private float timeNanoseconds;
+    protected final List<CriterionDisplayElement> elements;
+    protected final float switchTimeSeconds;
 
     public TimedSwitchingElement(float switchTimeSeconds, List<CriterionDisplayElement> elements) {
         this.elements = elements;

@@ -47,9 +47,9 @@ public class PlayerInteractedWithEntityCriterionHandler implements CriterionHand
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<PlayerInteractedWithEntityCriterion.Conditions> criterion) {
         IndentedTextHolder playerTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, itemConditionsHeader)
+        PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, itemConditionsHeader)
                 .ifPresent(playerTextHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(playerTextHolder::accept);
 
         CriterionDisplayElement beforeText = new TextElement(playerTextHolder.isEmpty() ? textBefore : textBeforeWithConditions);
@@ -61,7 +61,7 @@ public class PlayerInteractedWithEntityCriterionHandler implements CriterionHand
         }
 
         IndentedTextHolder entityTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
                 .ifPresent(entityTextHolder::accept);
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(criterion.conditions().entity().orElse(null));

@@ -1,5 +1,8 @@
 package io.github.tr100000.researcher;
 
+import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
+import io.github.tr100000.researcher.api.criterion.util.ComponentsPredicateHelper;
+import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
@@ -69,6 +72,12 @@ public class ResearcherClient implements ClientModInitializer {
         }
         else {
             recipeViewerDelegate = RecipeViewerDelegate.NONE;
+        }
+
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            CriterionHandlerRegistry.printNonRegistered();
+            EntityPredicateHelper.printNonRegistered();
+            ComponentsPredicateHelper.printNonRegistered();
         }
     }
 }

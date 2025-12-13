@@ -13,7 +13,7 @@ public class AnyBlockUseCriterionHandler extends AbstractCriterionHandler<AnyBlo
 
     @Override
     protected void fillTooltip(ResearchCriterion<AnyBlockUseCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().location(), ItemCriterionHandler::locationTooltip, null)
+        PredicateHelper.optionalTooltip(criterion.conditions().location(), ItemCriterionHandler::locationTooltip, null)
                 .ifPresent(textHolder::accept);
     }
 }

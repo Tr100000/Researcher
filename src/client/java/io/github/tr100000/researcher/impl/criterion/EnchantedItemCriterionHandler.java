@@ -19,7 +19,7 @@ public class EnchantedItemCriterionHandler extends AbstractCriterionHandler<Ench
 
     @Override
     protected void fillTooltip(ResearchCriterion<EnchantedItemCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         NumberRangeUtils.tooltip(criterion.conditions().levels(), LEVEL_TEXT, textHolder);
         playerTooltip(criterion, textHolder);

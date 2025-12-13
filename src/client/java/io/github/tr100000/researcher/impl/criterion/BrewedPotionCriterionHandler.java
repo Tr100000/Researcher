@@ -11,6 +11,7 @@ import io.github.tr100000.researcher.api.criterion.element.TextElement;
 import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.criterion.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
+import io.github.tr100000.trutils.api.item.ItemUtils;
 import net.minecraft.advancement.criterion.BrewedPotionCriterion;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -32,7 +33,7 @@ public class BrewedPotionCriterionHandler implements CriterionHandler<BrewedPoti
         Optional<RegistryEntry<Potion>> potion = criterion.conditions().potion();
 
         IndentedTextHolder textHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement element;
@@ -63,8 +64,8 @@ public class BrewedPotionCriterionHandler implements CriterionHandler<BrewedPoti
 
     private CriterionDisplayElement getPotionElement(RegistryEntry<Potion> potion) {
         return new GroupedElement(
-                new ItemElement(ModUtils.getPotionStack(potion), false),
-                new TextElement(Text.translatable(ModUtils.getPotionTranslationKey(potion)))
+                new ItemElement(ItemUtils.getPotionStack(potion), false),
+                new TextElement(Text.translatable(ItemUtils.getPotionTranslationKey(potion)))
         );
     }
 }

@@ -26,7 +26,7 @@ public class SlideDownBlockCriterionHandler implements CriterionHandler<SlideDow
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<SlideDownBlockCriterion.Conditions> criterion) {
         IndentedTextHolder playerConditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(playerConditionTextHolder::accept);
 
         CriterionDisplayElement textBefore = new TextElement(playerConditionTextHolder.isEmpty() ? BEFORE_KEY : BEFORE_WITH_CONDITIONS_KEY);
@@ -38,7 +38,7 @@ public class SlideDownBlockCriterionHandler implements CriterionHandler<SlideDow
         }
 
         IndentedTextHolder blockConditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().state(), PredicateHelper::stateTooltip, BLOCK_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().state(), PredicateHelper::stateTooltip, BLOCK_CONDITIONS_HEADER)
                 .ifPresent(blockConditionTextHolder::accept);
 
         CriterionDisplayElement block = criterion.conditions().block().map(BlockPredicateHelper::element).orElseGet(() -> new TextElement(ANY_BLOCK));

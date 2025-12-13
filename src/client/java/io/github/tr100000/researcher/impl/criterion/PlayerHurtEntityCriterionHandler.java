@@ -34,9 +34,9 @@ public class PlayerHurtEntityCriterionHandler implements CriterionHandler<Player
         Optional<LootContextPredicate> entityPredicate = criterion.conditions().entity();
 
         IndentedTextHolder conditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(conditionTextHolder::accept);
-        PredicateHelper.tooltip(damagePredicate, DamagePredicateHelper::tooltip, DAMAGE_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(damagePredicate, DamagePredicateHelper::tooltip, DAMAGE_CONDITIONS_HEADER)
                 .ifPresent(conditionTextHolder::accept);
 
         CriterionDisplayElement beforeText = new TextElement(conditionTextHolder.isEmpty() ? BEFORE_TEXT : BEFORE_WITH_CONDITIONS_TEXT);
@@ -47,7 +47,7 @@ public class PlayerHurtEntityCriterionHandler implements CriterionHandler<Player
         }
 
         IndentedTextHolder entityConditionTextHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(entityPredicate, EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(entityPredicate, EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
                 .ifPresent(entityConditionTextHolder::accept);
 
         CriterionDisplayElement entityElement = EntityPredicateHelper.element(entityPredicate.orElse(null));

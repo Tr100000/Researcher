@@ -22,7 +22,7 @@ public class ItemDurabilityChangedCriterionHandler extends AbstractCriterionHand
     protected void fillTooltip(ResearchCriterion<ItemDurabilityChangedCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
         NumberRangeUtils.tooltip(criterion.conditions().durability(), DURABILITY, textHolder);
         NumberRangeUtils.tooltip(criterion.conditions().delta(), DELTA, textHolder);
-        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

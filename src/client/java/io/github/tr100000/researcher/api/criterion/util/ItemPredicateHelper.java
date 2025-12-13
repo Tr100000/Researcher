@@ -32,8 +32,7 @@ public final class ItemPredicateHelper {
         }
         NumberRangeUtils.tooltip(predicate.count(), ITEM_COUNT, textHolder);
         if (!predicate.components().isEmpty()) {
-            // TODO
-            textHolder.accept(Text.literal("TODO component conditions"));
+            ComponentsPredicateHelper.tooltip(predicate.components(), textHolder);
         }
     }
 
@@ -56,7 +55,7 @@ public final class ItemPredicateHelper {
 
     public static CriterionDisplayElement entryElement(RegistryEntry<Item> item) {
         return new GroupedElement(
-                new ItemElement(item.value().getDefaultStack(), true),
+                new ItemElement(item.value(), true),
                 new TextElement(item.value().getName())
         );
     }

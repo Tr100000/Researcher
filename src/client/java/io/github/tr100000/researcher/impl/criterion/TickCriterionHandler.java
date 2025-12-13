@@ -78,7 +78,7 @@ public class TickCriterionHandler implements CriterionHandler<TickCriterion.Cond
     @Override
     public CriterionDisplayElement prepare(ResearchCriterion<TickCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement element;

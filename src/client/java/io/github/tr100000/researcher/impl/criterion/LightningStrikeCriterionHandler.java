@@ -18,9 +18,9 @@ public class LightningStrikeCriterionHandler extends AbstractCriterionHandler<Li
 
     @Override
     protected void fillTooltip(ResearchCriterion<LightningStrikeCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().lightning(), EntityPredicateHelper::tooltip, LIGHTNING_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().lightning(), EntityPredicateHelper::tooltip, LIGHTNING_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().bystander(), EntityPredicateHelper::tooltip, BYSTANDER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().bystander(), EntityPredicateHelper::tooltip, BYSTANDER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

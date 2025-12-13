@@ -19,11 +19,11 @@ public class BredAnimalsCriterionHandler extends AbstractCriterionHandler<BredAn
 
     @Override
     protected void fillTooltip(ResearchCriterion<BredAnimalsCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().parent(), EntityPredicateHelper::tooltip, PARENT_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().parent(), EntityPredicateHelper::tooltip, PARENT_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().partner(), EntityPredicateHelper::tooltip, PARTNER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().partner(), EntityPredicateHelper::tooltip, PARTNER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().child(), EntityPredicateHelper::tooltip, CHILD_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().child(), EntityPredicateHelper::tooltip, CHILD_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }

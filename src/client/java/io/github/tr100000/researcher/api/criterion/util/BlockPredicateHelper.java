@@ -37,12 +37,10 @@ public final class BlockPredicateHelper {
             textHolder.pop();
         }
         if (predicate.nbt().isPresent()) {
-            // TODO
-            textHolder.accept(Text.literal("TODO nbt conditions"));
+            PredicateHelper.nbtTooltip(predicate.nbt().get(), textHolder);
         }
         if (!predicate.components().isEmpty()) {
-            // TODO
-            textHolder.accept(Text.literal("TODO component conditions"));
+            ComponentsPredicateHelper.tooltip(predicate.components(), textHolder);
         }
     }
 
@@ -78,7 +76,7 @@ public final class BlockPredicateHelper {
         if (block == null) return anyBlockElement();
 
         return new GroupedElement(
-                new ItemElement(block.asItem().getDefaultStack(), false),
+                new ItemElement(block, false),
                 new TextElement(block.getName())
         );
     }

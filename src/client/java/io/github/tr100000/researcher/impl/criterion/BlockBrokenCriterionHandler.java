@@ -25,9 +25,9 @@ public class BlockBrokenCriterionHandler implements CriterionHandler<BlockBroken
     public CriterionDisplayElement prepare(ResearchCriterion<BlockBrokenCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
-        PredicateHelper.tooltip(criterion.conditions().state(), PredicateHelper::stateTooltip, BLOCK_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().state(), PredicateHelper::stateTooltip, BLOCK_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement beforeText = new TextElement(textHolder.isEmpty() ? TEXT_BEFORE : TEXT_BEFORE_WITH_CONDITIONS);

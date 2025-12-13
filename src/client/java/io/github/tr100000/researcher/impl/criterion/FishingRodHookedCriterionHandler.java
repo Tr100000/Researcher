@@ -30,11 +30,11 @@ public class FishingRodHookedCriterionHandler implements CriterionHandler<Fishin
     public CriterionDisplayElement prepare(ResearchCriterion<FishingRodHookedCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
-        PredicateHelper.tooltip(criterion.conditions().rod(), ItemPredicateHelper::tooltip, ROD_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().rod(), ItemPredicateHelper::tooltip, ROD_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().entity(), EntityPredicateHelper::tooltip, ENTITY_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         Optional<CriterionDisplayElement> itemElement = criterion.conditions().item().flatMap(ItemPredicateHelper::element);

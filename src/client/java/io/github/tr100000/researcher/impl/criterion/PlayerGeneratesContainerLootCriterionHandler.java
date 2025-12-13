@@ -21,7 +21,7 @@ public class PlayerGeneratesContainerLootCriterionHandler implements CriterionHa
     public CriterionDisplayElement prepare(ResearchCriterion<PlayerGeneratesContainerLootCriterion.Conditions> criterion) {
         IndentedTextHolder textHolder = new IndentedTextHolder();
 
-        PredicateHelper.tooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
+        PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 
         CriterionDisplayElement element = new TextElement(Text.translatable(textHolder.isEmpty() ? TEXT : TEXT_WITH_CONDITIONS, criterion.conditions().lootTable().getValue()));

@@ -14,7 +14,7 @@ public class UsedTotemCriterionHandler extends AbstractCriterionHandler<UsedTote
 
     @Override
     protected void fillTooltip(ResearchCriterion<UsedTotemCriterion.Conditions> criterion, IndentedTextHolder textHolder) {
-        PredicateHelper.tooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, null)
+        PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, null)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);
     }
