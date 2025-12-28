@@ -6,17 +6,18 @@ import com.google.common.graph.Graph;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
 import io.github.tr100000.researcher.api.ResearchHolder;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
-import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
+import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
 import io.github.tr100000.researcher.networking.ResearchUpdateS2CPacket;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("UnstableApiUsage")
+@NullMarked
 public class ClientResearchTracker implements ResearchHolder, PlayerResearchHolder {
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final Minecraft client = Minecraft.getInstance();
 
     private final Map<Research, ResearchProgress> progressMap = new Object2ObjectOpenHashMap<>();
     private @Nullable Identifier currentResearching;
@@ -35,8 +37,8 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
 
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
-    private final Map<Research, ResearchItemsCriterion.Conditions> researchConditions = new Object2ObjectOpenHashMap<>();
-    private Graph<Research> graph;
+    private final Map<Research, ResearchItemsTrigger.TriggerInstance> researchConditions = new Object2ObjectOpenHashMap<>();
+    private @Nullable Graph<Research> graph;
 
     public ClientResearchTracker() {
         ResearcherConfigs.client.pinAvailableResearches.listenToEntry(entry -> {
@@ -63,7 +65,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
             Research research = get(id);
             progressMap.put(research, progress);
             if (!packet.clearCurrent() && progress.isFinished()) {
-                client.getToastManager().add(new ResearchToast(research));
+                client.getToastManager().addToast(new ResearchToast(research));
                 shouldPinAvailable.set(true);
             }
             if (!progress.hasProgress()) {
@@ -83,8 +85,8 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         prepared.forEach((id, entry) -> {
             researchMap.put(id, entry);
             unlockableRecipes.addAll(entry.recipeUnlocks());
-            if (entry.getConditions() instanceof ResearchItemsCriterion.Conditions conditions) {
-                researchConditions.put(entry, conditions);
+            if (entry.getConditions() instanceof ResearchItemsTrigger.TriggerInstance triggerInstance) {
+                researchConditions.put(entry, triggerInstance);
             }
         });
         graph = ResearchManager.buildResearchGraph(researchMap);
@@ -99,15 +101,17 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         return researchMap;
     }
 
-    public Graph<Research> getGraph() {
+    public @Nullable Graph<Research> getGraph() {
         return graph;
     }
 
-    public @Nullable Research get(Identifier id) {
+    public @Nullable Research get(@Nullable Identifier id) {
+        if (id == null) return null;
         return researchMap.get(id);
     }
 
-    public @Nullable Identifier getId(Research research) {
+    public @Nullable Identifier getId(@Nullable Research research) {
+        if (research == null) return null;
         return researchMap.inverse().get(research);
     }
 
@@ -115,7 +119,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         return unlockableRecipes.contains(recipeId);
     }
 
-    public @Nullable ResearchItemsCriterion.Conditions getResearchConditions(Research research) {
+    public ResearchItemsTrigger.@Nullable TriggerInstance getResearchConditions(Research research) {
         return researchConditions.get(research);
     }
 
@@ -181,7 +185,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         });
     }
 
-    public Text getTitleWithStatus(Research research) {
+    public Component getTitleWithStatus(Research research) {
         ResearchProgress progress = getProgress(research);
         String titleKey;
         float progressPercentage = 0;

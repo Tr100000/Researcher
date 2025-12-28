@@ -1,8 +1,8 @@
 package io.github.tr100000.researcher.mixin;
 
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.PlayerAdvancementTracker;
-import net.minecraft.advancement.criterion.Criterion;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.server.PlayerAdvancements;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -10,16 +10,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Criterion.ConditionsContainer.class)
+@Mixin(CriterionTrigger.Listener.class)
 public abstract class CriterionConditionsContainerMixin {
-    @Shadow @Final private String id;
+    @Shadow @Final private String criterion;
 
-    @Shadow @Final private AdvancementEntry advancement;
+    @Shadow @Final private AdvancementHolder advancement;
 
-    @Inject(method = "grant", at = @At("HEAD"), cancellable = true)
-    public void grant(PlayerAdvancementTracker tracker, CallbackInfo ci) {
+    @Inject(method = "run", at = @At("HEAD"), cancellable = true)
+    public void grant(PlayerAdvancements tracker, CallbackInfo ci) {
         if (advancement == null) {
-            tracker.owner.researcher$getPlayerTracker().incrementCriterion(id);
+            tracker.player.researcher$getPlayerTracker().incrementCriterion(criterion);
             ci.cancel();
         }
     }

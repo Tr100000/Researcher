@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.PlayerResearchTracker;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.NonExtendable
@@ -25,7 +25,7 @@ public class ResearcherNetworking {
         });
     }
 
-    public static <T extends CustomPayload> CustomPayload.Id<T> payloadId(String path) {
-        return new CustomPayload.Id<>(ModUtils.id(path));
+    public static <T extends CustomPacketPayload> CustomPacketPayload.Type<T> payloadId(String path) {
+        return new CustomPacketPayload.Type<>(ModUtils.id(path));
     }
 }

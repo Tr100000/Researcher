@@ -12,8 +12,8 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +26,14 @@ public class Researcher implements ModInitializer {
     public void onInitialize() {
         ResearcherConfigs.init();
 
-        ResearcherCriteria.register();
+        ResearcherCriteriaTriggers.register();
 
         CommandRegistrationCallback.EVENT.register(ResearcherCommand::register);
         CommandRegistrationCallback.EVENT.register(ResearchCommand::register);
 
         PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                ResearcherCriteria.BLOCK_BROKEN.trigger(serverPlayer, state);
+            if (player instanceof ServerPlayer serverPlayer) {
+                ResearcherCriteriaTriggers.BLOCK_BROKEN.trigger(serverPlayer, state);
             }
         });
 
@@ -45,9 +45,9 @@ public class Researcher implements ModInitializer {
 //                ResearchManager.ID
 //        );
 
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPED);
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPELESS);
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.CRAFTING_TRANSMUTE);
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPED_RECIPE);
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPELESS_RECIPE);
+        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.TRANSMUTE);
     }
 
     public static Version getVersion() {

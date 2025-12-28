@@ -1,20 +1,22 @@
 package io.github.tr100000.researcher.compat;
 
+import io.github.tr100000.researcher.mixin.client.jei.RecipesGuiAccessor;
 import io.github.tr100000.trutils.api.utils.RecipeViewerDelegate;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.common.Internal;
+import mezz.jei.gui.recipes.RecipesGui;
 import mezz.jei.gui.util.FocusUtil;
 import mezz.jei.library.runtime.JeiRuntime;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public class JeiDelegate implements RecipeViewerDelegate {
-    private static JeiRuntime runtime;
-    private static FocusUtil focusUtil;
+    private static @Nullable JeiRuntime runtime;
+    private static @Nullable FocusUtil focusUtil;
 
     public static void runtimeAvailable(IJeiRuntime runtime) {
         JeiDelegate.runtime = (JeiRuntime)runtime;
@@ -28,32 +30,29 @@ public class JeiDelegate implements RecipeViewerDelegate {
 
     @Override
     public boolean showAllRecipes() {
-        // This code throws an error for some reason
-//        if (runtime == null) return false;
-//
-//        RecipesGui recipesGui = (RecipesGui)runtime.getRecipesGui();
-//        return ((RecipesGuiAccessor)recipesGui).getLogic().showAllRecipes();
+        if (runtime == null) return false;
 
-        return false;
+        RecipesGui recipesGui = (RecipesGui)runtime.getRecipesGui();
+        return ((RecipesGuiAccessor)recipesGui).getLogic().showAllRecipes();
     }
 
     @Override
-    public boolean showRecipe(@NotNull Identifier id) {
+    public boolean showRecipe(Identifier id) {
         // I have no idea whether this is possible or not.
         return false;
     }
 
     @Override
-    public boolean showRecipes(@NotNull ItemStack stack) {
+    public boolean showRecipes(ItemStack stack) {
         return show(stack, List.of(RecipeIngredientRole.OUTPUT));
     }
 
     @Override
-    public boolean showUses(@NotNull ItemStack stack) {
+    public boolean showUses(ItemStack stack) {
         return show(stack, List.of(RecipeIngredientRole.INPUT));
     }
 
-    private boolean show(@NotNull ItemStack stack, List<RecipeIngredientRole> roles) {
+    private boolean show(ItemStack stack, List<RecipeIngredientRole> roles) {
         if (runtime == null || focusUtil == null) return false;
 
         var typedIngredient = runtime.getIngredientManager().createTypedIngredient(stack, true);

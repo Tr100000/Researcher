@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin implements ResearchManagerGetter {
-    @Shadow private MinecraftServer.ResourceManagerHolder resourceManagerHolder;
+    @Shadow private MinecraftServer.ReloadableResources resources;
 
     @Override @Unique
     public ResearchManager researcher$getServerManager() {
-        return resourceManagerHolder.dataPackContents().researcher$getServerManager();
+        return resources.managers().researcher$getServerManager();
     }
 }

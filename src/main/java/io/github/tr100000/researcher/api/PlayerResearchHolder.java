@@ -3,8 +3,8 @@ package io.github.tr100000.researcher.api;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.researcher.ResearchStatus;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 

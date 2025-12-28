@@ -8,44 +8,44 @@ import com.google.common.graph.ImmutableGraph;
 import com.mojang.serialization.JsonOps;
 import io.github.tr100000.researcher.api.ResearchHolder;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
-import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
+import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.DataPackContents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.profiler.Profiler;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.storage.LevelResource;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public class ResearchManager extends JsonDataLoader<Research> implements ResearchHolder {
+public class ResearchManager extends SimpleJsonResourceReloadListener<Research> implements ResearchHolder {
     public static final String PATH = "research";
     public static final Identifier ID = ModUtils.id(PATH);
-    private final DataPackContents parent;
+    private final ReloadableServerResources parent;
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
-    private final Map<Research, ResearchItemsCriterion.Conditions> researchConditions = new Object2ObjectOpenHashMap<>();
-    private Graph<Research> graph;
+    private final Map<Research, ResearchItemsTrigger.TriggerInstance> researchConditions = new Object2ObjectOpenHashMap<>();
+    private @Nullable Graph<Research> graph;
 
-    public static final WorldSavePath WORLD_SAVE_PATH = new WorldSavePath(PATH);
+    public static final LevelResource WORLD_SAVE_PATH = new LevelResource(PATH);
 
-    public ResearchManager(RegistryWrapper.WrapperLookup lookup, DataPackContents parent) {
-        super(lookup.getOps(JsonOps.INSTANCE), Research.CODEC, ResourceFinder.json(PATH));
+    public ResearchManager(HolderLookup.Provider lookup, ReloadableServerResources parent) {
+        super(lookup.createSerializationContext(JsonOps.INSTANCE), Research.CODEC, FileToIdConverter.json(PATH));
         this.parent = parent;
     }
 
     @Override
-    protected void apply(Map<Identifier, Research> prepared, ResourceManager manager, Profiler profiler) {
+    protected void apply(Map<Identifier, Research> prepared, ResourceManager manager, ProfilerFiller profiler) {
         researchMap.clear();
         unlockableRecipes.clear();
         researchConditions.clear();
@@ -60,19 +60,19 @@ public class ResearchManager extends JsonDataLoader<Research> implements Researc
                 entry = new Research(entry.titleText(), entry.descriptionText(), new ResearchCriterion<>(entry.trigger().criterion(), cost), entry.prerequisiteIds(), entry.recipeUnlocks(), entry.display());
             }
             researchMap.put(id, entry);
-            entry.recipeUnlocks().forEach(unlock -> parent.getRecipeManager().get(RegistryKey.of(RegistryKeys.RECIPE, unlock)).ifPresentOrElse(
+            entry.recipeUnlocks().forEach(unlock -> parent.getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, unlock)).ifPresentOrElse(
                     recipe -> {
                         if (LockableRecipeTypesList.getTypes().contains(recipe.value().getSerializer())) {
                             unlockableRecipes.add(unlock);
                         }
                         else {
-                            Researcher.LOGGER.warn("Recipe {} of type {} is not lockable!", unlock, Registries.RECIPE_TYPE.getId(recipe.value().getType()));
+                            Researcher.LOGGER.warn("Recipe {} of type {} is not lockable!", unlock, BuiltInRegistries.RECIPE_TYPE.getKey(recipe.value().getType()));
                         }
                     },
                     () -> Researcher.LOGGER.warn("Recipe with id {} doesn't exist!", unlock)
             ));
-            if (entry.getConditions() instanceof ResearchItemsCriterion.Conditions conditions) {
-                researchConditions.put(entry, conditions);
+            if (entry.getConditions() instanceof ResearchItemsTrigger.TriggerInstance triggerInstance) {
+                researchConditions.put(entry, triggerInstance);
             }
         });
 
@@ -108,19 +108,21 @@ public class ResearchManager extends JsonDataLoader<Research> implements Researc
         return researchMap;
     }
 
-    public Graph<Research> getGraph() {
+    public @Nullable Graph<Research> getGraph() {
         return graph;
     }
 
-    public @Nullable Research get(Identifier id) {
+    public @Nullable Research get(@Nullable Identifier id) {
+        if (id == null) return null;
         return researchMap.get(id);
     }
 
-    public @Nullable Identifier getId(Research research) {
+    public @Nullable Identifier getId(@Nullable Research research) {
+        if (research == null) return null;
         return researchMap.inverse().get(research);
     }
 
-    public @Nullable ResearchItemsCriterion.Conditions getResearchConditions(Research research) {
+    public ResearchItemsTrigger.@Nullable TriggerInstance getResearchConditions(Research research) {
         return researchConditions.get(research);
     }
 

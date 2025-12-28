@@ -10,7 +10,6 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import org.jetbrains.annotations.NotNull;
 
 @Translation(prefix = "config.researcher.client")
 public class ResearcherClientConfig extends Config {
@@ -27,8 +26,8 @@ public class ResearcherClientConfig extends Config {
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140);
 
     @Override
-    public @NotNull String translationKey() {
-        return getId().toTranslationKey("config");
+    public String translationKey() {
+        return getId().toLanguageKey("config");
     }
 
     public enum ResearchTreeMode implements EnumTranslatable {
@@ -37,7 +36,7 @@ public class ResearcherClientConfig extends Config {
         ;
 
         @Override
-        public @NotNull String prefix() {
+        public String prefix() {
             return "config." + Researcher.MODID + ".tree_mode";
         }
     }

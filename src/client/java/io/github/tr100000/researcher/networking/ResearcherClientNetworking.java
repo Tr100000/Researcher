@@ -7,7 +7,7 @@ public final class ResearcherClientNetworking extends ResearcherNetworking {
 
     public static void registerClientRecievers() {
         ClientPlayNetworking.registerGlobalReceiver(ResearchUpdateS2CPacket.ID, (payload, context) -> {
-            context.client().execute(() -> context.client().getNetworkHandler().researcher$getClientTracker().handleUpdate(payload));
+            context.client().execute(() -> context.client().getConnection().researcher$getClientTracker().handleUpdate(payload));
         });
     }
 }

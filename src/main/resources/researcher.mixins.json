@@ -4,14 +4,14 @@
   "plugin": "io.github.tr100000.researcher.mixin.ResearcherMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-		"CriterionConditionsContainerMixin",
-		"DataPackContentsMixin",
-		"ItemMixin",
-		"MinecraftServerMixin",
-		"PlayerManagerMixin",
-		"RecipeUnlockerMixin",
-		"ServerPlayerEntityMixin"
-	],
+    "CriterionConditionsContainerMixin",
+    "ItemMixin",
+    "MinecraftServerMixin",
+    "PlayerListMixin",
+    "RecipeCraftingHolderMixin",
+    "ReloadableServerResourcesMixin",
+    "ServerPlayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

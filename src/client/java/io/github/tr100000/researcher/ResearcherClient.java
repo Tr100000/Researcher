@@ -1,9 +1,9 @@
 package io.github.tr100000.researcher;
 
-import io.github.tr100000.researcher.api.criterion.CriterionHandlerRegistry;
-import io.github.tr100000.researcher.api.criterion.util.ComponentsPredicateHelper;
-import io.github.tr100000.researcher.api.criterion.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
+import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
+import io.github.tr100000.researcher.api.trigger.util.ComponentsPredicateHelper;
+import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.ReiDelegate;
@@ -20,44 +20,46 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jspecify.annotations.NullMarked;
 import org.lwjgl.glfw.GLFW;
 
+@NullMarked
 public class ResearcherClient implements ClientModInitializer {
-    public static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category.create(ModUtils.id("main"));
-    public static final KeyBinding OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(ModUtils.id("open_research_screen").toTranslationKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
+    public static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(ModUtils.id("main"));
+    public static final KeyMapping OPEN_RESEARCH_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(ModUtils.id("open_research_screen").toLanguageKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
 
-    public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.of(ModUtils.id("ui.toast.research_finished"));
+    public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.createVariableRangeEvent(ModUtils.id("ui.toast.research_finished"));
 
     public static RecipeViewerDelegate recipeViewerDelegate;
 
     @Override
     public void onInitializeClient() {
-        ResearcherCriterionHandlers.register();
+        ResearcherTriggerHandlers.register();
 
-        Registry.register(Registries.SOUND_EVENT, ModUtils.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
+        Registry.register(BuiltInRegistries.SOUND_EVENT, ModUtils.id("ui.toast.research_finished"), RESEARCH_FINISHED_SOUND);
 
         ResearcherClientNetworking.registerClientRecievers();
 
         ClientCommandRegistrationCallback.EVENT.register(ResearcherClientCommand::register);
 
-        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPED, CraftingRecipeUnlockDisplay::createShaped);
-        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPELESS, CraftingRecipeUnlockDisplay::createShapeless);
-        RecipeUnlockDisplayRegistry.register(RecipeSerializer.CRAFTING_TRANSMUTE, CraftingRecipeUnlockDisplay::createTransmute);
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPED_RECIPE, CraftingRecipeUnlockDisplay::createShaped);
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.SHAPELESS_RECIPE, CraftingRecipeUnlockDisplay::createShapeless);
+        RecipeUnlockDisplayRegistry.register(RecipeSerializer.TRANSMUTE, CraftingRecipeUnlockDisplay::createTransmute);
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, ResearchHud.LAYER_ID, ResearchHud::render);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (OPEN_RESEARCH_SCREEN_KEY.wasPressed()) {
-                if (client.currentScreen instanceof ResearchScreen researchScreen) {
+            if (OPEN_RESEARCH_SCREEN_KEY.consumeClick()) {
+                if (client.screen instanceof ResearchScreen researchScreen) {
                     client.setScreen(researchScreen.parent);
                 }
                 else {
-                    client.setScreen(new ResearchScreen(client.currentScreen));
+                    client.setScreen(new ResearchScreen(client.screen));
                 }
             }
         });
@@ -75,7 +77,7 @@ public class ResearcherClient implements ClientModInitializer {
         }
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            CriterionHandlerRegistry.printNonRegistered();
+            TriggerHandlerRegistry.printNonRegistered();
             EntityPredicateHelper.printNonRegistered();
             ComponentsPredicateHelper.printNonRegistered();
         }

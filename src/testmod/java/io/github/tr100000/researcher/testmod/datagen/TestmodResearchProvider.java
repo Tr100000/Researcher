@@ -3,30 +3,26 @@ package io.github.tr100000.researcher.testmod.datagen;
 import io.github.tr100000.researcher.api.data.ResearchBuilder;
 import io.github.tr100000.researcher.api.data.ResearchExporter;
 import io.github.tr100000.researcher.api.data.ResearchProvider;
-import io.github.tr100000.researcher.criteria.BlockBrokenCriterion;
-import io.github.tr100000.researcher.criteria.ItemCraftedCriterion;
+import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
+import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.advancement.criterion.BrewedPotionCriterion;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.advancement.criterion.OnKilledCriterion;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potions;
-import net.minecraft.predicate.NumberRange;
-import net.minecraft.predicate.TagPredicate;
-import net.minecraft.predicate.entity.DamageSourcePredicate;
-import net.minecraft.predicate.entity.DistancePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.criterion.DistancePredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.KilledTrigger;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.TagPredicate;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,91 +31,91 @@ import java.util.concurrent.CompletableFuture;
 import static io.github.tr100000.researcher.testmod.ResearcherTestmod.id;
 
 public class TestmodResearchProvider extends ResearchProvider {
-    public TestmodResearchProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public TestmodResearchProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(output, registryLookup);
     }
 
     @Override
-    protected void configure(ResearchExporter exporter, RegistryWrapper.WrapperLookup lookup) {
-        RegistryEntryLookup<Item> itemLookup = lookup.getOrThrow(RegistryKeys.ITEM);
+    protected void configure(ResearchExporter exporter, HolderLookup.Provider lookup) {
+        HolderGetter<Item> itemLookup = lookup.lookupOrThrow(Registries.ITEM);
 
         Identifier blastFurnace = new ResearchBuilder(id("blast_furnace"))
-                .title(Text.literal("Blast Furnace"))
+                .title(Component.literal("Blast Furnace"))
                 .display(Items.BLAST_FURNACE)
                 .recipeUnlocks(
-                        Identifier.ofVanilla("blast_furnace"),
-                        Identifier.ofVanilla("this_recipe_does_not_exist")
+                        Identifier.withDefaultNamespace("blast_furnace"),
+                        Identifier.withDefaultNamespace("this_recipe_does_not_exist")
                 )
-                .toUnlock(ItemCraftedCriterion.Conditions.of(ItemPredicate.Builder.create().items(itemLookup, Items.BLAST_FURNACE)), 2)
+                .toUnlock(ItemCraftedTrigger.TriggerInstance.of(ItemPredicate.Builder.item().of(itemLookup, Items.BLAST_FURNACE)), 2)
                 .export(exporter);
 
         Identifier ironTools = new ResearchBuilder(id("iron_tools"))
-                .title(Text.literal("Iron Tools"))
+                .title(Component.literal("Iron Tools"))
                 .display(Items.IRON_PICKAXE)
                 .prerequisites(blastFurnace)
                 .recipeUnlocks(
-                        Identifier.ofVanilla("iron_sword"),
-                        Identifier.ofVanilla("iron_axe"),
-                        Identifier.ofVanilla("iron_pickaxe"),
-                        Identifier.ofVanilla("iron_shovel"),
-                        Identifier.ofVanilla("iron_hoe"),
-                        Identifier.ofVanilla("iron_helmet"),
-                        Identifier.ofVanilla("iron_chestplate"),
-                        Identifier.ofVanilla("iron_leggings"),
-                        Identifier.ofVanilla("iron_boots")
+                        Identifier.withDefaultNamespace("iron_sword"),
+                        Identifier.withDefaultNamespace("iron_axe"),
+                        Identifier.withDefaultNamespace("iron_pickaxe"),
+                        Identifier.withDefaultNamespace("iron_shovel"),
+                        Identifier.withDefaultNamespace("iron_hoe"),
+                        Identifier.withDefaultNamespace("iron_helmet"),
+                        Identifier.withDefaultNamespace("iron_chestplate"),
+                        Identifier.withDefaultNamespace("iron_leggings"),
+                        Identifier.withDefaultNamespace("iron_boots")
                 )
-                .toUnlock(ItemCraftedCriterion.Conditions.of(ItemPredicate.Builder.create().items(itemLookup, Items.IRON_INGOT)), 10)
+                .toUnlock(ItemCraftedTrigger.TriggerInstance.of(ItemPredicate.Builder.item().of(itemLookup, Items.IRON_INGOT)), 10)
                 .export(exporter);
 
         Identifier testing = new ResearchBuilder(id("testing"))
-                .title(Text.literal("Testing"))
+                .title(Component.literal("Testing"))
                 .prerequisites(blastFurnace)
                 .recipeUnlocks(
-                        Identifier.ofVanilla("wooden_sword"),
-                        Identifier.ofVanilla("wooden_axe"),
-                        Identifier.ofVanilla("wooden_pickaxe"),
-                        Identifier.ofVanilla("wooden_shovel"),
-                        Identifier.ofVanilla("wooden_hoe"),
-                        Identifier.ofVanilla("stone_sword"),
-                        Identifier.ofVanilla("stone_axe"),
-                        Identifier.ofVanilla("stone_pickaxe"),
-                        Identifier.ofVanilla("stone_shovel"),
-                        Identifier.ofVanilla("stone_hoe"),
-                        Identifier.ofVanilla("diamond_helmet"),
-                        Identifier.ofVanilla("diamond_chestplate"),
-                        Identifier.ofVanilla("diamond_leggings"),
-                        Identifier.ofVanilla("diamond_boots"),
-                        Identifier.ofVanilla("brown_shulker_box")
+                        Identifier.withDefaultNamespace("wooden_sword"),
+                        Identifier.withDefaultNamespace("wooden_axe"),
+                        Identifier.withDefaultNamespace("wooden_pickaxe"),
+                        Identifier.withDefaultNamespace("wooden_shovel"),
+                        Identifier.withDefaultNamespace("wooden_hoe"),
+                        Identifier.withDefaultNamespace("stone_sword"),
+                        Identifier.withDefaultNamespace("stone_axe"),
+                        Identifier.withDefaultNamespace("stone_pickaxe"),
+                        Identifier.withDefaultNamespace("stone_shovel"),
+                        Identifier.withDefaultNamespace("stone_hoe"),
+                        Identifier.withDefaultNamespace("diamond_helmet"),
+                        Identifier.withDefaultNamespace("diamond_chestplate"),
+                        Identifier.withDefaultNamespace("diamond_leggings"),
+                        Identifier.withDefaultNamespace("diamond_boots"),
+                        Identifier.withDefaultNamespace("brown_shulker_box")
                 )
-                .toUnlock(BlockBrokenCriterion.Conditions.of(Blocks.OBSIDIAN), 20)
+                .toUnlock(BlockBrokenTrigger.Conditions.of(Blocks.OBSIDIAN), 20)
                 .export(exporter);
 
         Identifier killTest = new ResearchBuilder(id("kill_test"))
-                .title(Text.literal("Kill Test"))
-                .description(Text.literal("Kill a skeleton from at least 50 meters away!"))
+                .title(Component.literal("Kill Test"))
+                .description(Component.literal("Kill a skeleton from at least 50 meters away!"))
                 .prerequisites(ironTools, testing)
-                .toUnlock(OnKilledCriterion.Conditions.createPlayerKilledEntity(
-                        EntityPredicate.Builder.create().type(lookup.getOrThrow(RegistryKeys.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(NumberRange.DoubleRange.atLeast(50.0))),
-                        DamageSourcePredicate.Builder.create().tag(TagPredicate.expected(DamageTypeTags.IS_PROJECTILE))
+                .toUnlock(KilledTrigger.TriggerInstance.playerKilledEntity(
+                        net.minecraft.advancements.criterion.EntityPredicate.Builder.entity().of(lookup.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(MinMaxBounds.Doubles.atLeast(50.0))),
+                        net.minecraft.advancements.criterion.DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE))
                 ), 5)
                 .export(exporter);
 
         new ResearchBuilder(id("inventory_change"))
-                .title(Text.literal("Change Your Inventory"))
+                .title(Component.literal("Change Your Inventory"))
                 .prerequisites(ironTools)
-                .toUnlock(Criteria.INVENTORY_CHANGED, new InventoryChangedCriterion.Conditions(
+                .toUnlock(CriteriaTriggers.INVENTORY_CHANGED, new net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance(
                         Optional.empty(),
-                        InventoryChangedCriterion.Conditions.Slots.ANY,
+                        net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance.Slots.ANY,
                         List.of()
                 ), 1000)
                 .export(exporter);
 
         new ResearchBuilder(id("brew_potion"))
-                .title(Text.literal("Potion Brewing Test"))
+                .title(Component.literal("Potion Brewing Test"))
                 .prerequisites(killTest)
                 .toUnlock(
-                        Criteria.BREWED_POTION,
-                        new BrewedPotionCriterion.Conditions(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
+                        CriteriaTriggers.BREWED_POTION,
+                        new net.minecraft.advancements.criterion.BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
                         10
                 )
                 .export(exporter);

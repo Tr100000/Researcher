@@ -3,9 +3,9 @@ package io.github.tr100000.researcher;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class ResearchProgress {
     public static final Codec<ResearchProgress> CODEC = Codec.either(
@@ -16,7 +16,7 @@ public class ResearchProgress {
             researchProgress -> researchProgress.isFinished() ? Either.left(researchProgress) : Either.right(researchProgress)
     );
 
-    public static final PacketCodec<RegistryByteBuf, ResearchProgress> PACKET_CODEC = PacketCodec.of(ResearchProgress::toPacket, ResearchProgress::fromPacket);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchProgress> PACKET_CODEC = StreamCodec.ofMember(ResearchProgress::toPacket, ResearchProgress::fromPacket);
 
     private boolean finished;
     private int count;
@@ -68,11 +68,10 @@ public class ResearchProgress {
         return (int)(getProgress01(max) * scale);
     }
 
-    public void increment(int maxCount) {
-        count++;
-        if (count >= maxCount) {
-            finish();
-        }
+    public void increment(int max, int by) {
+        count += by;
+        if (count < 0) count = 0;
+        if (count >= max) finish();
     }
 
     public void finish() {
@@ -85,14 +84,14 @@ public class ResearchProgress {
         count = 0;
     }
 
-    public void toPacket(PacketByteBuf buf) {
+    public void toPacket(FriendlyByteBuf buf) {
         buf.writeBoolean(finished);
         if (!finished) {
             buf.writeVarInt(count);
         }
     }
 
-    public static ResearchProgress fromPacket(PacketByteBuf buf) {
+    public static ResearchProgress fromPacket(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
             return new ResearchProgress(true);
         }

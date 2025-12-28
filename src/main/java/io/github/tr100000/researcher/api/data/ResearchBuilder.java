@@ -5,20 +5,21 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.advancement.AdvancementCriterion;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.advancement.criterion.CriterionConditions;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.ItemLike;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ResearchBuilder {
-    public final Identifier id;
-    private Text titleText;
-    private Text descriptionText;
+    private final Identifier id;
+    private @Nullable Component titleText;
+    private @Nullable Component descriptionText;
     private ResearchCriterion<?> trigger = ResearchCriterion.IMPOSSIBLE;
     private final List<Identifier> prerequisiteIds = new ObjectArrayList<>();
     private final List<Identifier> recipeUnlocks = new ObjectArrayList<>();
@@ -28,12 +29,12 @@ public class ResearchBuilder {
         this.id = id;
     }
 
-    public ResearchBuilder title(Text titleText) {
+    public ResearchBuilder title(Component titleText) {
         this.titleText = titleText;
         return this;
     }
 
-    public ResearchBuilder description(Text descriptionText) {
+    public ResearchBuilder description(Component descriptionText) {
         this.descriptionText = descriptionText;
         return this;
     }
@@ -43,20 +44,20 @@ public class ResearchBuilder {
         return this;
     }
 
-    public ResearchBuilder toUnlock(AdvancementCriterion<?> trigger, int count) {
+    public ResearchBuilder toUnlock(Criterion<?> trigger, int count) {
         return toUnlock(new ResearchCriterion<>(trigger, count));
     }
 
-    public ResearchBuilder toUnlock(AdvancementCriterion<?> trigger) {
+    public ResearchBuilder toUnlock(Criterion<?> trigger) {
         return toUnlock(trigger, 1);
     }
 
-    public <T extends CriterionConditions> ResearchBuilder toUnlock(Criterion<T> trigger, T conditions, int count) {
-        return toUnlock(new AdvancementCriterion<>(trigger, conditions), count);
+    public <T extends CriterionTriggerInstance> ResearchBuilder toUnlock(CriterionTrigger<T> trigger, T conditions, int count) {
+        return toUnlock(new Criterion<>(trigger, conditions), count);
     }
 
-    public <T extends CriterionConditions> ResearchBuilder toUnlock(Criterion<T> trigger, T conditions) {
-        return toUnlock(new AdvancementCriterion<>(trigger, conditions));
+    public <T extends CriterionTriggerInstance> ResearchBuilder toUnlock(CriterionTrigger<T> trigger, T conditions) {
+        return toUnlock(new Criterion<>(trigger, conditions));
     }
 
     public ResearchBuilder prerequisites(List<Identifier> prerequisiteIds) {
@@ -82,7 +83,7 @@ public class ResearchBuilder {
         return this;
     }
 
-    public ResearchBuilder display(ItemConvertible item) {
+    public ResearchBuilder display(ItemLike item) {
         return display(new ItemIcon(item));
     }
 

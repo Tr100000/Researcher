@@ -4,11 +4,11 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,13 +19,13 @@ import java.util.Optional;
 
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {
-    protected ChatScreenMixin(Text title) {
+    protected ChatScreenMixin(Component title) {
         super(title);
     }
 
     @Inject(method = "mouseClicked", at = @At("TAIL"))
-    private void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
-        ClientResearchTracker researchTracker = client.getNetworkHandler().researcher$getClientTracker();
+    private void mouseClicked(MouseButtonEvent click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
+        ClientResearchTracker researchTracker = minecraft.getConnection().researcher$getClientTracker();
 
         int y = 0;
         if (researchTracker.getCurrentResearching() != null) {
@@ -39,7 +39,7 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Unique
-    private void unsetResearchIfTouching(int y, Identifier id, boolean pin, Click click) {
+    private void unsetResearchIfTouching(int y, Identifier id, boolean pin, MouseButtonEvent click) {
         if (GuiHelper.isMouseTouching(0, y, 150, 26, click.x(), click.y())) {
             if (pin) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.UNPIN, Optional.of(id)));

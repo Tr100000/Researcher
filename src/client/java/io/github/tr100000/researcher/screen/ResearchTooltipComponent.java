@@ -3,46 +3,46 @@ package io.github.tr100000.researcher.screen;
 import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
-import io.github.tr100000.researcher.api.criterion.CriterionDisplayElement;
+import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.trutils.api.gui.ExtendedTooltipComponent;
 import io.github.tr100000.trutils.api.utils.GameUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 
 public class ResearchTooltipComponent extends ExtendedTooltipComponent {
-    private final MinecraftClient client = MinecraftClient.getInstance();
+    private final Minecraft client = Minecraft.getInstance();
     public final Research research;
 
-    private final OrderedText title;
-    private final OrderedText idText;
-    private final OrderedText modNameText;
-    private final CriterionDisplayElement criterionDisplay;
+    private final FormattedCharSequence title;
+    private final FormattedCharSequence idText;
+    private final FormattedCharSequence modNameText;
+    private final TriggerDisplayElement criterionDisplay;
 
     public ResearchTooltipComponent(Research research, boolean showStatus) {
         this.research = research;
-        ClientResearchTracker researchManager = client.getNetworkHandler().researcher$getClientTracker();
+        ClientResearchTracker researchManager = client.getConnection().researcher$getClientTracker();
 
         if (showStatus) {
-            title = researchManager.getTitleWithStatus(research).asOrderedText();
+            title = researchManager.getTitleWithStatus(research).getVisualOrderText();
         }
         else {
-            title = research.getTitle(researchManager).asOrderedText();
+            title = research.getTitle(researchManager).getVisualOrderText();
         }
 
         Identifier researchId = researchManager.getIdOrEmpty(research);
-        idText = Text.literal(researchId.toString()).formatted(Formatting.DARK_GRAY).asOrderedText();
-        modNameText = Text.literal(GameUtils.getModName(researchId)).formatted(Formatting.BLUE, Formatting.ITALIC).asOrderedText();
+        idText = Component.literal(researchId.toString()).withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText();
+        modNameText = Component.literal(GameUtils.getModName(researchId)).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC).getVisualOrderText();
 
         criterionDisplay = ResearchInfoView.prepareDisplay(research.trigger());
     }
 
     @Override
-    public void drawText(DrawContext draw, TextRenderer textRenderer, int x, int y) {
+    public void renderText(GuiGraphics draw, Font textRenderer, int x, int y) {
         text(draw, textRenderer, title, x, y); y += 10;
         y += 22;
         if (client.options.advancedItemTooltips) {
@@ -52,18 +52,18 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, int width, int height, DrawContext draw) {
-        ResearchProgress progress = client.getNetworkHandler().researcher$getClientTracker().getProgress(research);
+    public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics draw) {
+        ResearchProgress progress = client.getConnection().researcher$getClientTracker().getProgress(research);
         ResearchInfoView.drawCriterion(criterionDisplay, research.trigger(), progress, draw, -1, -1, x + 1, y + 11, 0);
     }
 
     @Override
-    public int getHeight(TextRenderer textRenderer) {
+    public int getHeight(Font textRenderer) {
         return client.options.advancedItemTooltips ? 52 : 42;
     }
 
     @Override
-    public int getWidth(TextRenderer textRenderer) {
+    public int getWidth(Font textRenderer) {
         int longest = longestText(textRenderer, title, modNameText);
         if (client.options.advancedItemTooltips) {
             longest = longestText(textRenderer, longest, idText);

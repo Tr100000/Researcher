@@ -4,30 +4,30 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 
 public class ResearchScreen extends Screen {
-    protected static final MinecraftClient client = MinecraftClient.getInstance();
+    protected static final Minecraft client = Minecraft.getInstance();
 
     public static int sidebarWidth;
     public static int infoViewHeight;
 
     public static @Nullable Research selected;
 
-    protected final ClientResearchTracker researchManager = client.getNetworkHandler().researcher$getClientTracker();
+    protected final ClientResearchTracker researchManager = client.getConnection().researcher$getClientTracker();
 
-    public final Screen parent;
+    public final @Nullable Screen parent;
 
-    protected ResearchTreeView treeView;
-    protected ResearchInfoView infoView;
-    protected ResearchListView listView;
+    protected @Nullable ResearchTreeView treeView;
+    protected @Nullable ResearchInfoView infoView;
+    protected @Nullable ResearchListView listView;
 
-    public ResearchScreen(Screen parent) {
-        super(Text.translatable("screen.researcher"));
+    public ResearchScreen(@Nullable Screen parent) {
+        super(Component.translatable("screen.researcher"));
         this.parent = parent;
         refreshSettings();
     }
@@ -45,7 +45,7 @@ public class ResearchScreen extends Screen {
     public void init() {
         if (!researchManager.isInitialized()) {
             Researcher.LOGGER.info("Tried to open research screen before initialization finished.");
-            close();
+            onClose();
             return;
         }
 
@@ -60,36 +60,36 @@ public class ResearchScreen extends Screen {
     }
 
     public void initWith(Research current) {
-        clearChildren();
+        clearWidgets();
         setSelected(current);
 
-        addDrawableChild(infoView);
+        addRenderableWidget(infoView);
         infoView.initWith(current);
-        addDrawableChild(listView);
+        addRenderableWidget(listView);
 
-        treeView = addDrawableChild(new ResearchTreeView(this, width - sidebarWidth, height));
+        treeView = addRenderableWidget(new ResearchTreeView(this, width - sidebarWidth, height));
         treeView.initWith(current);
 
         setInitialFocus(treeView);
     }
 
     @Override
-    public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
-        applyBlur(draw);
-        renderDarkening(draw);
+    public void render(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+        renderBlurredBackground(draw);
+        renderMenuBackground(draw);
         if (selected != null) super.render(draw, mouseX, mouseY, delta);
     }
 
     @Override
-    public void renderBackground(DrawContext draw, int mouseX, int mouseY, float delta) {}
+    public void renderBackground(GuiGraphics draw, int mouseX, int mouseY, float delta) {}
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         client.setScreen(parent);
     }
 }

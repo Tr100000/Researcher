@@ -1,0 +1,29 @@
+classTweaker v1 named
+
+transitive-inject-interface net/minecraft/server/MinecraftServer io/github/tr100000/researcher/api/ResearchManagerGetter
+transitive-inject-interface net/minecraft/server/ReloadableServerResources io/github/tr100000/researcher/api/ResearchManagerGetter
+transitive-inject-interface net/minecraft/server/players/PlayerList io/github/tr100000/researcher/api/ServerResearchTrackerGetter
+transitive-inject-interface net/minecraft/server/level/ServerPlayer io/github/tr100000/researcher/api/PlayerResearchTrackerGetter
+transitive-inject-interface net/minecraft/client/multiplayer/ClientPacketListener io/github/tr100000/researcher/api/ClientResearchTrackerGetter
+
+accessible class net/minecraft/server/MinecraftServer$ReloadableResources
+accessible class net/minecraft/advancements/criterion/LocationPredicate$PositionPredicate
+accessible class net/minecraft/advancements/criterion/PlayerPredicate$AdvancementPredicate
+accessible class net/minecraft/advancements/criterion/PlayerPredicate$AdvancementCriterionsPredicate
+accessible class net/minecraft/advancements/criterion/PlayerPredicate$AdvancementDonePredicate
+accessible class net/minecraft/advancements/criterion/PlayerPredicate$StatMatcher
+accessible class net/minecraft/advancements/criterion/StatePropertiesPredicate$PropertyMatcher
+accessible class net/minecraft/advancements/criterion/StatePropertiesPredicate$ValueMatcher
+accessible class net/minecraft/advancements/criterion/StatePropertiesPredicate$ExactMatcher
+accessible class net/minecraft/advancements/criterion/StatePropertiesPredicate$RangedMatcher
+
+accessible method net/minecraft/world/level/storage/LevelResource <init> (Ljava/lang/String;)V
+accessible method net/minecraft/server/packs/resources/SimpleJsonResourceReloadListener <init> (Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Lnet/minecraft/resources/FileToIdConverter;)V
+
+accessible field net/minecraft/server/PlayerAdvancements player Lnet/minecraft/server/level/ServerPlayer;
+accessible field net/minecraft/advancements/criterion/ContextAwarePredicate conditions Ljava/util/List;
+accessible field net/minecraft/world/item/BoatItem entityType Lnet/minecraft/world/entity/EntityType;
+accessible field net/minecraft/world/item/MinecartItem type Lnet/minecraft/world/entity/EntityType;
+accessible field net/minecraft/world/item/HangingEntityItem type Lnet/minecraft/world/entity/EntityType;
+accessible field net/minecraft/core/component/DataComponentExactPredicate expectedComponents Ljava/util/List;
+accessible field net/minecraft/core/component/predicates/EnchantmentsPredicate enchantments Ljava/util/List;

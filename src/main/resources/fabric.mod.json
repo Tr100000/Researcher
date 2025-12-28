@@ -18,14 +18,7 @@
     "client": ["io.github.tr100000.researcher.ResearcherClient"]
   },
   "custom": {
-    "fzzy_config": ["researcher"],
-    "loom:injected_interfaces": {
-      "net/minecraft/class_5350": ["io/github/tr100000/researcher/api/ResearchManagerGetter"],
-      "net/minecraft/server/MinecraftServer": ["io/github/tr100000/researcher/api/ResearchManagerGetter"],
-      "net/minecraft/class_3324": ["io/github/tr100000/researcher/api/ServerResearchTrackerGetter"],
-      "net/minecraft/class_3222": ["io/github/tr100000/researcher/api/PlayerResearchTrackerGetter"],
-      "net/minecraft/class_634": ["io/github/tr100000/researcher/api/ClientResearchTrackerGetter"]
-    }
+    "fzzy_config": ["researcher"]
   },
   "mixins": [
     "researcher.mixins.json",
@@ -34,12 +27,12 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "researcher.accesswidener",
+  "accessWidener": "researcher.classtweaker",
   "depends": {
     "fabricloader": ">=0.18",
     "minecraft": "~1.21.11",
     "java": ">=21",
-    "fabric-api": ">=0.139",
+    "fabric-api": ">=0.140",
     "trutils": "*",
     "fzzy_config": ">=0.7"
   }

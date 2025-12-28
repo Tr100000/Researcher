@@ -3,11 +3,11 @@ package io.github.tr100000.researcher.networking;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Map;
@@ -19,19 +19,19 @@ public record ResearchUpdateS2CPacket(
         Map<Identifier, Research> loadedResearch,
         Optional<Identifier> currentResearching,
         List<Identifier> pinnedResearches
-) implements CustomPayload {
-    public static final Id<ResearchUpdateS2CPacket> ID = ResearcherNetworking.payloadId("research_update");
-    public static final PacketCodec<RegistryByteBuf, ResearchUpdateS2CPacket> CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOLEAN, ResearchUpdateS2CPacket::clearCurrent,
-            PacketCodecs.map(Object2ObjectOpenHashMap::new, Identifier.PACKET_CODEC, ResearchProgress.PACKET_CODEC), ResearchUpdateS2CPacket::progressMap,
-            PacketCodecs.map(Object2ObjectOpenHashMap::new, Identifier.PACKET_CODEC, Research.PACKET_CODEC), ResearchUpdateS2CPacket::loadedResearch,
-            PacketCodecs.optional(Identifier.PACKET_CODEC), ResearchUpdateS2CPacket::currentResearching,
-            Identifier.PACKET_CODEC.collect(PacketCodecs.toList()), ResearchUpdateS2CPacket::pinnedResearches,
+) implements CustomPacketPayload {
+    public static final Type<ResearchUpdateS2CPacket> ID = ResearcherNetworking.payloadId("research_update");
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchUpdateS2CPacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, ResearchUpdateS2CPacket::clearCurrent,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, ResearchProgress.PACKET_CODEC), ResearchUpdateS2CPacket::progressMap,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, Research.PACKET_CODEC), ResearchUpdateS2CPacket::loadedResearch,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), ResearchUpdateS2CPacket::currentResearching,
+            Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), ResearchUpdateS2CPacket::pinnedResearches,
             ResearchUpdateS2CPacket::new
     );
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 }

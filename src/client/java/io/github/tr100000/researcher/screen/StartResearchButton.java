@@ -4,23 +4,23 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
-public class StartResearchButton extends PressableWidget {
+public class StartResearchButton extends AbstractButton {
     private final Identifier researchId;
     private final boolean pin;
     private final int originalX;
     private boolean isCurrent;
 
-    private StartResearchButton(int x, int y, int width, int height, Text text, Identifier researchId, boolean pin, boolean isCurrent) {
+    private StartResearchButton(int x, int y, int width, int height, Component text, Identifier researchId, boolean pin, boolean isCurrent) {
         super(x, y, width, height, text);
         this.researchId = researchId;
         this.pin = pin;
@@ -29,15 +29,15 @@ public class StartResearchButton extends PressableWidget {
     }
 
     public static StartResearchButton create(int x, int y, ClientResearchTracker researchTracker, Research research, boolean pin, boolean isCurrent) {
-        StartResearchButton button = new StartResearchButton(x, y, 0, 20, Text.empty(), researchTracker.getIdOrEmpty(research), pin, isCurrent);
+        StartResearchButton button = new StartResearchButton(x, y, 0, 20, Component.empty(), researchTracker.getIdOrEmpty(research), pin, isCurrent);
         button.updateText(isCurrent);
         return button;
     }
 
     @Override
-    public void onPress(AbstractInput input) {
+    public void onPress(InputWithModifiers input) {
         if (isCurrent) {
-            if (input.hasShift() && MinecraftClient.getInstance().player.isInCreativeMode()) {
+            if (input.hasShiftDown() && Minecraft.getInstance().player.hasInfiniteMaterials()) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.REVOKE, Optional.of(researchId)));
             }
             else if (pin) {
@@ -49,7 +49,7 @@ public class StartResearchButton extends PressableWidget {
             isCurrent = false;
         }
         else {
-            if (input.hasShift() && MinecraftClient.getInstance().player.isInCreativeMode()) {
+            if (input.hasShiftDown() && Minecraft.getInstance().player.hasInfiniteMaterials()) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.GRANT, Optional.of(researchId)));
             }
             else if (pin) {
@@ -65,8 +65,8 @@ public class StartResearchButton extends PressableWidget {
     }
 
     @Override
-    protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        drawLabel(context.getTextConsumer());
+    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+        renderDefaultLabel(context.textRenderer());
     }
 
     public void updateText(boolean isCurrent) {
@@ -80,15 +80,15 @@ public class StartResearchButton extends PressableWidget {
     }
 
     private void setText(String key) {
-        Text text = Text.translatable("screen.researcher." + key);
-        int newWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 8;
+        Component text = Component.translatable("screen.researcher." + key);
+        int newWidth = Minecraft.getInstance().font.width(text) + 8;
         setWidth(newWidth);
         setX(originalX - newWidth);
         setMessage(text);
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-        super.appendDefaultNarrations(builder);
+    protected void updateWidgetNarration(NarrationElementOutput builder) {
+        super.defaultButtonNarrationText(builder);
     }
 }

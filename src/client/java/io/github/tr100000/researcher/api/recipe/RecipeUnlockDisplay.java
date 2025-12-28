@@ -1,23 +1,23 @@
 package io.github.tr100000.researcher.api.recipe;
 
 import io.github.tr100000.trutils.api.gui.Icon;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.recipe.display.SlotDisplayContexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.context.ContextParameterMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import java.util.Objects;
 
 public interface RecipeUnlockDisplay {
-    RecipeUnlockDisplay ERROR = new Impl(Icon.ERROR, TooltipComponent.of(Text.literal("Error").asOrderedText()));
+    RecipeUnlockDisplay ERROR = new Impl(Icon.ERROR, ClientTooltipComponent.create(Component.literal("Error").getVisualOrderText()));
 
     Icon icon();
-    TooltipComponent tooltip();
+    ClientTooltipComponent tooltip();
 
-    record Impl(Icon icon, TooltipComponent tooltip) implements RecipeUnlockDisplay {}
+    record Impl(Icon icon, ClientTooltipComponent tooltip) implements RecipeUnlockDisplay {}
 
-    static ContextParameterMap contextParameterMap() {
-        return SlotDisplayContexts.createParameters(Objects.requireNonNull(MinecraftClient.getInstance().world));
+    static ContextMap contextParameterMap() {
+        return SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
     }
 }

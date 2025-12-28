@@ -6,11 +6,11 @@ import com.google.common.collect.Multimap;
 import com.google.common.graph.Graph;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
-import io.github.tr100000.researcher.criteria.ResearchItemsCriterion;
+import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,11 +22,11 @@ import java.util.function.Function;
 public interface ResearchHolder {
     boolean isInitialized();
     Map<Identifier, Research> getAll();
-    Graph<Research> getGraph();
-    @Nullable Research get(Identifier id);
-    @Nullable Identifier getId(Research research);
+    @Nullable Graph<Research> getGraph();
+    @Nullable Research get(@Nullable Identifier id);
+    @Nullable Identifier getId(@Nullable Research research);
     boolean isRecipeUnlockable(Identifier recipeId);
-    @Nullable ResearchItemsCriterion.Conditions getResearchConditions(Research research);
+    ResearchItemsTrigger.@Nullable TriggerInstance getResearchConditions(Research research);
 
     default Collection<Research> listAll() {
         return getAll().values();

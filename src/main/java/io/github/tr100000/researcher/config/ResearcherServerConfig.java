@@ -9,7 +9,6 @@ import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
-import org.jetbrains.annotations.NotNull;
 
 @Translation(prefix = "config.researcher.server")
 public class ResearcherServerConfig extends Config {
@@ -22,8 +21,8 @@ public class ResearcherServerConfig extends Config {
     public ValidatedEnum<ResearchSyncMode> researchSyncMode = new ValidatedEnum<>(ResearchSyncMode.NONE);
 
     @Override
-    public @NotNull String translationKey() {
-        return getId().toTranslationKey("config");
+    public String translationKey() {
+        return getId().toLanguageKey("config");
     }
 
     @Override

@@ -5,8 +5,9 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ChatScreenMixin",
-    "ClientPlayNetworkHandlerMixin",
-    "jei.JeiStarterMixin"
+    "ClientPacketListenerMixin",
+    "jei.JeiStarterMixin",
+    "jei.RecipesGuiAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

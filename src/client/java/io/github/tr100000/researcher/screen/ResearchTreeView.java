@@ -8,10 +8,10 @@ import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     public ResearchTreeView(ResearchScreen parent, int width, int height) {
         super(parent, ResearchScreen.sidebarWidth, 0, width, height);
         this.researchTracker = parent.researchManager;
-        this.scissorRect = new ScreenRect(x, y, width, height);
+        this.scissorRect = new ScreenRectangle(x, y, width, height);
     }
 
     public void initWith(Research research) {
@@ -109,8 +109,8 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     @Override
-    public void renderView(DrawContext draw, int mouseX, int mouseY, float delta) {
-        draw.getMatrices().translate((float)offsetX, (float)offsetY);
+    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+        draw.pose().translate((float)offsetX, (float)offsetY);
 
         int newMouseX = mouseX - (int)offsetX;
         int newMouseY = mouseY - (int)offsetY;
@@ -133,7 +133,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         return null;
     }
 
-    private void renderConnections(DrawContext draw, ResearchNodeWidget currentHovered) {
+    private void renderConnections(GuiGraphics draw, @Nullable ResearchNodeWidget currentHovered) {
         drawFakeConnections(draw, currentHovered);
 
         successorConnections.forEach((from, to) -> {
@@ -146,25 +146,25 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         }
     }
 
-    private void drawConnection(DrawContext draw, ResearchNodeWidget from, ResearchNodeWidget to, int color) {
+    private void drawConnection(GuiGraphics draw, ResearchNodeWidget from, ResearchNodeWidget to, int color) {
         if (from.getY() > to.getY()) drawConnection(draw, to, from, color);
         int startX = from.getX() + from.getWidth() / 2;
         int startY = from.getY() + from.getHeight() - 1;
         int endX = to.getX() + to.getWidth() / 2;
         int endY = to.getY();
         int midY = (startY + endY) / 2;
-        draw.drawVerticalLine(startX, startY, midY, color);
-        draw.drawHorizontalLine(startX, endX, midY, color);
-        draw.drawVerticalLine(endX, midY, endY, color);
+        draw.vLine(startX, startY, midY, color);
+        draw.hLine(startX, endX, midY, color);
+        draw.vLine(endX, midY, endY, color);
     }
 
-    private void highlightConnected(DrawContext draw, ResearchNodeWidget node) {
+    private void highlightConnected(GuiGraphics draw, ResearchNodeWidget node) {
         successorConnections.get(node).forEach(successor -> drawHighlight(draw, successor));
         predecessorConnections.get(node).forEach(predecessor -> drawHighlight(draw, predecessor));
         drawHighlight(draw, node);
     }
 
-    private void drawFakeConnections(DrawContext draw, ResearchNodeWidget currentHovered) {
+    private void drawFakeConnections(GuiGraphics draw, @Nullable ResearchNodeWidget currentHovered) {
         final int length = 20;
 
         topNodes.forEach(node -> {
@@ -182,7 +182,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         });
     }
 
-    private void drawFakeConnection(DrawContext draw, int x, int startY, int endY, int color) {
+    private void drawFakeConnection(GuiGraphics draw, int x, int startY, int endY, int color) {
         final int segmentCount = 3;
         final int height = endY - startY;
         final int segmentHeight = height / segmentCount;
@@ -191,34 +191,34 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         for (int i = 0; i < segmentCount; i += 2) {
             int segmentStartY = startY + segmentHeight * i;
             int segmentEndY = (int)(segmentStartY + (segmentHeight + 1.25F));
-            draw.drawVerticalLine(x, segmentStartY, segmentEndY, color);
+            draw.vLine(x, segmentStartY, segmentEndY, color);
         }
     }
 
-    private void drawHighlight(DrawContext draw, ResearchNodeWidget node) {
-        draw.drawStrokedRectangle(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
+    private void drawHighlight(GuiGraphics draw, ResearchNodeWidget node) {
+        draw.renderOutline(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
     }
 
     @Override
-    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+    public boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
         if (click.button() == 0) {
             this.offsetX += offsetX;
             this.offsetY += offsetY;
             return true;
         }
         else {
-            return super.mouseDragged(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), offsetX, offsetY);
+            return super.mouseDragged(new MouseButtonEvent(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), offsetX, offsetY);
         }
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
-        return super.mouseClicked(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), doubled);
+    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
+        return super.mouseClicked(new MouseButtonEvent(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), doubled);
     }
 
     @Override
-    public boolean mouseReleased(Click click) {
-        return super.mouseReleased(new Click(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()));
+    public boolean mouseReleased(MouseButtonEvent click) {
+        return super.mouseReleased(new MouseButtonEvent(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()));
     }
 
     @Override

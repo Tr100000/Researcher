@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(JeiStarter.class)
-public class JeiStarterMixin {
+public abstract class JeiStarterMixin {
     @Inject(require = 0, method = "start", at = @At(value = "INVOKE", target = "Lmezz/jei/common/Internal;setRuntime(Lmezz/jei/api/runtime/IJeiRuntime;)V"))
     private void onRuntimeAvailable(CallbackInfo ci, @Local(name = "jeiRuntime") JeiRuntime runtime) {
         JeiDelegate.runtimeAvailable(runtime);

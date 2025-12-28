@@ -2,59 +2,59 @@ package io.github.tr100000.researcher.impl.recipe;
 
 import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplay;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.recipe.TransmuteRecipe;
-import net.minecraft.recipe.display.RecipeDisplay;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.context.ContextParameterMap;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.TransmuteRecipe;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 public final class CraftingRecipeUnlockDisplay {
     private CraftingRecipeUnlockDisplay() {}
 
-    public static RecipeUnlockDisplay createShaped(RecipeEntry<ShapedRecipe> entry) {
-        return createNormal(entry.value(), entry.id().getValue());
+    public static RecipeUnlockDisplay createShaped(RecipeHolder<ShapedRecipe> entry) {
+        return createNormal(entry.value(), entry.id().identifier());
     }
 
-    public static RecipeUnlockDisplay createShapeless(RecipeEntry<ShapelessRecipe> entry) {
-        return createNormal(entry.value(), entry.id().getValue());
+    public static RecipeUnlockDisplay createShapeless(RecipeHolder<ShapelessRecipe> entry) {
+        return createNormal(entry.value(), entry.id().identifier());
     }
 
     private static RecipeUnlockDisplay createNormal(CraftingRecipe recipe, Identifier recipeId) {
-        if (recipe.getDisplays().isEmpty()) return RecipeUnlockDisplay.ERROR;
-        if (recipe.getIngredientPlacement().hasNoPlacement()) return RecipeUnlockDisplay.ERROR;
+        if (recipe.display().isEmpty()) return RecipeUnlockDisplay.ERROR;
+        if (recipe.placementInfo().isImpossibleToPlace()) return RecipeUnlockDisplay.ERROR;
 
-        ContextParameterMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
-        RecipeDisplay recipeDisplay = recipe.getDisplays().getFirst();
+        ContextMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
+        RecipeDisplay recipeDisplay = recipe.display().getFirst();
         CraftingRecipeTooltipComponent tooltip = CraftingRecipeTooltipComponent.create(
                 recipeId,
                 recipe instanceof ShapedRecipe shaped ? shaped.getWidth() : 3,
-                recipe.getIngredientPlacement(),
+                recipe.placementInfo(),
                 recipeDisplay.result(),
                 contextParameterMap
         );
-        ItemStack resultStack = recipeDisplay.result().getFirst(contextParameterMap);
+        ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
         return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
     }
 
-    public static RecipeUnlockDisplay createTransmute(RecipeEntry<TransmuteRecipe> entry) {
+    public static RecipeUnlockDisplay createTransmute(RecipeHolder<TransmuteRecipe> entry) {
         TransmuteRecipe recipe = entry.value();
-        if (recipe.getDisplays().isEmpty()) return RecipeUnlockDisplay.ERROR;
-        if (recipe.getIngredientPlacement().hasNoPlacement()) return RecipeUnlockDisplay.ERROR;
+        if (recipe.display().isEmpty()) return RecipeUnlockDisplay.ERROR;
+        if (recipe.placementInfo().isImpossibleToPlace()) return RecipeUnlockDisplay.ERROR;
 
-        ContextParameterMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
-        RecipeDisplay recipeDisplay = recipe.getDisplays().getFirst();
+        ContextMap contextParameterMap = RecipeUnlockDisplay.contextParameterMap();
+        RecipeDisplay recipeDisplay = recipe.display().getFirst();
         CraftingRecipeTooltipComponent tooltip = CraftingRecipeTooltipComponent.create(
-                entry.id().getValue(),
+                entry.id().identifier(),
                 2,
-                recipe.getIngredientPlacement(),
+                recipe.placementInfo(),
                 recipeDisplay.result(),
                 contextParameterMap
         );
-        ItemStack resultStack = recipeDisplay.result().getFirst(contextParameterMap);
+        ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
         return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
     }
 }

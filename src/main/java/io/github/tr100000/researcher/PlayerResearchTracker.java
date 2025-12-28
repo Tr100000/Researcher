@@ -16,13 +16,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancement.PlayerAdvancementTracker;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.nio.file.Files;
@@ -39,11 +39,11 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     private static final Gson GSON = Researcher.GSON;
 
     private ResearchManager researchManager;
-    private final PlayerManager playerManager;
+    private final PlayerList playerManager;
     private final Path filePath;
 
-    private PlayerAdvancementTracker playerAdvancementTracker;
-    private ServerPlayerEntity owner;
+    private PlayerAdvancements playerAdvancements;
+    private ServerPlayer owner;
     private boolean dirty = true;
     private boolean forceNextUpdate = false;
     private boolean hasStartedTracking;
@@ -54,22 +54,23 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     private List<Identifier> pinnedResearches = new ObjectArrayList<>();
     private final Set<PlayerResearchTracker> syncedTrackers = new ObjectOpenHashSet<>();
 
-    public PlayerResearchTracker(ServerPlayerEntity player, ResearchManager researchManager, PlayerManager playerManager, Path filePath) {
+    public PlayerResearchTracker(ServerPlayer player, ResearchManager researchManager, PlayerList playerManager, Path filePath) {
         this.researchManager = researchManager;
         this.playerManager = playerManager;
         this.filePath = filePath;
-        setOwner(player);
+        this.owner = player;
+        this.playerAdvancements = player.getAdvancements();
         load();
         beginTrackingAll();
         Researcher.LOGGER.info("Initialized research tracker for {}", player.getName().getString());
     }
 
-    public void setOwner(ServerPlayerEntity owner) {
+    public void setOwner(ServerPlayer owner) {
         this.owner = owner;
-        this.playerAdvancementTracker = owner.getAdvancementTracker();
+        this.playerAdvancements = owner.getAdvancements();
     }
 
-    public ServerPlayerEntity getOwner() {
+    public ServerPlayer getOwner() {
         return owner;
     }
 
@@ -164,7 +165,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     @SuppressWarnings("unchecked")
     private void beginTracking(Research research) {
         Researcher.LOGGER.debug("Begin tracking research {}", researchManager.getId(research));
-        research.getTrigger().beginTrackingCondition(playerAdvancementTracker, getConditionsContainer(research));
+        research.getTrigger().addPlayerListener(playerAdvancements, getConditionsContainer(research));
     }
 
     private void endTrackingAll() {
@@ -174,12 +175,12 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     @SuppressWarnings("unchecked")
     private void endTracking(Research research) {
         Researcher.LOGGER.debug("End tracking research {}", researchManager.getId(research));
-        research.getTrigger().endTrackingCondition(playerAdvancementTracker, getConditionsContainer(research));
+        research.getTrigger().removePlayerListener(playerAdvancements, getConditionsContainer(research));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Criterion.ConditionsContainer getConditionsContainer(Research research) {
-        return new Criterion.ConditionsContainer(research.getConditions(), null, researchManager.getId(research).toString());
+    private CriterionTrigger.Listener getConditionsContainer(Research research) {
+        return new CriterionTrigger.Listener(research.getConditions(), null, researchManager.getId(research).toString());
     }
 
     public void syncWith(PlayerResearchTracker other) {
@@ -199,7 +200,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
 
         if (!ourProgress.isFinished() && otherProgress.isFinished()) {
             // This prevents things like advancements not triggering when syncing settings are changed
-            ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchManager.getIdOrThrow(research));
+            ResearcherCriteriaTriggers.HAS_RESEARCH.trigger(owner, researchManager.getIdOrThrow(research));
         }
     }
 
@@ -246,26 +247,26 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
 
         progressUpdates.add(research);
         endTracking(research);
-        playerManager.broadcast(research.getChatAnnouncementText(researchManager, owner), false);
-        ResearcherCriteria.HAS_RESEARCH.trigger(owner, researchId);
+        playerManager.broadcastSystemMessage(research.getChatAnnouncementText(researchManager, owner), false);
+        ResearcherCriteriaTriggers.HAS_RESEARCH.trigger(owner, researchId);
         if (researchId.equals(currentResearching)) {
             currentResearching = null;
         }
         pinnedResearches.remove(researchId);
     }
 
-    public boolean incrementCriterion(Research research) {
-        return incrementCriterion(research, true);
+    public boolean incrementCriterion(Research research, int count) {
+        return incrementCriterion(research, count, true);
     }
 
-    private boolean incrementCriterion(Research research, boolean sync) {
+    private boolean incrementCriterion(Research research, int count, boolean sync) {
         ResearchProgress progress = getProgress(research);
         if (canResearch(research)) {
-            progress.increment(research.trigger().count());
+            progress.increment(research.trigger().count(), count);
             if (progress.isFinished()) {
                 onResearchFinished(research);
                 if (sync) {
-                    syncedTrackers.forEach(tracker -> tracker.incrementCriterion(research, false));
+                    syncedTrackers.forEach(tracker -> tracker.incrementCriterion(research, count, false));
                 }
             }
             else if (sync) {
@@ -279,7 +280,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     }
 
     public boolean incrementCriterion(String id) {
-        return incrementCriterion(researchManager.get(Identifier.of(id)));
+        return incrementCriterion(researchManager.get(Identifier.parse(id)), 1);
     }
 
     public boolean revokeCriterion(Research research) {
@@ -314,7 +315,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
 
             progressUpdates.clear();
             if (dirty || !updatedProgressMap.isEmpty() || forceNextUpdate) {
-                Researcher.LOGGER.info("Sending research update to {}", owner.getName().getLiteralString());
+                Researcher.LOGGER.info("Sending research update to {}", owner.getName().tryCollapseToString());
                 ServerPlayNetworking.send(owner, new ResearchUpdateS2CPacket(
                         dirty,
                         updatedProgressMap,
@@ -336,12 +337,12 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
             case PIN -> payload.researchId().ifPresent(this::pinResearch);
             case UNPIN -> payload.researchId().ifPresent(this::unpinResearch);
             case GRANT -> {
-                if (owner.isInCreativeMode()) {
+                if (owner.hasInfiniteMaterials()) {
                     payload.researchId().ifPresent(id -> grantCriterion(researchManager.get(id)));
                 }
             }
             case REVOKE -> {
-                if (owner.isInCreativeMode()) {
+                if (owner.hasInfiniteMaterials()) {
                     payload.researchId().ifPresent(id -> revokeCriterion(researchManager.get(id)));
                 }
             }
@@ -385,12 +386,12 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         }
     }
 
-    public boolean canResearch(Research research) {
+    public boolean canResearch(@Nullable Research research) {
         if (research == null || hasFinished(research)) return false;
         return research.prerequisites(researchManager).stream().allMatch(this::hasFinished);
     }
 
-    public boolean hasFinished(Research research) {
+    public boolean hasFinished(@Nullable Research research) {
         if (research == null) return false;
         return getProgress(research).isFinished();
     }

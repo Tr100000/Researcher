@@ -5,10 +5,10 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -23,10 +23,10 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
 
     public ResearchListView(ResearchScreen parent, int height) {
         super(parent, 0, ResearchScreen.infoViewHeight, ResearchScreen.sidebarWidth, height);
-        this.scissorRect = new ScreenRect(0, y, parent.width, height);
+        this.scissorRect = new ScreenRectangle(0, y, parent.width, height);
 
-        TextFieldWidget searchField = addDrawableChild(new TextFieldWidget(client.textRenderer, 4, ResearchScreen.infoViewHeight + 4, ResearchScreen.sidebarWidth - 8, 14, Text.translatable("screen.researcher.search")));
-        searchField.setChangedListener(this::searchAndReposition);
+        EditBox searchField = addDrawableChild(new EditBox(client.font, 4, ResearchScreen.infoViewHeight + 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search")));
+        searchField.setResponder(this::searchAndReposition);
 
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
         researchList.sort(Research.statusComparator(parent.researchManager).thenComparing(Research.idComparator(parent.researchManager)));
@@ -64,9 +64,9 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
     }
 
     @Override
-    public void renderView(DrawContext draw, int mouseX, int mouseY, float delta) {
+    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
         draw.fill(0, getY() - 1, getWidth(), parent.height, BACKGROUND_COLOR);
-        draw.drawStrokedRectangle(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
+        draw.renderOutline(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
         super.renderView(draw, mouseX, mouseY, delta);
     }
 }

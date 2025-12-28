@@ -1,32 +1,32 @@
 package io.github.tr100000.researcher.screen;
 
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import io.github.tr100000.trutils.api.gui.IconRenderers;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.util.Colors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.util.CommonColors;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-public class ResearchNodeWidget extends PressableWidget {
-    private final MinecraftClient client = MinecraftClient.getInstance();
+public class ResearchNodeWidget extends AbstractButton {
+    private final Minecraft client = Minecraft.getInstance();
     private final ResearchTooltipWrapper tooltipWrapper = new ResearchTooltipWrapper(true);
     private final ResearchScreen screen;
     private final ScrollableView parentView;
-    private final TooltipPositioner tooltipPositioner = new TooltipPositionerImpl();
+    private final ClientTooltipPositioner tooltipPositioner = new TooltipPositionerImpl();
     public final Research research;
 
     public static final int FILL_LOCKED = 0xFFB82121;
     public static final int FILL_AVAILABLE = 0xFFBABABA;
     public static final int FILL_FINISHED = 0xFF149900;
-    public static final int FILL_PROGRESS_BACKGROUND = Colors.GRAY;
+    public static final int FILL_PROGRESS_BACKGROUND = CommonColors.GRAY;
     public static final int FILL_PROGRESS_BAR = 0xFF28C900;
 
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, Research research) {
@@ -38,14 +38,14 @@ public class ResearchNodeWidget extends PressableWidget {
     }
 
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
-        super(x, y, width, height, research.getTitle(MinecraftClient.getInstance().getNetworkHandler().researcher$getClientTracker()));
+        super(x, y, width, height, research.getTitle(Minecraft.getInstance().getConnection().researcher$getClientTracker()));
         this.screen = screen;
         this.parentView = parentView;
         this.research = research;
     }
 
     @Override
-    public void drawIcon(DrawContext draw, int mouseX, int mouseY, float delta) {
+    public void renderContents(GuiGraphics draw, int mouseX, int mouseY, float delta) {
         ResearchProgress progress = screen.researchManager.getProgress(research);
         boolean showProgressBar = !progress.isFinished() && progress.getCount() > 0;
         draw.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getFillColor(progress));
@@ -59,10 +59,10 @@ public class ResearchNodeWidget extends PressableWidget {
             draw.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
         }
 
-        if (isHovered() && draw.scissorContains(mouseX + parentView.getOffsetX(), mouseY + parentView.getOffsetY())) {
+        if (isHovered() && draw.containsPointInScissor(mouseX + parentView.getOffsetX(), mouseY + parentView.getOffsetY())) {
             GuiHelper.drawSlotHighlight(draw, this);
-            GuiHelper.drawTooltip(draw, client.textRenderer, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
-            draw.setCursor(StandardCursors.POINTING_HAND);
+            GuiHelper.drawTooltip(draw, client.font, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
+            draw.requestCursor(CursorTypes.POINTING_HAND);
         }
     }
 
@@ -72,22 +72,22 @@ public class ResearchNodeWidget extends PressableWidget {
     }
 
     @Override
-    public void onPress(AbstractInput input) {
+    public void onPress(InputWithModifiers input) {
         screen.initWith(research);
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-        appendDefaultNarrations(builder);
+    protected void updateWidgetNarration(NarrationElementOutput builder) {
+        defaultButtonNarrationText(builder);
     }
 
     /**
-     * Special implementation of {@link TooltipPositioner} to take view offsets into account.
-     * @implNote Modified version of {@link net.minecraft.client.gui.tooltip.HoveredTooltipPositioner}.
+     * Special implementation of {@link ClientTooltipPositioner} to take view offsets into account.
+     * @implNote Modified version of {@link net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner}.
      */
-    private class TooltipPositionerImpl implements TooltipPositioner {
+    private class TooltipPositionerImpl implements ClientTooltipPositioner {
         @Override
-        public Vector2ic getPosition(int screenWidth, int screenHeight, int x, int y, int width, int height) {
+        public Vector2ic positionTooltip(int screenWidth, int screenHeight, int x, int y, int width, int height) {
             Vector2i vector2i = new Vector2i(x, y).add(12, -12).add(parentView.getOffsetX(), parentView.getOffsetY());
             this.preventOverflow(screenWidth, screenHeight, vector2i, width, height);
             return vector2i;

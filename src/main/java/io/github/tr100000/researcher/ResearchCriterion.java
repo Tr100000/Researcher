@@ -2,41 +2,41 @@ package io.github.tr100000.researcher;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancement.AdvancementCriterion;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.advancement.criterion.CriterionConditions;
-import net.minecraft.advancement.criterion.ImpossibleCriterion;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 
-public record ResearchCriterion<T extends CriterionConditions>(AdvancementCriterion<T> criterion, int count) {
+public record ResearchCriterion<T extends CriterionTriggerInstance>(Criterion<T> criterion, int count) {
     public static final Codec<ResearchCriterion<?>> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    AdvancementCriterion.CODEC.fieldOf("criterion").forGetter(ResearchCriterion::criterion),
-                    Codecs.POSITIVE_INT.fieldOf("count").forGetter(ResearchCriterion::count)
+                    Criterion.CODEC.fieldOf("criterion").forGetter(ResearchCriterion::criterion),
+                    ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(ResearchCriterion::count)
             ).apply(instance, ResearchCriterion::new)
     );
 
-    public static final PacketCodec<RegistryByteBuf, ResearchCriterion<?>> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.unlimitedRegistryCodec(AdvancementCriterion.CODEC), ResearchCriterion::criterion,
-            PacketCodecs.VAR_INT, ResearchCriterion::count,
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchCriterion<?>> PACKET_CODEC = StreamCodec.composite(
+            ByteBufCodecs.fromCodecWithRegistriesTrusted(Criterion.CODEC), ResearchCriterion::criterion,
+            ByteBufCodecs.VAR_INT, ResearchCriterion::count,
             ResearchCriterion::new
     );
 
-    public static final ResearchCriterion<ImpossibleCriterion.Conditions> IMPOSSIBLE = new ResearchCriterion<>(Criteria.IMPOSSIBLE, new ImpossibleCriterion.Conditions(), Integer.MAX_VALUE);
+    public static final ResearchCriterion<ImpossibleTrigger.TriggerInstance> IMPOSSIBLE = new ResearchCriterion<>(CriteriaTriggers.IMPOSSIBLE, new ImpossibleTrigger.TriggerInstance(), Integer.MAX_VALUE);
 
-    public ResearchCriterion(Criterion<T> trigger, T conditions, int count) {
-        this(new AdvancementCriterion<>(trigger, conditions), count);
+    public ResearchCriterion(CriterionTrigger<T> trigger, T conditions, int count) {
+        this(new Criterion<>(trigger, conditions), count);
     }
 
     public T conditions() {
-        return criterion().conditions();
+        return criterion().triggerInstance();
     }
 
-    public Criterion<T> trigger() {
+    public CriterionTrigger<T> trigger() {
         return criterion().trigger();
     }
 }

@@ -1,18 +1,19 @@
 package io.github.tr100000.researcher.api.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText> {
+@NullMarked
+public class IndentedTextHolder implements Consumer<Component>, Iterable<MutableComponent> {
     private static final int DEFAULT_INDENT = 2;
 
-    private final List<MutableText> text = new ObjectArrayList<>();
+    private final List<MutableComponent> text = new ObjectArrayList<>();
     private int indent = 0;
 
     public int push(int amount) {
@@ -33,11 +34,11 @@ public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText>
         return pop(DEFAULT_INDENT);
     }
 
-    public void accept(Text text) {
+    public void accept(Component text) {
         this.text.add(getIndentText().append(text));
     }
 
-    public void accept(List<MutableText> text) {
+    public void accept(List<MutableComponent> text) {
         text.forEach(this);
     }
 
@@ -45,11 +46,11 @@ public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText>
         textHolder.forEach(this);
     }
 
-    private MutableText getIndentText() {
-        return Text.literal(" ".repeat(indent));
+    private MutableComponent getIndentText() {
+        return Component.literal(" ".repeat(indent));
     }
 
-    public List<MutableText> getText() {
+    public List<MutableComponent> getText() {
         return text;
     }
 
@@ -62,7 +63,7 @@ public class IndentedTextHolder implements Consumer<Text>, Iterable<MutableText>
     }
 
     @Override
-    public @NotNull Iterator<MutableText> iterator() {
+    public Iterator<MutableComponent> iterator() {
         return text.iterator();
     }
 }

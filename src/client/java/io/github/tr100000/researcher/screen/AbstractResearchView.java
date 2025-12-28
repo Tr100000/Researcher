@@ -1,18 +1,18 @@
 package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.trutils.api.gui.AbstractView;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 import java.util.function.Consumer;
 
-public abstract class AbstractResearchView extends AbstractView implements Widget {
-    protected static final MinecraftClient client = MinecraftClient.getInstance();
+public abstract class AbstractResearchView extends AbstractView implements LayoutElement {
+    protected static final Minecraft client = Minecraft.getInstance();
 
-    protected ScreenRect scissorRect;
+    protected ScreenRectangle scissorRect;
     protected final ResearchScreen parent;
     protected int x;
     protected int y;
@@ -63,29 +63,29 @@ public abstract class AbstractResearchView extends AbstractView implements Widge
     }
 
     @Override
-    public void forEachChild(Consumer<ClickableWidget> consumer) {
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {
         children().forEach(child -> {
-            if (child instanceof ClickableWidget widgetChild) {
+            if (child instanceof AbstractWidget widgetChild) {
                 consumer.accept(widgetChild);
             }
         });
     }
 
     @Override
-    public ScreenRect getNavigationFocus() {
-        return Widget.super.getNavigationFocus();
+    public ScreenRectangle getRectangle() {
+        return LayoutElement.super.getRectangle();
     }
 
     @Override
-    public void render(DrawContext draw, int mouseX, int mouseY, float delta) {
-        draw.getMatrices().pushMatrix();
-        draw.enableScissor(scissorRect.getLeft(), scissorRect.getTop(), scissorRect.getRight(), scissorRect.getBottom());
+    public void render(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+        draw.pose().pushMatrix();
+        draw.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
         renderView(draw, mouseX, mouseY, delta);
         draw.disableScissor();
-        draw.getMatrices().popMatrix();
+        draw.pose().popMatrix();
     }
 
-    public void renderView(DrawContext draw, int mouseX, int mouseY, float delta) {
+    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
         super.render(draw, mouseX, mouseY, delta);
     }
 }
