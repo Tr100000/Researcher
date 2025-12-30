@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.mixin.client.jei;
+package io.github.tr100000.researcher.mixin.client.compat.jei;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.tr100000.researcher.compat.JeiDelegate;

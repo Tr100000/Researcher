@@ -6,10 +6,13 @@
   "client": [
     "ChatScreenMixin",
     "ClientPacketListenerMixin",
-    "jei.JeiStarterMixin",
-    "jei.RecipesGuiAccessor"
+    "compat.jei.JeiStarterMixin",
+    "compat.jei.RecipesGuiAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "compat.jei.RecipeManagerInternalMixin"
+  ]
 }

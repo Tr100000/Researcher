@@ -19,7 +19,7 @@ public class ResearcherMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (targetClassName.startsWith("mezz.jei")) {
+        if (mixinClassName.contains("compat.jei")) {
             return FabricLoader.getInstance().isModLoaded("jei");
         }
         else {

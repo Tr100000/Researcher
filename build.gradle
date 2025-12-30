@@ -52,6 +52,7 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}"
     modImplementation ":trutils:${project.trutils_version}"
+    modImplementation ":codec2schema:${project.codec2schema_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 

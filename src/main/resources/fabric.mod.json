@@ -15,7 +15,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["io.github.tr100000.researcher.Researcher"],
-    "client": ["io.github.tr100000.researcher.ResearcherClient"]
+    "client": ["io.github.tr100000.researcher.ResearcherClient"],
+    "codec2schema:generate": ["io.github.tr100000.researcher.compat.codec2schema.ResearcherSchemaGeneration"]
   },
   "custom": {
     "fzzy_config": ["researcher"]

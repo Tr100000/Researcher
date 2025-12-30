@@ -71,7 +71,10 @@ public class RecipeUnlockWidget extends AbstractWidget {
     @Override
     public void onClick(MouseButtonEvent click, boolean doubled) {
         if (isError) return;
-        if (!ResearcherClient.recipeViewerDelegate.showRecipe(id)) ResearcherClient.recipeViewerDelegate.showRecipes(tryGetResult());
+        if (!ResearcherClient.recipeViewerDelegate.showRecipe(id)) {
+            // We tried, and that's what matters
+            ResearcherClient.recipeViewerDelegate.showRecipes(tryGetResult());
+        }
     }
 
     private ItemStack tryGetResult() {

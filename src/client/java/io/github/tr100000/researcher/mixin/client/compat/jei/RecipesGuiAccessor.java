@@ -1,4 +1,4 @@
-package io.github.tr100000.researcher.mixin.client.jei;
+package io.github.tr100000.researcher.mixin.client.compat.jei;
 
 import mezz.jei.gui.recipes.IRecipeGuiLogic;
 import mezz.jei.gui.recipes.RecipesGui;
