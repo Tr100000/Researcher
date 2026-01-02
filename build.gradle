@@ -12,6 +12,7 @@ base {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = "TerraformersMC Maven"
         url = "https://maven.terraformersmc.com/releases"
@@ -40,9 +41,6 @@ repositories {
             includeGroup "dev.architectury"
         }
     }
-    flatDir {
-        dirs "libs"
-    }
 }
 
 dependencies {
@@ -51,8 +49,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}"
-    modImplementation ":trutils:${project.trutils_version}"
-    modImplementation ":codec2schema:${project.codec2schema_version}"
+    modImplementation "io.github.tr100000:trutils:${project.trutils_version}"
+    modImplementation "io.github.tr100000:codec2schema:${project.codec2schema_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
