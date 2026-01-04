@@ -1,6 +1,7 @@
 plugins {
     id "net.fabricmc.fabric-loom-remap" version "${loom_version}"
     id "com.diffplug.spotless" version "8.+"
+    id "com.modrinth.minotaur" version "2.+"
     id "maven-publish"
 }
 
@@ -107,6 +108,18 @@ loom {
         }
     }
 }
+
+modrinth {
+    projectId = "researcher"
+    versionNumber = project.version
+    versionName = project.version
+    uploadFile = remapJar
+    additionalFiles = [remapSourcesJar]
+    changelog = rootProject.file("CHANGELOG.md").text
+    syncBodyFrom = rootProject.file("README.md").text
+}
+
+tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 spotless {
     format "misc", {

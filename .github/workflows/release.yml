@@ -1,5 +1,6 @@
-name: build
-on: [pull_request, push]
+name: release
+on:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,12 +19,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
-      - name: sync modrinth body
+      - name: publish
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew modrinthSyncBody
-      - name: capture build artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: Artifacts
-          path: build/libs/
+        run: ./gradlew modrinth

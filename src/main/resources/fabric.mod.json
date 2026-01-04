@@ -6,7 +6,7 @@
   "description": "A (mostly) data-driven research system inspired by Factorio.",
   "authors": ["Tr100000"],
   "contact": {
-    "homepage": "https://github.com/Tr100000/Researcher",
+    "homepage": "https://modrinth.com/mod/researcher",
     "sources": "https://github.com/Tr100000/Researcher",
     "issues": "https://github.com/Tr100000/Researcher/issues"
   },
@@ -34,7 +34,7 @@
     "minecraft": "~1.21.11",
     "java": ">=21",
     "fabric-api": ">=0.140",
-    "trutils": "*",
+    "trutils": ">=0.1",
     "fzzy_config": ">=0.7"
   }
 }
