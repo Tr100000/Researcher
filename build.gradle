@@ -41,8 +41,12 @@ repositories {
             includeGroup "dev.architectury"
         }
     }
-    flatDir {
-        dirs "libs"
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
     }
 }
 
@@ -52,8 +56,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}+${project.minecraft_version}"
-    modImplementation ":trutils:${project.trutils_version}"
-    modImplementation ":codec2schema:${project.codec2schema_version}"
+    modImplementation "maven.modrinth:trutils:${project.trutils_version}"
+    modImplementation "maven.modrinth:codec2schema:${project.codec2schema_version}"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
@@ -117,6 +121,11 @@ modrinth {
     additionalFiles = [remapSourcesJar]
     changelog = rootProject.file("CHANGELOG.md").text
     syncBodyFrom = rootProject.file("README.md").text
+    dependencies {
+        required.project "fabric-api"
+        required.project "trutils"
+        required.project "fzzy-config"
+    }
 }
 
 tasks.modrinth.dependsOn(tasks.modrinthSyncBody)

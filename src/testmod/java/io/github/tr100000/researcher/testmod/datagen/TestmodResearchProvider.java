@@ -7,7 +7,11 @@ import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
 import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.criterion.BrewedPotionTrigger;
+import net.minecraft.advancements.criterion.DamageSourcePredicate;
 import net.minecraft.advancements.criterion.DistancePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.KilledTrigger;
 import net.minecraft.advancements.criterion.MinMaxBounds;
@@ -95,19 +99,20 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .description(Component.literal("Kill a skeleton from at least 50 meters away!"))
                 .prerequisites(ironTools, testing)
                 .toUnlock(KilledTrigger.TriggerInstance.playerKilledEntity(
-                        net.minecraft.advancements.criterion.EntityPredicate.Builder.entity().of(lookup.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(MinMaxBounds.Doubles.atLeast(50.0))),
-                        net.minecraft.advancements.criterion.DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE))
+                        EntityPredicate.Builder.entity().of(lookup.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(MinMaxBounds.Doubles.atLeast(50.0))),
+                        DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE))
                 ), 5)
                 .export(exporter);
 
         new ResearchBuilder(id("inventory_change"))
                 .title(Component.literal("Change Your Inventory"))
                 .prerequisites(ironTools)
-                .toUnlock(CriteriaTriggers.INVENTORY_CHANGED, new net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance(
+                .toUnlock(CriteriaTriggers.INVENTORY_CHANGED, new InventoryChangeTrigger.TriggerInstance(
                         Optional.empty(),
-                        net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance.Slots.ANY,
+                        InventoryChangeTrigger.TriggerInstance.Slots.ANY,
                         List.of()
                 ), 1000)
+                .recipeUnlocks(Identifier.withDefaultNamespace("ender_eye"))
                 .export(exporter);
 
         new ResearchBuilder(id("brew_potion"))
@@ -115,7 +120,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .prerequisites(killTest)
                 .toUnlock(
                         CriteriaTriggers.BREWED_POTION,
-                        new net.minecraft.advancements.criterion.BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
+                        new BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
                         10
                 )
                 .export(exporter);

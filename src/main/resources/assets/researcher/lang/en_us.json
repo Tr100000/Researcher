@@ -24,6 +24,7 @@
   "config.researcher.sync_mode.TEAM": "Teams",
   "config.researcher.tree_mode.ALL_RELATED": "All Related (EXPERIMENTAL)",
   "config.researcher.tree_mode.DIRECTLY_RELATED": "Directly Related",
+  "key.category.researcher.main": "Researcher",
   "key.researcher.open_research_screen": "Open Research Screen",
   "screen.researcher": "Research",
   "screen.researcher.available": "%s (Available)",

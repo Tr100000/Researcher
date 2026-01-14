@@ -1,1 +1,2 @@
-Initial release
+### Fixed
+- Fixed key category text
