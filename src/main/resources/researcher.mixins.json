@@ -4,7 +4,7 @@
   "plugin": "io.github.tr100000.researcher.mixin.ResearcherMixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CriterionConditionsContainerMixin",
+    "CriterionTriggerListenerMixin",
     "ItemMixin",
     "MinecraftServerMixin",
     "PlayerListMixin",

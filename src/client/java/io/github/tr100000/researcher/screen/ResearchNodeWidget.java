@@ -16,12 +16,14 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 public class ResearchNodeWidget extends AbstractButton {
-    private final Minecraft client = Minecraft.getInstance();
+    private static final Minecraft client = Minecraft.getInstance();
+    private final ClientTooltipPositioner tooltipPositioner = new TooltipPositionerImpl();
     private final ResearchTooltipWrapper tooltipWrapper = new ResearchTooltipWrapper(true);
     private final ResearchScreen screen;
     private final ScrollableView parentView;
-    private final ClientTooltipPositioner tooltipPositioner = new TooltipPositionerImpl();
+
     public final Research research;
+    private int depth = 0;
 
     public static final int FILL_LOCKED = 0xFFB82121;
     public static final int FILL_AVAILABLE = 0xFFBABABA;
@@ -29,12 +31,13 @@ public class ResearchNodeWidget extends AbstractButton {
     public static final int FILL_PROGRESS_BACKGROUND = CommonColors.GRAY;
     public static final int FILL_PROGRESS_BAR = 0xFF28C900;
 
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, Research research) {
-        this(screen, parentView, x, y, research, false);
+    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int depth, Research research) {
+        this(screen, parentView, x, y, depth, research, false);
     }
 
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, Research research, boolean isSelected) {
+    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int depth, Research research, boolean isSelected) {
         this(screen, parentView, x, y, isSelected ? 64 : 48, isSelected ? 64 : 48, research);
+        this.depth = depth;
     }
 
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
@@ -59,7 +62,7 @@ public class ResearchNodeWidget extends AbstractButton {
             draw.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
         }
 
-        if (isHovered() && draw.containsPointInScissor(mouseX + parentView.getOffsetX(), mouseY + parentView.getOffsetY())) {
+        if (isHovered()) {
             GuiHelper.drawSlotHighlight(draw, this);
             GuiHelper.drawTooltip(draw, client.font, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
             draw.requestCursor(CursorTypes.POINTING_HAND);
@@ -69,6 +72,10 @@ public class ResearchNodeWidget extends AbstractButton {
     private int getFillColor(ResearchProgress progress) {
         if (progress.isFinished()) return FILL_FINISHED;
         return screen.researchManager.canResearch(research) ? FILL_AVAILABLE : FILL_LOCKED;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     @Override

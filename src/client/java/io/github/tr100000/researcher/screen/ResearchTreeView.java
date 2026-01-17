@@ -21,6 +21,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     private final BiMap<Research, ResearchNodeWidget> nodeWidgets = HashBiMap.create();
     private final Multimap<ResearchNodeWidget, ResearchNodeWidget> successorConnections = HashMultimap.create();
     private final Multimap<ResearchNodeWidget, ResearchNodeWidget> predecessorConnections = HashMultimap.create();
+    private final List<CachedConnection> cachedConnections = new ObjectArrayList<>();
     private final List<ResearchNodeWidget> topNodes = new ObjectArrayList<>();
     private final List<ResearchNodeWidget> bottomNodes = new ObjectArrayList<>();
 
@@ -64,7 +65,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     private void addRootResearchNode(Research research) {
-        nodeWidgets.put(research, addDrawableChild(new ResearchNodeWidget(parent, this, getX() + width / 2 - 32, height / 2 - 32, research, true)));
+        nodeWidgets.put(research, addDrawableChild(new ResearchNodeWidget(parent, this, getX() + width / 2 - 32, height / 2 - 32, 0, research, true)));
     }
 
     private void addResearchNodes(Collection<Research> nodeCollection, int depth, Predicate<Research> shouldAddFakeConnections) {
@@ -78,7 +79,7 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         for (Research node : nodes) {
             int x = getX() + Math.round(width / 2f - 24 + (j - ((nodes.size() - 1) / 2f)) * widthPerNode);
             int y = height / 2 - 24 + heightPerLevel * depth;
-            ResearchNodeWidget nodeWidget = addDrawableChild(new ResearchNodeWidget(parent, this, x, y, node));
+            ResearchNodeWidget nodeWidget = addDrawableChild(new ResearchNodeWidget(parent, this, x, y, depth, node));
             j++;
 
             nodeWidgets.put(node, nodeWidget);
@@ -106,6 +107,30 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
                 }
             });
         });
+
+        successorConnections.forEach(this::computeConnection);
+    }
+
+    private void computeConnection(ResearchNodeWidget from, ResearchNodeWidget to) {
+        if (from.getDepth() > to.getDepth()) {
+            computeConnection(to, from);
+            return;
+        }
+
+        int startX = from.getX() + from.getWidth() / 2;
+        int startY = from.getY() + from.getHeight() - 1;
+        int endX = to.getX() + to.getWidth() / 2;
+        int endY = to.getY();
+        int midY = (startY + endY) / 2;
+
+        cachedConnections.add(new CachedConnection(startX, startY, midY, endX, endY, from, to));
+    }
+
+    private @Nullable CachedConnection getCachedConnection(ResearchNodeWidget from, ResearchNodeWidget to) {
+        for (CachedConnection c : cachedConnections) {
+            if (c.matches(from, to)) return c;
+        }
+        return null;
     }
 
     @Override
@@ -137,25 +162,21 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         drawFakeConnections(draw, currentHovered);
 
         successorConnections.forEach((from, to) -> {
-            int color = from == currentHovered || to == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR;
-            drawConnection(draw, from, to, color);
+            drawConnection(draw, from, to, CONNECTION_COLOR);
         });
         if (currentHovered != null) {
             successorConnections.get(currentHovered).forEach(node -> drawConnection(draw, currentHovered, node, CONNECTION_COLOR_HOVERED));
-            predecessorConnections.get(currentHovered).forEach(node -> drawConnection(draw, node, currentHovered ,CONNECTION_COLOR_HOVERED));
+            predecessorConnections.get(currentHovered).forEach(node -> drawConnection(draw, node, currentHovered, CONNECTION_COLOR_HOVERED));
         }
     }
 
     private void drawConnection(GuiGraphics draw, ResearchNodeWidget from, ResearchNodeWidget to, int color) {
-        if (from.getY() > to.getY()) drawConnection(draw, to, from, color);
-        int startX = from.getX() + from.getWidth() / 2;
-        int startY = from.getY() + from.getHeight() - 1;
-        int endX = to.getX() + to.getWidth() / 2;
-        int endY = to.getY();
-        int midY = (startY + endY) / 2;
-        draw.vLine(startX, startY, midY, color);
-        draw.hLine(startX, endX, midY, color);
-        draw.vLine(endX, midY, endY, color);
+        CachedConnection c = getCachedConnection(from, to);
+        if (c == null) return;
+
+        draw.vLine(c.startX(), c.startY(), c.midY(), color); // down
+        draw.hLine(c.startX(), c.endX(), c.midY(), color); // right
+        draw.vLine(c.endX(), c.midY(), c.endY(), color); // down
     }
 
     private void highlightConnected(GuiGraphics draw, ResearchNodeWidget node) {
@@ -200,14 +221,14 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent click, double offsetX, double offsetY) {
+    public boolean mouseDragged(MouseButtonEvent click, double dx, double dy) {
         if (click.button() == 0) {
-            this.offsetX += offsetX;
-            this.offsetY += offsetY;
+            this.offsetX += dx;
+            this.offsetY += dy;
             return true;
         }
         else {
-            return super.mouseDragged(new MouseButtonEvent(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), offsetX, offsetY);
+            return super.mouseDragged(new MouseButtonEvent(click.x() - offsetX, click.y() - offsetY, click.buttonInfo()), dx, dy);
         }
     }
 
@@ -241,7 +262,17 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     @Override
     public void clearChildren() {
         super.clearChildren();
-        successorConnections.clear();
         nodeWidgets.clear();
+        successorConnections.clear();
+        predecessorConnections.clear();
+        cachedConnections.clear();
+        topNodes.clear();
+        bottomNodes.clear();
+    }
+
+    record CachedConnection(int startX, int startY, int midY, int endX, int endY, ResearchNodeWidget from, ResearchNodeWidget to) {
+        public boolean matches(ResearchNodeWidget a, ResearchNodeWidget b) {
+            return (a == from && b == to) || (b == from && a == to);
+        }
     }
 }

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CriterionTrigger.Listener.class)
-public abstract class CriterionConditionsContainerMixin {
+public abstract class CriterionTriggerListenerMixin {
     @Shadow @Final private String criterion;
 
     @Shadow @Final private AdvancementHolder advancement;

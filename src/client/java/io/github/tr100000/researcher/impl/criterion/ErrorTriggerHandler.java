@@ -15,9 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class ErrorTriggerHandler<T extends CriterionTriggerInstance> implements TriggerHandler<T> {
-    public static final ErrorTriggerHandler<CriterionTriggerInstance> NULL = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("criterion.null"));
-    public static final ErrorTriggerHandler<ImpossibleTrigger.TriggerInstance> IMPOSSIBLE = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("criterion.impossible"));
-    public static final ErrorTriggerHandler<CriterionTriggerInstance> ERROR = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("criterion.error"));
+    public static final ErrorTriggerHandler<CriterionTriggerInstance> NULL = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("trigger.null"));
+    public static final ErrorTriggerHandler<ImpossibleTrigger.TriggerInstance> IMPOSSIBLE = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("trigger.impossible"));
+    public static final ErrorTriggerHandler<CriterionTriggerInstance> ERROR = new ErrorTriggerHandler<>(ModUtils.getScreenTranslated("trigger.error"));
 
     private final ItemStack stack = Items.BARRIER.getDefaultInstance();
     private final Component text;
