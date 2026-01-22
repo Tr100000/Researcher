@@ -6,13 +6,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
 public abstract class AbstractResearchView extends AbstractView implements LayoutElement {
     protected static final Minecraft client = Minecraft.getInstance();
 
-    protected ScreenRectangle scissorRect;
+    protected @Nullable ScreenRectangle scissorRect;
     protected final ResearchScreen parent;
     protected int x;
     protected int y;
@@ -79,9 +80,9 @@ public abstract class AbstractResearchView extends AbstractView implements Layou
     @Override
     public void render(GuiGraphics draw, int mouseX, int mouseY, float delta) {
         draw.pose().pushMatrix();
-        draw.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
+        if (scissorRect != null) draw.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
         renderView(draw, mouseX, mouseY, delta);
-        draw.disableScissor();
+        if (scissorRect != null) draw.disableScissor();
         draw.pose().popMatrix();
     }
 

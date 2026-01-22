@@ -117,7 +117,7 @@ public class TestmodResearchProvider extends ResearchProvider {
 
         new ResearchBuilder(id("brew_potion"))
                 .title(Component.literal("Potion Brewing Test"))
-                .prerequisites(killTest)
+                .prerequisites(killTest, ironTools)
                 .toUnlock(
                         CriteriaTriggers.BREWED_POTION,
                         new BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),

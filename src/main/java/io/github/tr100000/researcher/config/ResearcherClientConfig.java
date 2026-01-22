@@ -20,7 +20,7 @@ public class ResearcherClientConfig extends Config {
     public ValidatedBoolean researchHud = new ValidatedBoolean(true);
     public ValidatedBoolean pinAvailableResearches = new ValidatedBoolean(false);
     public ValidatedBoolean discoveryResearchMode = new ValidatedBoolean(false);
-    public ValidatedEnum<ResearchTreeMode> researchTreeMode = new ValidatedEnum<>(ResearchTreeMode.DIRECTLY_RELATED);
+    public ValidatedEnum<ResearchTreeMode> researchTreeMode = new ValidatedEnum<>(ResearchTreeMode.ALL_RELATED);
     public ValidatedFloat researchTreeScrollSensitivity = new ValidatedFloat(2.5F, 30.0F, 0.5F, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS);
     public ValidatedInt researchScreenSidebarWidth = new ValidatedInt(230);
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140);
@@ -33,6 +33,7 @@ public class ResearcherClientConfig extends Config {
     public enum ResearchTreeMode implements EnumTranslatable {
         DIRECTLY_RELATED,
         ALL_RELATED,
+        ALL
         ;
 
         @Override

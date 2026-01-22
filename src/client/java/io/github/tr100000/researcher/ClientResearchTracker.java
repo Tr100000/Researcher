@@ -2,11 +2,11 @@ package io.github.tr100000.researcher;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.graph.Graph;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
 import io.github.tr100000.researcher.api.ResearchHolder;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
+import io.github.tr100000.researcher.graph.ResearchGraph;
 import io.github.tr100000.researcher.networking.ResearchUpdateS2CPacket;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("UnstableApiUsage")
 @NullMarked
 public class ClientResearchTracker implements ResearchHolder, PlayerResearchHolder {
     private static final Minecraft client = Minecraft.getInstance();
@@ -38,7 +37,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
     private final Map<Research, ResearchItemsTrigger.TriggerInstance> researchConditions = new Object2ObjectOpenHashMap<>();
-    private @Nullable Graph<Research> graph;
+    private @Nullable ResearchGraph graph;
 
     public ClientResearchTracker() {
         ResearcherConfigs.client.pinAvailableResearches.listenToEntry(entry -> {
@@ -89,7 +88,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
                 researchConditions.put(entry, triggerInstance);
             }
         });
-        graph = ResearchManager.buildResearchGraph(researchMap);
+        graph = ResearchGraph.build(researchMap);
     }
 
     @Override
@@ -101,8 +100,8 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         return researchMap;
     }
 
-    public @Nullable Graph<Research> getGraph() {
-        return graph;
+    public ResearchGraph getGraph() {
+        return graph != null ? graph : ResearchGraph.EMPTY;
     }
 
     public @Nullable Research get(@Nullable Identifier id) {

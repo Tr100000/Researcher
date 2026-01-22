@@ -1,28 +1,27 @@
 package io.github.tr100000.researcher.api;
 
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-import com.google.common.graph.Graph;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
+import io.github.tr100000.researcher.graph.ResearchGraph;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-@SuppressWarnings("UnstableApiUsage")
 public interface ResearchHolder {
     boolean isInitialized();
     Map<Identifier, Research> getAll();
-    @Nullable Graph<Research> getGraph();
+    ResearchGraph getGraph();
     @Nullable Research get(@Nullable Identifier id);
     @Nullable Identifier getId(@Nullable Research research);
     boolean isRecipeUnlockable(Identifier recipeId);
@@ -61,7 +60,7 @@ public interface ResearchHolder {
         return null;
     }
 
-    default Set<Research> directPredecessorsOf(Research research) {
+    default List<Research> directPredecessorsOf(Research research) {
         return getGraph().predecessors(research);
     }
 
@@ -69,7 +68,7 @@ public interface ResearchHolder {
         return new ObjectOpenHashSet<>(directPredecessorsOf(research));
     }
 
-    default Set<Research> allPredecessorsOf(Research research) {
+    default Set<Research> allPredecessorsOf(@Nullable Research research) {
         Set<Research> predecessors = new ObjectOpenHashSet<>(getGraph().predecessors(research));
         if (!predecessors.isEmpty()) {
             predecessors.forEach(node -> predecessors.addAll(allPredecessorsOf(node)));
@@ -98,7 +97,7 @@ public interface ResearchHolder {
         return predecessorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), researchToPredecessors);
     }
 
-    default Set<Research> directSuccessorsOf(Research research) {
+    default List<Research> directSuccessorsOf(Research research) {
         return getGraph().successors(research);
     }
 
@@ -135,25 +134,25 @@ public interface ResearchHolder {
         return successorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), researchToSuccessors);
     }
 
-    default Multimap<Integer, Research> getRelatedMap(Research research) {
+    default Map<Research, Integer> getRelatedMap(Research research) {
         return getRelatedMap(research, this::getDepthMapPredecessors, this::getDepthMapSuccessors);
     }
 
-    default Multimap<Integer, Research> getRelatedMap(Research research, Function<Research, Set<Research>> researchToPredecessors, Function<Research, Set<Research>> researchToSuccessors) {
-        ImmutableListMultimap.Builder<Integer, Research> builder = ImmutableListMultimap.builder();
+    default Map<Research, Integer> getRelatedMap(Research research, Function<Research, Set<Research>> researchToPredecessors, Function<Research, Set<Research>> researchToSuccessors) {
+        Map<Research, Integer> relatedMap = new Object2IntOpenHashMap<>();
 
-        predecessorDepthMap(research, researchToPredecessors).forEach((predecessor, depth) -> builder.put(depth, predecessor));
-        builder.put(0, research);
-        successorDepthMap(research, researchToSuccessors).forEach((successor, depth) -> builder.put(depth, successor));
+        relatedMap.putAll(predecessorDepthMap(research, researchToPredecessors));
+        relatedMap.put(research, 0);
+        relatedMap.putAll(successorDepthMap(research, researchToSuccessors));
 
-        return builder.build();
+        return relatedMap;
     }
 
     default Set<Research> getRootNodes() {
-        return getGraph().nodes().stream().filter(node -> getGraph().inDegree(node) == 0).collect(ImmutableSet.toImmutableSet());
+        return new ObjectOpenHashSet<>(getGraph().rootNodes());
     }
 
     default boolean isValid(Research research) {
-        return getGraph().nodes().contains(research);
+        return getGraph().containsNode(research);
     }
 }

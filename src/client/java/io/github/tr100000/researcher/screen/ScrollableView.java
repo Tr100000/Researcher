@@ -8,4 +8,12 @@ public interface ScrollableView {
     default int getOffsetY() {
         return 0;
     }
+
+    default double offsetToScreenX(double offsetX) {
+        return getOffsetX() + offsetX;
+    }
+
+    default double offsetToScreenY(double offsetY) {
+        return getOffsetY() + offsetY;
+    }
 }

@@ -31,20 +31,16 @@ public class ResearchNodeWidget extends AbstractButton {
     public static final int FILL_PROGRESS_BACKGROUND = CommonColors.GRAY;
     public static final int FILL_PROGRESS_BAR = 0xFF28C900;
 
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int depth, Research research) {
-        this(screen, parentView, x, y, depth, research, false);
-    }
-
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int depth, Research research, boolean isSelected) {
-        this(screen, parentView, x, y, isSelected ? 64 : 48, isSelected ? 64 : 48, research);
-        this.depth = depth;
-    }
-
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
         super(x, y, width, height, research.getTitle(Minecraft.getInstance().getConnection().researcher$getClientTracker()));
         this.screen = screen;
         this.parentView = parentView;
         this.research = research;
+    }
+
+    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, int depth, Research research) {
+        this(screen, parentView, x, y, width, height, research);
+        this.depth = depth;
     }
 
     @Override
@@ -62,7 +58,9 @@ public class ResearchNodeWidget extends AbstractButton {
             draw.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
         }
 
-        if (isHovered()) {
+        double actualMouseX = parentView.offsetToScreenX(mouseX);
+        double actualMouseY = parentView.offsetToScreenY(mouseY);
+        if (draw.containsPointInScissor((int)actualMouseX, (int)actualMouseY) && isMouseOver(mouseX, mouseY)) {
             GuiHelper.drawSlotHighlight(draw, this);
             GuiHelper.drawTooltip(draw, client.font, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
             draw.requestCursor(CursorTypes.POINTING_HAND);
