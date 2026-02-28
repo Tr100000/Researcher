@@ -36,5 +36,8 @@
     "fabric-api": ">=0.140",
     "trutils": ">=0.1",
     "fzzy_config": ">=0.7"
+  },
+  "suggests": {
+    "codec2schema": ">=0.2"
   }
 }

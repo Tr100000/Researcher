@@ -71,6 +71,11 @@ dependencies {
     }
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${project.rei_version}"
+
+    if (project.recipe_viewer == "rrv") {
+        modRuntimeOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
+    }
+    modCompileOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
 }
 
 apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
