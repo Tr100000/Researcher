@@ -5,7 +5,7 @@ import io.github.tr100000.codec2schema.api.SchemaExporter;
 import io.github.tr100000.researcher.LockableRecipeTypesList;
 import io.github.tr100000.researcher.Research;
 
-public class ResearcherSchemaGeneration implements Codec2SchemaPlugin {
+public class ResearcherSchemaPlugin implements Codec2SchemaPlugin {
     @Override
     public void generateSchemas(SchemaExporter exporter) {
         exporter.accept(Research.CODEC, "data", "research.json");
