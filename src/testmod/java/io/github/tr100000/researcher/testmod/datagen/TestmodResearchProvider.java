@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.api.data.ResearchExporter;
 import io.github.tr100000.researcher.api.data.ResearchProvider;
 import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
 import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.BrewedPotionTrigger;
 import net.minecraft.advancements.criterion.DamageSourcePredicate;
@@ -35,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import static io.github.tr100000.researcher.testmod.ResearcherTestmod.id;
 
 public class TestmodResearchProvider extends ResearchProvider {
-    public TestmodResearchProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+    public TestmodResearchProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(output, registryLookup);
     }
 

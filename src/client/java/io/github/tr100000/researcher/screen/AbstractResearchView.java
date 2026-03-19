@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.trutils.api.gui.AbstractView;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -78,15 +78,15 @@ public abstract class AbstractResearchView extends AbstractView implements Layou
     }
 
     @Override
-    public void render(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        draw.pose().pushMatrix();
-        if (scissorRect != null) draw.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
-        renderView(draw, mouseX, mouseY, delta);
-        if (scissorRect != null) draw.disableScissor();
-        draw.pose().popMatrix();
+    public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        graphics.pose().pushMatrix();
+        if (scissorRect != null) graphics.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
+        extractView(graphics, mouseX, mouseY, delta);
+        if (scissorRect != null) graphics.disableScissor();
+        graphics.pose().popMatrix();
     }
 
-    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        super.render(draw, mouseX, mouseY, delta);
+    public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 }

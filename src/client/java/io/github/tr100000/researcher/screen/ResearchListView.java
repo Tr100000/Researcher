@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -73,17 +73,17 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
     }
 
     @Override
-    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        draw.fill(0, getY() - 1, getWidth(), parent.height, BACKGROUND_COLOR);
-        draw.renderOutline(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
-        searchFieldRenderable.render(draw, mouseX, mouseY, delta);
+    public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        graphics.fill(0, getY() - 1, getWidth(), parent.height, BACKGROUND_COLOR);
+        graphics.outline(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
+        searchFieldRenderable.extractRenderState(graphics, mouseX, mouseY, delta);
 
-        draw.pose().translate(getOffsetX(), getOffsetY());
+        graphics.pose().translate(getOffsetX(), getOffsetY());
 
         int newMouseX = mouseX - getOffsetX();
         int newMouseY = mouseY - getOffsetY();
 
-        super.renderView(draw, newMouseX, newMouseY, delta);
+        super.extractView(graphics, newMouseX, newMouseY, delta);
     }
 
 

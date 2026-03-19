@@ -62,7 +62,7 @@ public class OnKilledTriggerHandler implements TriggerHandler<KilledTrigger.Trig
     public TriggerDisplayElement prepare(ResearchCriterion<KilledTrigger.TriggerInstance> criterion) {
         Optional<ContextAwarePredicate> playerPredicate = criterion.conditions().player();
         Optional<DamageSourcePredicate> killingBlowPredicate = criterion.conditions().killingBlow();
-        Optional<ContextAwarePredicate> entityPredicate = criterion.conditions().entityPredicate();
+        Optional<ContextAwarePredicate> entityPredicate = criterion.conditions().entity();
 
         IndentedTextHolder killConditionTextHolder = new IndentedTextHolder();
         PredicateHelper.optionalTooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)

@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;
 
@@ -17,22 +17,22 @@ public class GroupedElement implements TriggerDisplayElement {
     }
 
     @Override
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
         int totalWidth = 0;
 
         for (TriggerDisplayElement element : elements) {
-            totalWidth += element.render(draw, x + totalWidth, y, mouseX, mouseY, delta);
+            totalWidth += element.extractRenderState(graphics, x + totalWidth, y, mouseX, mouseY, delta);
         }
 
         return totalWidth;
     }
 
     @Override
-    public int getWidth() {
+    public int width() {
         int totalWidth = 0;
 
         for (TriggerDisplayElement element : elements) {
-            totalWidth += element.getWidth();
+            totalWidth += element.width();
         }
 
         return totalWidth;

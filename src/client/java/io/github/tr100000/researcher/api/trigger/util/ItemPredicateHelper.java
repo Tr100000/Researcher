@@ -27,7 +27,7 @@ public final class ItemPredicateHelper {
         if (predicate.items().isPresent()) {
             textHolder.accept(ITEM_LIST);
             textHolder.push();
-            predicate.items().get().forEach(entry -> textHolder.accept(entry.value().getName()));
+            predicate.items().get().forEach(entry -> textHolder.accept(entry.value().getName(entry.value().getDefaultInstance())));
             textHolder.pop();
         }
         NumberRangeUtils.tooltip(predicate.count(), ITEM_COUNT, textHolder);
@@ -56,7 +56,7 @@ public final class ItemPredicateHelper {
     public static TriggerDisplayElement entryElement(Holder<Item> item) {
         return new GroupedElement(
                 new ItemElement(item.value(), true),
-                new TextElement(item.value().getName())
+                new TextElement(item.value().getName(item.value().getDefaultInstance()))
         );
     }
 

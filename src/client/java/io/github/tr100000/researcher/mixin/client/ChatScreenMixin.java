@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,7 +40,9 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Unique
-    private void unsetResearchIfTouching(int y, Identifier id, boolean pin, MouseButtonEvent click) {
+    private void unsetResearchIfTouching(int y, @Nullable Identifier id, boolean pin, MouseButtonEvent click) {
+        if (id == null) return;
+
         if (GuiHelper.isMouseTouching(0, y, 150, 26, click.x(), click.y())) {
             if (pin) {
                 ClientPlayNetworking.send(new StartResearchC2SPacket(StartResearchC2SPacket.Mode.UNPIN, Optional.of(id)));

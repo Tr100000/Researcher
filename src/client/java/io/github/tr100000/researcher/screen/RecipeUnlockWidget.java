@@ -10,7 +10,7 @@ import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.IconRenderers;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
@@ -60,11 +61,11 @@ public class RecipeUnlockWidget extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        IconRenderers.draw(icon, draw, getX(), getY());
-        if (isHovered() && draw.containsPointInScissor(mouseX, mouseY)) {
-            GuiHelper.drawTooltip(draw, client.font, List.of(tooltip), mouseX, mouseY, GuiHelper.widgetPositionerFor(this));
-            draw.requestCursor(isError ? CursorTypes.NOT_ALLOWED : CursorTypes.POINTING_HAND);
+    protected void extractWidgetRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        IconRenderers.draw(icon, graphics, getX(), getY());
+        if (isHovered() && graphics.containsPointInScissor(mouseX, mouseY)) {
+            GuiHelper.tooltip(graphics, client.font, List.of(tooltip), mouseX, mouseY, GuiHelper.widgetPositionerFor(this));
+            graphics.requestCursor(isError ? CursorTypes.NOT_ALLOWED : CursorTypes.POINTING_HAND);
         }
     }
 
@@ -78,7 +79,7 @@ public class RecipeUnlockWidget extends AbstractWidget {
     }
 
     private ItemStack tryGetResult() {
-        return icon instanceof ItemIcon(ItemStack stack) ? stack : ItemStack.EMPTY;
+        return icon instanceof ItemIcon(ItemStackTemplate template) ? template.create() : ItemStack.EMPTY;
     }
 
     @Override

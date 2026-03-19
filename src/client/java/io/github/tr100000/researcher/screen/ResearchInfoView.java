@@ -8,7 +8,7 @@ import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.researcher.api.trigger.TriggerHandler;
 import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -66,18 +66,18 @@ public class ResearchInfoView extends AbstractResearchView {
     }
 
     @Override
-    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+    public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         if (currentDisplay == null || ResearchScreen.selected == null || researchTracker == null) return;
 
         ResearchProgress progress = researchTracker.getProgress(ResearchScreen.selected);
-        draw.fill(0, 0, width, height, BACKGROUND_COLOR);
-        draw.drawString(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);
-        drawCriterion(currentDisplay, ResearchScreen.selected.trigger(), progress, draw, mouseX, mouseY, 12, 20, delta);
+        graphics.fill(0, 0, width, height, BACKGROUND_COLOR);
+        graphics.text(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);
+        extractCriterion(currentDisplay, ResearchScreen.selected.trigger(), progress, graphics, mouseX, mouseY, 12, 20, delta);
         if (showUnlocks) {
-            draw.drawString(client.font, Component.translatable("screen.researcher.unlocks"), 12, 42, CommonColors.WHITE);
+            graphics.text(client.font, Component.translatable("screen.researcher.unlocks"), 12, 42, CommonColors.WHITE);
         }
-        draw.renderOutline(0, 0, width, height, BORDER_COLOR);
-        super.renderView(draw, mouseX, mouseY, delta);
+        graphics.outline(0, 0, width, height, BORDER_COLOR);
+        super.extractView(graphics, mouseX, mouseY, delta);
     }
 
     public static <T extends CriterionTriggerInstance> TriggerDisplayElement prepareDisplay(ResearchCriterion<T> criterion) {
@@ -85,12 +85,12 @@ public class ResearchInfoView extends AbstractResearchView {
         return handler.prepare(criterion);
     }
 
-    public static void drawCriterion(TriggerDisplayElement display, ResearchCriterion<?> criterion, ResearchProgress progress, GuiGraphics draw, int mouseX, int mouseY, int x, int y, float delta) {
-        int criterionWidth = display.getWidth();
-        draw.fill(x, y, x + criterionWidth + 4, y + 18, CRITERION_BACKGROUND);
-        draw.fill(x, y, x + getScaledProgress(criterion, progress, criterionWidth + 4), y + 18, CRITERION_PROGRESS);
-        draw.renderOutline(x, y, criterionWidth + 4, 18, CRITERION_BORDER);
-        display.render(draw, x + 1, y + 1, mouseX, mouseY, delta);
+    public static void extractCriterion(TriggerDisplayElement display, ResearchCriterion<?> criterion, ResearchProgress progress, final GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, float delta) {
+        int criterionWidth = display.width();
+        graphics.fill(x, y, x + criterionWidth + 4, y + 18, CRITERION_BACKGROUND);
+        graphics.fill(x, y, x + getScaledProgress(criterion, progress, criterionWidth + 4), y + 18, CRITERION_PROGRESS);
+        graphics.outline(x, y, criterionWidth + 4, 18, CRITERION_BORDER);
+        display.extractRenderState(graphics, x + 1, y + 1, mouseX, mouseY, delta);
     }
 
     public static int getScaledProgress(ResearchCriterion<?> criterion, ResearchProgress progress, int width) {

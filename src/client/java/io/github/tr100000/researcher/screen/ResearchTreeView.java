@@ -12,7 +12,7 @@ import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.graph.GraphLayout;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jspecify.annotations.Nullable;
@@ -112,24 +112,23 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     @Override
-    public void renderView(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        draw.pose().translate(getOffsetX(), getOffsetY());
+    public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        graphics.pose().translate(getOffsetX(), getOffsetY());
 
         int newMouseX = mouseX - getOffsetX();
         int newMouseY = mouseY - getOffsetY();
 
-        ResearchNodeWidget hovered = getCurrentHovered(draw, newMouseX, newMouseY);
+        ResearchNodeWidget hovered = getCurrentHovered(graphics, newMouseX, newMouseY);
         if (hovered != null) {
-            highlightConnected(draw, hovered);
+            highlightConnected(graphics, hovered);
         }
-        renderConnections(draw, hovered);
+        extractConnections(graphics, hovered);
 
-        super.renderView(draw, newMouseX, newMouseY, delta);
-
+        super.extractView(graphics, newMouseX, newMouseY, delta);
     }
 
-    private @Nullable ResearchNodeWidget getCurrentHovered(GuiGraphics draw, int mouseX, int mouseY) {
-        if (!draw.containsPointInScissor(mouseX + getOffsetX(), mouseY + getOffsetY())) return null;
+    private @Nullable ResearchNodeWidget getCurrentHovered(final GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        if (!graphics.containsPointInScissor(mouseX + getOffsetX(), mouseY + getOffsetY())) return null;
 
         for (ResearchNodeWidget node : nodeWidgets.values()) {
             if (node.isMouseOver(mouseX, mouseY)) {
@@ -139,58 +138,58 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         return null;
     }
 
-    private void renderConnections(GuiGraphics draw, @Nullable ResearchNodeWidget currentHovered) {
+    private void extractConnections(final GuiGraphicsExtractor graphics, @Nullable ResearchNodeWidget currentHovered) {
         if (renderedGraph == null) return;
 
-        drawFakeConnections(draw, currentHovered);
+        extractFakeConnections(graphics, currentHovered);
 
-        renderedGraph.edges().forEach(edge -> drawConnection(draw, edge, CONNECTION_COLOR));
+        renderedGraph.edges().forEach(edge -> extractConnection(graphics, edge, CONNECTION_COLOR));
 
         if (currentHovered != null) {
-            successorConnections.get(currentHovered).forEach(node -> drawConnection(draw, currentHovered, node, CONNECTION_COLOR_HOVERED));
-            predecessorConnections.get(currentHovered).forEach(node -> drawConnection(draw, node, currentHovered, CONNECTION_COLOR_HOVERED));
+            successorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, currentHovered, node, CONNECTION_COLOR_HOVERED));
+            predecessorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, node, currentHovered, CONNECTION_COLOR_HOVERED));
         }
     }
 
-    private void drawConnection(GuiGraphics draw, ResearchNodeWidget from, ResearchNodeWidget to, int color) {
+    private void extractConnection(final GuiGraphicsExtractor graphics, ResearchNodeWidget from, ResearchNodeWidget to, int color) {
         GraphLayout.RenderedEdge edge = getRenderedEdge(from, to);
         if (edge == null) return;
-        drawConnection(draw, edge, color);
+        extractConnection(graphics, edge, color);
     }
 
-    private void drawConnection(GuiGraphics draw, GraphLayout.RenderedEdge edge, int color) {
+    private void extractConnection(final GuiGraphicsExtractor graphics, GraphLayout.RenderedEdge edge, int color) {
         for (GraphLayout.RenderedEdgeSegment segment : edge.segments()) {
-            draw.vLine(segment.fromX(), segment.fromY(), segment.midY(), color); // down
-            draw.hLine(segment.fromX(), segment.toX(), segment.midY(), color); // right
-            draw.vLine(segment.toX(), segment.midY(), segment.toY(), color); // down
+            graphics.verticalLine(segment.fromX(), segment.fromY(), segment.midY(), color); // down
+            graphics.horizontalLine(segment.fromX(), segment.toX(), segment.midY(), color); // right
+            graphics.verticalLine(segment.toX(), segment.midY(), segment.toY(), color); // down
         }
     }
 
-    private void highlightConnected(GuiGraphics draw, ResearchNodeWidget node) {
-        successorConnections.get(node).forEach(successor -> drawHighlight(draw, successor));
-        predecessorConnections.get(node).forEach(predecessor -> drawHighlight(draw, predecessor));
-        drawHighlight(draw, node);
+    private void highlightConnected(final GuiGraphicsExtractor graphics, ResearchNodeWidget node) {
+        successorConnections.get(node).forEach(successor -> extractHighlight(graphics, successor));
+        predecessorConnections.get(node).forEach(predecessor -> extractHighlight(graphics, predecessor));
+        extractHighlight(graphics, node);
     }
 
-    private void drawFakeConnections(GuiGraphics draw, @Nullable ResearchNodeWidget currentHovered) {
+    private void extractFakeConnections(final GuiGraphicsExtractor graphics, @Nullable ResearchNodeWidget currentHovered) {
         final int length = 20;
 
         for (ResearchNodeWidget node : topNodes) {
             int x = node.getX() + node.getWidth() / 2;
             int startY = node.getY();
             int endY = startY - length;
-            drawFakeConnection(draw, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
+            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
         }
 
         for (ResearchNodeWidget node : bottomNodes) {
             int x = node.getX() + node.getWidth() / 2;
             int startY = node.getY() + node.getHeight();
             int endY = startY + length;
-            drawFakeConnection(draw, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
+            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
         }
     }
 
-    private void drawFakeConnection(GuiGraphics draw, int x, int startY, int endY, int color) {
+    private void extractFakeConnection(final GuiGraphicsExtractor graphics, int x, int startY, int endY, int color) {
         final int segmentCount = 3;
         final int height = endY - startY;
         final int segmentHeight = height / segmentCount;
@@ -199,12 +198,12 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         for (int i = 0; i < segmentCount; i += 2) {
             int segmentStartY = startY + segmentHeight * i;
             int segmentEndY = (int)(segmentStartY + (segmentHeight + 1.25F));
-            draw.vLine(x, segmentStartY, segmentEndY, color);
+            graphics.verticalLine(x, segmentStartY, segmentEndY, color);
         }
     }
 
-    private void drawHighlight(GuiGraphics draw, ResearchNodeWidget node) {
-        draw.renderOutline(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
+    private void extractHighlight(final GuiGraphicsExtractor graphics, ResearchNodeWidget node) {
+        graphics.outline(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
     }
 
     @Override

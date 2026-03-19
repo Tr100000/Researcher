@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.screen;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractTextAreaWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -13,14 +13,14 @@ import java.util.List;
 
 public class ResearchDescriptionWidget extends AbstractTextAreaWidget {
     private final int maxHeight;
-    private final Font textRenderer;
+    private final Font font;
     private final List<FormattedCharSequence> wrappedText;
 
-    public ResearchDescriptionWidget(int x, int y, int width, int height, Component text, Font textRenderer) {
-        super(x, y, width, height, text);
+    public ResearchDescriptionWidget(int x, int y, int width, int height, Component text, Font font) {
+        super(x, y, width, height, text, defaultSettings(9));
         this.maxHeight = height;
-        this.textRenderer = textRenderer;
-        this.wrappedText = textRenderer.split(text, width - 10);
+        this.font = font;
+        this.wrappedText = font.split(text, width - 10);
     }
 
     @Override
@@ -39,15 +39,15 @@ public class ResearchDescriptionWidget extends AbstractTextAreaWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractWidgetRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         if (getMessage().getString().isBlank()) return;
-        super.renderWidget(context, mouseX, mouseY, delta);
+        super.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
     }
 
     @Override
-    protected void renderContents(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+    protected void extractContents(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         for (int i = 0; i < wrappedText.size(); i++) {
-            draw.drawString(textRenderer, wrappedText.get(i), getX() + 3, getY() + 3 + 9 * i, CommonColors.WHITE);
+            graphics.text(font, wrappedText.get(i), getX() + 3, getY() + 3 + 9 * i, CommonColors.WHITE);
         }
     }
 

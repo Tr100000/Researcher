@@ -6,7 +6,7 @@ import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import io.github.tr100000.trutils.api.gui.IconRenderers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -44,26 +44,26 @@ public class ResearchNodeWidget extends AbstractButton {
     }
 
     @Override
-    public void renderContents(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+    public void extractContents(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         ResearchProgress progress = screen.researchManager.getProgress(research);
         boolean showProgressBar = !progress.isFinished() && progress.getCount() > 0;
-        draw.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getFillColor(progress));
+        graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getFillColor(progress));
 
         int iconSize = (int)(getWidth() * 0.85F);
         if (iconSize % 2 == 1) iconSize++;
         int iconOffset = (getWidth() - iconSize) / 2;
-        IconRenderers.drawWithSize(research.display(), draw, getX() + iconOffset, getY() + iconOffset - (showProgressBar ? 1 : 0), iconSize, delta);
+        IconRenderers.drawWithSize(research.display(), graphics, getX() + iconOffset, getY() + iconOffset - (showProgressBar ? 1 : 0), iconSize, delta);
         if (showProgressBar) {
-            draw.fill(getX(), getY() + getHeight() - 2, getX() + getWidth(), getY() + getHeight(), FILL_PROGRESS_BACKGROUND);
-            draw.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
+            graphics.fill(getX(), getY() + getHeight() - 2, getX() + getWidth(), getY() + getHeight(), FILL_PROGRESS_BACKGROUND);
+            graphics.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);
         }
 
         double actualMouseX = parentView.offsetToScreenX(mouseX);
         double actualMouseY = parentView.offsetToScreenY(mouseY);
-        if (draw.containsPointInScissor((int)actualMouseX, (int)actualMouseY) && isMouseOver(mouseX, mouseY)) {
-            GuiHelper.drawSlotHighlight(draw, this);
-            GuiHelper.drawTooltip(draw, client.font, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
-            draw.requestCursor(CursorTypes.POINTING_HAND);
+        if (graphics.containsPointInScissor((int)actualMouseX, (int)actualMouseY) && isMouseOver(mouseX, mouseY)) {
+            GuiHelper.slotHighlight(graphics, this);
+            GuiHelper.tooltip(graphics, client.font, tooltipWrapper.getOrCreate(research), mouseX, mouseY, tooltipPositioner);
+            graphics.requestCursor(CursorTypes.POINTING_HAND);
         }
     }
 

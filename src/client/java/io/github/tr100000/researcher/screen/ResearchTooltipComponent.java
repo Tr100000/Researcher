@@ -9,7 +9,7 @@ import io.github.tr100000.trutils.api.utils.GameUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
@@ -42,33 +42,33 @@ public class ResearchTooltipComponent extends ExtendedTooltipComponent {
     }
 
     @Override
-    public void renderText(GuiGraphics draw, Font textRenderer, int x, int y) {
-        text(draw, textRenderer, title, x, y); y += 10;
+    public void extractText(final GuiGraphicsExtractor graphics, Font font, int x, int y) {
+        text(graphics, font, title, x, y); y += 10;
         y += 22;
         if (client.options.advancedItemTooltips) {
-            text(draw, textRenderer, idText, x, y); y += 10;
+            text(graphics, font, idText, x, y); y += 10;
         }
-        text(draw, textRenderer, modNameText, x, y);
+        text(graphics, font, modNameText, x, y);
     }
 
     @Override
-    public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics draw) {
+    public void extractImage(Font font, int x, int y, int width, int height, final GuiGraphicsExtractor graphics) {
         ResearchProgress progress = client.getConnection().researcher$getClientTracker().getProgress(research);
-        ResearchInfoView.drawCriterion(criterionDisplay, research.trigger(), progress, draw, -1, -1, x + 1, y + 11, 0);
+        ResearchInfoView.extractCriterion(criterionDisplay, research.trigger(), progress, graphics, -1, -1, x + 1, y + 11, 0);
     }
 
     @Override
-    public int getHeight(Font textRenderer) {
+    public int getHeight(Font font) {
         return client.options.advancedItemTooltips ? 52 : 42;
     }
 
     @Override
-    public int getWidth(Font textRenderer) {
-        int longest = longestText(textRenderer, title, modNameText);
+    public int getWidth(Font font) {
+        int longest = longestText(font, title, modNameText);
         if (client.options.advancedItemTooltips) {
-            longest = longestText(textRenderer, longest, idText);
+            longest = longestText(font, longest, idText);
         }
-        int criterionWidth = criterionDisplay.getWidth() + 5;
+        int criterionWidth = criterionDisplay.width() + 5;
         return Math.max(longest, criterionWidth);
     }
 }

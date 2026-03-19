@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.element.GroupedElement;
 import io.github.tr100000.researcher.api.trigger.element.SpacingElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -22,19 +22,19 @@ public class TriggerDisplay implements TriggerDisplayElement {
         this(List.of(elements));
     }
 
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
         int totalWidth = EDGE_PADDING;
         for (TriggerDisplayElement element : elements) {
-            element.render(draw, x + totalWidth, y, mouseX, mouseY, delta);
-            totalWidth += element.getWidth();
+            element.extractRenderState(graphics, x + totalWidth, y, mouseX, mouseY, delta);
+            totalWidth += element.width();
         }
         return totalWidth + EDGE_PADDING;
     }
 
-    public int getWidth() {
+    public int width() {
         int totalWidth = EDGE_PADDING;
         for (TriggerDisplayElement element : elements) {
-            totalWidth += element.getWidth();
+            totalWidth += element.width();
         }
         return totalWidth + EDGE_PADDING;
     }

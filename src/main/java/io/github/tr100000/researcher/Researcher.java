@@ -13,7 +13,9 @@ import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.TransmuteRecipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +47,9 @@ public class Researcher implements ModInitializer {
 //                ResearchManager.ID
 //        );
 
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPED_RECIPE);
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.SHAPELESS_RECIPE);
-        RecipeSynchronization.synchronizeRecipeSerializer(RecipeSerializer.TRANSMUTE);
+        RecipeSynchronization.synchronizeRecipeSerializer(ShapedRecipe.SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(ShapelessRecipe.SERIALIZER);
+        RecipeSynchronization.synchronizeRecipeSerializer(TransmuteRecipe.SERIALIZER);
     }
 
     public static Version getVersion() {

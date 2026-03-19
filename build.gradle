@@ -1,5 +1,5 @@
 plugins {
-    id "net.fabricmc.fabric-loom-remap" version "${loom_version}"
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
     id "com.diffplug.spotless" version "8.+"
     id "com.modrinth.minotaur" version "2.+"
     id "maven-publish"
@@ -35,6 +35,7 @@ repositories {
         }
     }
     maven {
+        name = "Shedaniel Maven"
         url = "https://maven.shedaniel.me/"
         content {
             includeGroupAndSubgroups "me.shedaniel"
@@ -48,34 +49,35 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    mavenLocal()
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "maven.modrinth:trutils:${project.trutils_version}"
-    modImplementation "maven.modrinth:codec2schema:${project.codec2schema_version}"
-    modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+//    implementation "maven.modrinth:trutils:${project.trutils_version}"
+    implementation "io.github.tr100000:trutils:${project.trutils_version}"
+    implementation "maven.modrinth:codec2schema:${project.codec2schema_version}"
+    implementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
+    implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     if (project.recipe_viewer == "jei") {
-        modRuntimeOnly "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
+        runtimeOnly "mezz.jei:jei-1.21.11-fabric:${project.jei_version}"
     }
-    modCompileOnly "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
+    compileOnly "mezz.jei:jei-1.21.11-fabric:${project.jei_version}"
 
     if (project.recipe_viewer == "rei") {
-        modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+        runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     }
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${project.rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${project.rei_version}"
 
     if (project.recipe_viewer == "rrv") {
-        modRuntimeOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
+        runtimeOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
     }
-    modCompileOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
+    compileOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
 }
 
 apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
@@ -118,21 +120,6 @@ loom {
     }
 }
 
-modrinth {
-    projectId = "researcher"
-    versionNumber = project.version
-    versionName = project.version
-    uploadFile = remapJar
-    additionalFiles = [remapSourcesJar]
-    changelog = rootProject.file("CHANGELOG.md").text
-    syncBodyFrom = rootProject.file("README.md").text
-    dependencies {
-        required.project "fabric-api"
-        required.project "trutils"
-        required.project "fzzy-config"
-    }
-}
-
 tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 spotless {
@@ -161,7 +148,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    it.options.release = 21
+    it.options.release = 25
 }
 
 tasks.withType(AbstractArchiveTask).configureEach {
@@ -170,8 +157,8 @@ tasks.withType(AbstractArchiveTask).configureEach {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 
     withSourcesJar()
 }
@@ -181,6 +168,21 @@ jar {
 
     from("LICENSE") {
         rename { "${it}_${inputs.properties.archivesName}" }
+    }
+}
+
+modrinth {
+    projectId = "researcher"
+    versionNumber = project.version
+    versionName = project.version
+    uploadFile = jar
+    additionalFiles = [sourcesJar]
+    changelog = rootProject.file("CHANGELOG.md").text
+    syncBodyFrom = rootProject.file("README.md").text
+    dependencies {
+        required.project "fabric-api"
+        required.project "trutils"
+        required.project "fzzy-config"
     }
 }
 

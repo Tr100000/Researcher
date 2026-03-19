@@ -1,7 +1,7 @@
 package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
@@ -35,12 +35,12 @@ public class TimedSwitchingElement implements TriggerDisplayElement {
     }
 
     @Override
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
-        return getCurrentElement().render(draw, x, y, mouseX, mouseY, delta);
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
+        return getCurrentElement().extractRenderState(graphics, x, y, mouseX, mouseY, delta);
     }
 
     @Override
-    public int getWidth() {
-        return getCurrentElement().getWidth();
+    public int width() {
+        return getCurrentElement().width();
     }
 }

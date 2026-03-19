@@ -5,6 +5,7 @@ import io.github.tr100000.trutils.api.gui.ItemIcon;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -37,7 +38,7 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
+        return new RecipeUnlockDisplay.Impl(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
     }
 
     public static RecipeUnlockDisplay createTransmute(RecipeHolder<TransmuteRecipe> entry) {
@@ -55,6 +56,6 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIcon(resultStack), tooltip);
+        return new RecipeUnlockDisplay.Impl(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
     }
 }

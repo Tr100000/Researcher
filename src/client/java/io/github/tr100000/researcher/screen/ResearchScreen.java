@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
@@ -74,14 +74,14 @@ public class ResearchScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics draw, int mouseX, int mouseY, float delta) {
-        renderBlurredBackground(draw);
-        renderMenuBackground(draw);
-        if (selected != null) super.render(draw, mouseX, mouseY, delta);
+    public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        extractBlurredBackground(graphics);
+        extractMenuBackground(graphics);
+        if (selected != null) super.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 
     @Override
-    public void renderBackground(GuiGraphics draw, int mouseX, int mouseY, float delta) {}
+    public void extractBackground(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {}
 
     @Override
     public boolean isPauseScreen() {

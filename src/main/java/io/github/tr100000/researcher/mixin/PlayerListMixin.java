@@ -11,7 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
-import org.jspecify.annotations.NullMarked;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,7 +26,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @Mixin(PlayerList.class)
-@NullMarked
 public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
     @Shadow @Final private MinecraftServer server;
 
@@ -44,14 +42,14 @@ public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
     }
 
     @Inject(method = "remove", at = @At(value = "INVOKE", target = "Ljava/util/Map;remove(Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 0))
-    private void remove(ServerPlayer player, CallbackInfo ci, @Local UUID uuid) {
+    private void remove(ServerPlayer player, CallbackInfo ci, @Local(name = "uuid") UUID uuid) {
         researchTrackers.remove(uuid);
         players.forEach(otherPlayer -> otherPlayer.researcher$getPlayerTracker().stopSyncWith(player.researcher$getPlayerTracker()));
     }
 
     @Inject(method = "reloadResources", at = @At("HEAD"))
     private void onDataPacksReloaded(CallbackInfo ci) {
-        researchTrackers.forEach((uuid, playerResearchTracker) -> playerResearchTracker.reload(server.researcher$getServerManager()));
+        researchTrackers.forEach((_, playerResearchTracker) -> playerResearchTracker.reload(server.researcher$getServerManager()));
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))

@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -69,7 +69,7 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
     }
 
     @Override
-    public void renderText(GuiGraphics graphics, Font font, int x, int y) {
+    public void extractText(final GuiGraphicsExtractor graphics, Font font, int x, int y) {
         text(graphics, font, recipeText, x, y);
         y += 10;
         y += 86;
@@ -82,8 +82,8 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics draw) {
-        draw.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y + 10, 0, 0, width, height, 256, 256);
+    public void extractImage(Font font, int x, int y, int width, int height, final GuiGraphicsExtractor graphics) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, x, y + 10, 0, 0, width, height, 256, 256);
 
         final long currentTick = System.currentTimeMillis() / 1000;
 
@@ -94,9 +94,9 @@ public class CraftingRecipeTooltipComponent extends ExtendedTooltipComponent {
             int column = i % recipeWidth;
 
             ItemStack stack = stacks.get((int)(currentTick % stacks.size()));
-            draw.renderFakeItem(stack, x + 30 + column * 18, y + 27 + row * 18);
+            graphics.fakeItem(stack, x + 30 + column * 18, y + 27 + row * 18);
         }
 
-        draw.renderFakeItem(result, x + 124, y + 45);
+        graphics.fakeItem(result, x + 124, y + 45);
     }
 }

@@ -1,4 +1,4 @@
-classTweaker v1 named
+classTweaker v1 official
 
 transitive-inject-interface net/minecraft/server/MinecraftServer io/github/tr100000/researcher/api/ResearchManagerGetter
 transitive-inject-interface net/minecraft/server/ReloadableServerResources io/github/tr100000/researcher/api/ResearchManagerGetter

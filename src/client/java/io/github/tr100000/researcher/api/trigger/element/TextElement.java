@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
@@ -35,13 +35,13 @@ public class TextElement implements TriggerDisplayElement {
     }
 
     @Override
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
-        draw.drawString(client.font, text, x, y + 4, color, shadow);
-        return getWidth();
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
+        graphics.text(client.font, text, x, y + 4, color, shadow);
+        return width();
     }
 
     @Override
-    public int getWidth() {
+    public int width() {
         if (cachedWidth < 0) cachedWidth = client.font.width(text);
         return cachedWidth;
     }

@@ -9,11 +9,12 @@ import io.github.tr100000.trutils.api.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
+import org.jspecify.annotations.Nullable;
 
 public final class ResearchHud {
     private ResearchHud() {}
@@ -29,7 +30,7 @@ public final class ResearchHud {
     private static final int PROGRESS_BACKGROUND_COLOR = 0xFF707070;
     private static final int PROGRESS_FILL_COLOR = 0xFF28C900;
 
-    public static void render(GuiGraphics draw, DeltaTracker tickCounter) {
+    public static void render(final GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
         if (client.level == null || client.player == null || !ResearcherConfigs.client.researchHud.get()) return;
         if (client.debugEntries.isOverlayVisible()) return; // Don't show when F3 is open
         if (client.screen instanceof ResearchScreen) return; // Don't show with research screen open (it doesn't render properly)
@@ -43,40 +44,40 @@ public final class ResearchHud {
         int y = 0;
 
         if (researchTracker.getCurrentResearching() != null) {
-            y += render(draw, researchTracker, researchTracker.getCurrentResearching(), 0);
+            y += render(graphics, researchTracker, researchTracker.getCurrentResearching(), 0);
         }
         for (Identifier researchId : researchTracker.getPinnedResearches()) {
-            y += render(draw, researchTracker, researchTracker.get(researchId), y);
+            y += render(graphics, researchTracker, researchTracker.get(researchId), y);
         }
     }
 
-    private static int render(GuiGraphics draw, ClientResearchTracker researchTracker, Research research, int y) {
+    private static int render(final GuiGraphicsExtractor graphics, ClientResearchTracker researchTracker, @Nullable Research research, int y) {
         if (research == null) return 0;
 
         boolean hovered = currentScreenCanInteractWithHud() && GuiHelper.isMouseTouching(0, y + 1, 150, 26);
 
-        draw.fill(0, y, 150, y + 28, BACKGROUND_COLOR);
-        draw.renderOutline(0, y, 150, 28, hovered ? BORDER_COLOR_HOVERED : BORDER_COLOR);
-        draw.drawString(client.font, research.getTitle(researchTracker), 4, y + 4, CommonColors.WHITE, true);
+        graphics.fill(0, y, 150, y + 28, BACKGROUND_COLOR);
+        graphics.outline(0, y, 150, 28, hovered ? BORDER_COLOR_HOVERED : BORDER_COLOR);
+        graphics.text(client.font, research.getTitle(researchTracker), 4, y + 4, CommonColors.WHITE, true);
 
-        renderProgressText(draw, researchTracker, research, getProgressPercentage(researchTracker, research), y);
+        renderProgressText(graphics, researchTracker, research, getProgressPercentage(researchTracker, research), y);
 
         int scaledProgress = getScaledProgress(researchTracker, research, 138 - percentageTextMaxWidth);
-        draw.fill(4, y + 18, 142 - percentageTextMaxWidth, y + 22, PROGRESS_BACKGROUND_COLOR);
-        draw.fill(4, y + 18, 4 + scaledProgress, y + 22, PROGRESS_FILL_COLOR);
+        graphics.fill(4, y + 18, 142 - percentageTextMaxWidth, y + 22, PROGRESS_BACKGROUND_COLOR);
+        graphics.fill(4, y + 18, 4 + scaledProgress, y + 22, PROGRESS_FILL_COLOR);
 
         return 27;
     }
 
-    private static void renderProgressText(GuiGraphics draw, ClientResearchTracker researchTracker, Research research, int progressPercentage, int yPos) {
+    private static void renderProgressText(final GuiGraphicsExtractor graphics, ClientResearchTracker researchTracker, Research research, int progressPercentage, int yPos) {
         final int x = 146 - percentageTextMaxWidth;
         final int y = yPos + 16;
 
         Component progressText = Component.literal(String.format("%s%%", progressPercentage));
-        draw.drawString(client.font, progressText, x, y, CommonColors.WHITE, true);
+        graphics.text(client.font, progressText, x, y, CommonColors.WHITE, true);
 
         if (currentScreenCanInteractWithHud() && GuiHelper.isMouseTouching(x, y, percentageTextMaxWidth, 9)) {
-            draw.setTooltipForNextFrame(getHoveredProgressTooltip(researchTracker, research), GuiHelper.getMouseX(), GuiHelper.getMouseY());
+            graphics.setTooltipForNextFrame(getHoveredProgressTooltip(researchTracker, research), GuiHelper.getMouseX(), GuiHelper.getMouseY());
         }
     }
 

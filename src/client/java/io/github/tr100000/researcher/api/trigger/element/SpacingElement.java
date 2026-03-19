@@ -1,22 +1,11 @@
 package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
-public class SpacingElement implements TriggerDisplayElement {
-    protected final int width;
-
-    public SpacingElement(int width) {
-        this.width = width;
-    }
-
+public record SpacingElement(int width) implements TriggerDisplayElement {
     @Override
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
-        return width;
-    }
-
-    @Override
-    public int getWidth() {
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
         return width;
     }
 }

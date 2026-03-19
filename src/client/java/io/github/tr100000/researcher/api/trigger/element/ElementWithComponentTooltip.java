@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 
@@ -27,7 +27,7 @@ public class ElementWithComponentTooltip extends AbstractElementWithTooltip {
     }
 
     @Override
-    protected void drawTooltip(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
-        GuiHelper.drawTooltip(draw, client.font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+    protected void drawTooltip(final GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
+        GuiHelper.tooltip(graphics, client.font, tooltip, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
     }
 }

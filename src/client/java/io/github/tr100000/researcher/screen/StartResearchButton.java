@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -65,8 +65,8 @@ public class StartResearchButton extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-        renderDefaultLabel(context.textRenderer());
+    protected void extractContents(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+        extractDefaultLabel(graphics.textRenderer());
     }
 
     public void updateText(boolean isCurrent) {

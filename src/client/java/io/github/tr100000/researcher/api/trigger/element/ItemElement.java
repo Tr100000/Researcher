@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.api.trigger.element;
 
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
@@ -20,19 +20,19 @@ public class ItemElement implements TriggerDisplayElement {
     }
 
     @Override
-    public int render(GuiGraphics draw, int x, int y, int mouseX, int mouseY, float delta) {
+    public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
         if (useStackTooltip) {
-            GuiHelper.drawItemWithoutEntityAndTooltip(draw, stack, x, y, mouseX, mouseY);
+            GuiHelper.fakeItem(graphics, stack, x, y, mouseX, mouseY);
         }
         else {
-            draw.renderFakeItem(stack, x, y);
+            graphics.fakeItem(stack, x, y);
         }
 
         return 16;
     }
 
     @Override
-    public int getWidth() {
+    public int width() {
         return 16;
     }
 }

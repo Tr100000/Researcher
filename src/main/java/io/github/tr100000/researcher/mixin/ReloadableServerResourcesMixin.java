@@ -6,13 +6,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.core.Registry;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.flag.FeatureFlagSet;
-import org.jspecify.annotations.NullMarked;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,22 +21,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(ReloadableServerResources.class)
-@NullMarked
 public class ReloadableServerResourcesMixin implements ResearchManagerGetter {
     @Unique
     private ResearchManager researchManager;
 
     @Inject(method = "<init>", at = @At(("TAIL")))
     private void init(
-            LayeredRegistryAccess<RegistryLayer> dynamicRegistries,
-            HolderLookup.Provider registries,
-            FeatureFlagSet enabledFeatures,
-            Commands.CommandSelection environment,
-            List<Registry.PendingTags<?>> pendingTagLoads,
-            PermissionSet permissions,
-            CallbackInfo ci
+            LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci
     ) {
-        researchManager = new ResearchManager(registries, (ReloadableServerResources)(Object)this);
+        researchManager = new ResearchManager(loadingContext, (ReloadableServerResources)(Object)this);
     }
 
     @Inject(method = "listeners", at = @At("RETURN"), cancellable = true)

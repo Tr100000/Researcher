@@ -22,6 +22,7 @@ import net.minecraft.core.component.predicates.FireworksPredicate;
 import net.minecraft.core.component.predicates.JukeboxPlayablePredicate;
 import net.minecraft.core.component.predicates.PotionsPredicate;
 import net.minecraft.core.component.predicates.TrimPredicate;
+import net.minecraft.core.component.predicates.VillagerTypePredicate;
 import net.minecraft.core.component.predicates.WritableBookPredicate;
 import net.minecraft.core.component.predicates.WrittenBookPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -88,6 +89,8 @@ public final class ComponentsPredicateHelper {
     private static final Component TRIM_PATTERN_LIST = ModUtils.getScreenTranslated("predicate.components.trim.pattern");
 
     private static final Component JUKEBOX_PLAYABLE_LIST = ModUtils.getScreenTranslated("predicate.components.jukebox_playable.list");
+
+    private static final Component VILLAGER_TYPE_LIST = ModUtils.getScreenTranslated("predicate.components.villager_type.list");
 
     @SuppressWarnings("unchecked")
     public static void tooltip(DataComponentMatchers predicate, IndentedTextHolder textHolder) {
@@ -216,7 +219,7 @@ public final class ComponentsPredicateHelper {
         textHolder.accept(ATTRIBUTE_MODIFIERS_HEADER);
         textHolder.push();
 
-        if (predicate.attribute().isPresent() && !predicate.attribute().get().stream().findAny().isPresent()) {
+        if (predicate.attribute().isPresent() && predicate.attribute().get().stream().findAny().isEmpty()) {
             textHolder.accept(ATTRIBUTE_MODIFIER_LIST);
             textHolder.push();
             predicate.attribute().get().forEach(entry -> textHolder.accept(Component.translatable(entry.value().getDescriptionId())));
@@ -260,6 +263,15 @@ public final class ComponentsPredicateHelper {
         }
     }
 
+    private static void villagerTypeTooltip(VillagerTypePredicate predicate, IndentedTextHolder textHolder) {
+        if (predicate.villagerTypes().size() > 0) {
+            textHolder.accept(VILLAGER_TYPE_LIST);
+            textHolder.push();
+            predicate.villagerTypes().forEach(entry -> textHolder.accept(Component.literal(entry.unwrapKey().orElseThrow().identifier().toLanguageKey("villager_type"))));
+            textHolder.pop();
+        }
+    }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends DataComponentPredicate> void registerHandler(DataComponentPredicate.Type<T> type, BiConsumer<T, IndentedTextHolder> handler, @Nullable Component headerText) {
         Objects.requireNonNull(type, "type is null");
@@ -295,5 +307,6 @@ public final class ComponentsPredicateHelper {
         registerHandler(DataComponentPredicates.ATTRIBUTE_MODIFIERS, ComponentsPredicateHelper::attributeModifiersTooltip, ATTRIBUTE_MODIFIERS_HEADER);
         registerHandler(DataComponentPredicates.ARMOR_TRIM, ComponentsPredicateHelper::trimTooltip, null);
         registerHandler(DataComponentPredicates.JUKEBOX_PLAYABLE, ComponentsPredicateHelper::jukeboxPlayableTooltip, null);
+        registerHandler(DataComponentPredicates.VILLAGER_VARIANT, ComponentsPredicateHelper::villagerTypeTooltip, null);
     }
 }

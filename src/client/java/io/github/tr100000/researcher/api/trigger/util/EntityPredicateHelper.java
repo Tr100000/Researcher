@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher.api.trigger.util;
 
+import io.github.tr100000.codec2schema.Codec2Schema;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
@@ -16,6 +17,7 @@ import net.minecraft.advancements.criterion.EntityFlagsPredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.EntitySubPredicate;
 import net.minecraft.advancements.criterion.FishingHookPredicate;
+import net.minecraft.advancements.criterion.FoodPredicate;
 import net.minecraft.advancements.criterion.GameTypePredicate;
 import net.minecraft.advancements.criterion.InputPredicate;
 import net.minecraft.advancements.criterion.LightningBoltPredicate;
@@ -26,7 +28,6 @@ import net.minecraft.advancements.criterion.RaiderPredicate;
 import net.minecraft.advancements.criterion.SheepPredicate;
 import net.minecraft.advancements.criterion.SlimePredicate;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -38,10 +39,10 @@ import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MinecartItem;
-import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -108,6 +109,8 @@ public final class EntityPredicateHelper {
     private static final Component FISHING_OPEN_WATER = ModUtils.getScreenTranslated("predicate.entity.fishing.open_water");
     private static final Component FISHING_NOT_OPEN_WATER = ModUtils.getScreenTranslated("predicate.entity.fishing.not_open_water");
     private static final Component PLAYER_EXPERIENCE_LEVEL = ModUtils.getScreenTranslated("predicate.entity.player.xp_level");
+    private static final Component PLAYER_FOOD_LEVEL = ModUtils.getScreenTranslated("predicate.entity.player.food.level");
+    private static final Component PLAYER_FOOD_SATURATION = ModUtils.getScreenTranslated("predicate.entity.food.saturation");
     private static final Component PLAYER_GAME_MODE = ModUtils.getScreenTranslated("predicate.entity.player.game_mode");
     private static final Component PLAYER_STATS = ModUtils.getScreenTranslated("predicate.entity.player.stats");
     private static final String PLAYER_HAS_RECIPE = ModUtils.getScreenTranslationKey("predicate.entity.player.has_recipe");
@@ -364,15 +367,17 @@ public final class EntityPredicateHelper {
         }
 
         if (predicate instanceof PlayerPredicate(
-                MinMaxBounds.Ints experienceLevel, GameTypePredicate gameMode, List<PlayerPredicate.StatMatcher<?>> stats, Object2BooleanMap<ResourceKey<Recipe<?>>> recipes, Map<Identifier, PlayerPredicate.AdvancementPredicate> advancements, Optional<EntityPredicate> lookingAt, Optional<InputPredicate> input
+                MinMaxBounds.Ints experienceLevel, FoodPredicate food, GameTypePredicate gameType, List<PlayerPredicate.StatMatcher<?>> stats, Object2BooleanMap<ResourceKey<Recipe<?>>> recipes, Map<Identifier, PlayerPredicate.AdvancementPredicate> advancements, Optional<EntityPredicate> lookingAt, Optional<InputPredicate> input
         )) {
             NumberRangeUtils.tooltip(experienceLevel, PLAYER_EXPERIENCE_LEVEL, textHolder);
-            if (gameMode != GameTypePredicate.ANY) {
+            if (gameType != GameTypePredicate.ANY) {
                 textHolder.accept(PLAYER_GAME_MODE);
                 textHolder.push();
-                gameMode.types().forEach(mode -> textHolder.accept(mode.getLongDisplayName()));
+                gameType.types().forEach(mode -> textHolder.accept(mode.getLongDisplayName()));
                 textHolder.pop();
             }
+            NumberRangeUtils.tooltip(food.level(), PLAYER_FOOD_LEVEL, textHolder);
+            NumberRangeUtils.tooltip(food.saturation(), PLAYER_FOOD_SATURATION, textHolder);
             if (!stats.isEmpty()) {
                 textHolder.accept(PLAYER_STATS);
                 textHolder.push();
@@ -436,8 +441,10 @@ public final class EntityPredicateHelper {
         }
     }
 
+
     public static void registerItemForEntityType(EntityType<?> entityType, Item item) {
-        Objects.requireNonNull(entityType, "entityType is null");
+        Codec2Schema.LOGGER.info("{}: {} (registering)", entityType, item);
+        Objects.requireNonNull(entityType, "entityData is null");
         Objects.requireNonNull(item, "item is null");
         ENTITY_TYPE_ITEMS.put(entityType, item);
     }
@@ -450,25 +457,17 @@ public final class EntityPredicateHelper {
         });
     }
 
-    static {
-        BuiltInRegistries.ITEM.forEach(item -> {
-            if (item.components().has(DataComponents.ENTITY_DATA)) {
-                TypedEntityData<EntityType<?>> data = item.components().get(DataComponents.ENTITY_DATA);
-                if (data != null && data.type() != null) {
-                    registerItemForEntityType(data.type(), item);
-                }
-            }
-            else if (item instanceof BoatItem boatItem) {
-                registerItemForEntityType(boatItem.entityType, item);
-            }
-            else if (item instanceof MinecartItem minecartItem) {
-                registerItemForEntityType(minecartItem.type, item);
-            }
-            else if (item instanceof HangingEntityItem decorationItem) {
-                registerItemForEntityType(decorationItem.type, item);
-            }
-        });
+    @ApiStatus.Internal
+    public static void onItemRegistered(Item item) {
+        switch (item) {
+            case BoatItem boatItem -> registerItemForEntityType(boatItem.entityType, item);
+            case MinecartItem minecartItem -> registerItemForEntityType(minecartItem.type, item);
+            case HangingEntityItem hangingEntityItem -> registerItemForEntityType(hangingEntityItem.type, item);
+            default -> {}
+        }
+    }
 
+    static {
         registerItemForEntityType(EntityType.ARMOR_STAND, Items.ARMOR_STAND);
         registerItemForEntityType(EntityType.ARROW, Items.ARROW);
         registerItemForEntityType(EntityType.SPECTRAL_ARROW, Items.SPECTRAL_ARROW);
