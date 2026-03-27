@@ -113,6 +113,9 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
 
     @Override
     public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        graphics.pose().pushMatrix();
+        assert scissorRect != null;
+        graphics.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
         graphics.pose().translate(getOffsetX(), getOffsetY());
 
         int newMouseX = mouseX - getOffsetX();
@@ -125,6 +128,9 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         extractConnections(graphics, hovered);
 
         super.extractView(graphics, newMouseX, newMouseY, delta);
+
+        graphics.disableScissor();
+        graphics.pose().popMatrix();
     }
 
     private @Nullable ResearchNodeWidget getCurrentHovered(final GuiGraphicsExtractor graphics, int mouseX, int mouseY) {

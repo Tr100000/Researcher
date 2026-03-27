@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.registries.Registries;
@@ -64,7 +65,7 @@ public class RecipeUnlockWidget extends AbstractWidget {
     protected void extractWidgetRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         IconRenderers.draw(icon, graphics, getX(), getY());
         if (isHovered() && graphics.containsPointInScissor(mouseX, mouseY)) {
-            GuiHelper.tooltip(graphics, client.font, List.of(tooltip), mouseX, mouseY, GuiHelper.widgetPositionerFor(this));
+            GuiHelper.tooltip(graphics, client.font, List.of(tooltip),  mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
             graphics.requestCursor(isError ? CursorTypes.NOT_ALLOWED : CursorTypes.POINTING_HAND);
         }
     }

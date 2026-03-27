@@ -1,14 +1,15 @@
 package io.github.tr100000.researcher.api.trigger.util;
 
-import io.github.tr100000.codec2schema.Codec2Schema;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.researcher.api.trigger.element.GroupedElement;
-import io.github.tr100000.researcher.api.trigger.element.ItemElement;
+import io.github.tr100000.researcher.api.trigger.element.IconElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.element.TimedSwitchingElement;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
+import io.github.tr100000.trutils.api.gui.Icon;
+import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.criterion.ContextAwarePredicate;
@@ -53,7 +54,7 @@ import java.util.Optional;
 public final class EntityPredicateHelper {
     private EntityPredicateHelper() {}
 
-    private static final Map<EntityType<?>, Item> ENTITY_TYPE_ITEMS = new Object2ObjectOpenHashMap<>();
+    private static final Map<EntityType<?>, Icon> ENTITY_TYPE_ICONS = new Object2ObjectOpenHashMap<>();
 
     private static final Component PREDICATE_MISSING = ModUtils.getScreenTranslated("predicate.entity.properties_missing");
     private static final Component ANY_ENTITY = ModUtils.getScreenTranslated("predicate.entity.any");
@@ -236,7 +237,7 @@ public final class EntityPredicateHelper {
 
     public static TriggerDisplayElement element(EntityType<?> entityType) {
         return new GroupedElement(
-                new ItemElement(ENTITY_TYPE_ITEMS.getOrDefault(entityType, Items.BARRIER), false),
+                new IconElement(ENTITY_TYPE_ICONS.getOrDefault(entityType, Icon.ERROR)),
                 new TextElement(entityType.getDescription())
         );
     }
@@ -441,17 +442,21 @@ public final class EntityPredicateHelper {
         }
     }
 
+    public static void registerItemForEntityType(EntityType<?> entityType, @Nullable Item item) {
+        if (item != null) {
+            registerIconForEntityType(entityType, new ItemIcon(item));
+        }
+    }
 
-    public static void registerItemForEntityType(EntityType<?> entityType, Item item) {
-        Codec2Schema.LOGGER.info("{}: {} (registering)", entityType, item);
-        Objects.requireNonNull(entityType, "entityData is null");
-        Objects.requireNonNull(item, "item is null");
-        ENTITY_TYPE_ITEMS.put(entityType, item);
+    public static void registerIconForEntityType(EntityType<?> entityType, Icon icon) {
+        Objects.requireNonNull(entityType, "entityType is null");
+        Objects.requireNonNull(icon, "icon in null");
+        ENTITY_TYPE_ICONS.put(entityType, icon);
     }
 
     public static void printNonRegistered() {
         BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
-            if (!ENTITY_TYPE_ITEMS.containsKey(entityType)) {
+            if (!ENTITY_TYPE_ICONS.containsKey(entityType)) {
                 Researcher.LOGGER.warn("{} doesn't have a registered item", BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
             }
         });

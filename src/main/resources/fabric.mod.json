@@ -31,13 +31,13 @@
   "accessWidener": "researcher.classtweaker",
   "depends": {
     "fabricloader": ">=0.18",
-    "minecraft": "~26.1-",
+    "minecraft": "~26.1",
     "java": ">=25",
-    "fabric-api": ">=0.143",
-    "trutils": ">=0.1",
+    "fabric-api": ">=0.144",
+    "trutils": ">=0.2-",
     "fzzy_config": ">=0.7.6"
   },
   "suggests": {
-    "codec2schema": ">=0.2"
+    "codec2schema": ">=0.3-"
   }
 }

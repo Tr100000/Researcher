@@ -32,7 +32,7 @@ public class ResearchNodeWidget extends AbstractButton {
     public static final int FILL_PROGRESS_BAR = 0xFF28C900;
 
     public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
-        super(x, y, width, height, research.getTitle(Minecraft.getInstance().getConnection().researcher$getClientTracker()));
+        super(x, y, width, height, research.getTitle(client.getConnection().researcher$getClientTracker()));
         this.screen = screen;
         this.parentView = parentView;
         this.research = research;

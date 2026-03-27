@@ -80,9 +80,11 @@ public abstract class AbstractResearchView extends AbstractView implements Layou
     @Override
     public void extractRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.pose().pushMatrix();
-        if (scissorRect != null) graphics.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
+        if (scissorRect != null)
+            graphics.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
         extractView(graphics, mouseX, mouseY, delta);
-        if (scissorRect != null) graphics.disableScissor();
+        if (scissorRect != null)
+            graphics.disableScissor();
         graphics.pose().popMatrix();
     }
 

@@ -18,7 +18,6 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.core.Registry;
@@ -54,8 +53,6 @@ public class ResearcherClient implements ClientModInitializer {
         RecipeUnlockDisplayRegistry.register(TransmuteRecipe.SERIALIZER, CraftingRecipeUnlockDisplay::createTransmute);
 
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, ResearchHud.LAYER_ID, ResearchHud::render);
-
-        RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM).register((_, _, object) -> EntityPredicateHelper.onItemRegistered(object));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (OPEN_RESEARCH_SCREEN_KEY.consumeClick()) {

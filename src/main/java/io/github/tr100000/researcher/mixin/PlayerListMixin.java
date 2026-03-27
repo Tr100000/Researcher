@@ -34,7 +34,7 @@ public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
     private final Map<UUID, PlayerResearchTracker> researchTrackers = new Object2ObjectOpenHashMap<>();
 
     @Inject(method = "save", at = @At("TAIL"))
-    private void savePlayerData(ServerPlayer player, CallbackInfo ci) {
+    private void save(ServerPlayer player, CallbackInfo ci) {
         PlayerResearchTracker researchTracker = researchTrackers.get(player.getUUID());
         if (researchTracker != null) {
             researchTracker.save(server.researcher$getServerManager());
@@ -48,12 +48,12 @@ public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
     }
 
     @Inject(method = "reloadResources", at = @At("HEAD"))
-    private void onDataPacksReloaded(CallbackInfo ci) {
+    private void reloadResources(CallbackInfo ci) {
         researchTrackers.forEach((_, playerResearchTracker) -> playerResearchTracker.reload(server.researcher$getServerManager()));
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void onPlayerConnect(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci) {
+    private void placeNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci) {
         playersToSyncWith(player)
                 .map(ServerPlayer::researcher$getPlayerTracker)
                 .forEach(player.researcher$getPlayerTracker()::syncWith);
@@ -78,7 +78,8 @@ public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
 
     @Unique
     private PlayerResearchTracker createResearchTracker(ServerPlayer player, UUID uuid) {
-        Path path = server.getWorldPath(ResearchManager.WORLD_SAVE_PATH).resolve(uuid + ".json");
-        return new PlayerResearchTracker(player, server.researcher$getServerManager(), (PlayerList)(Object) this, path);
+        Path worldDirPath = server.getWorldPath(ResearchManager.WORLD_SAVE_PATH);
+        Path researchPath = worldDirPath.resolve(uuid + ".json");
+        return new PlayerResearchTracker(player, server.researcher$getServerManager(), (PlayerList)(Object) this, researchPath);
     }
 }

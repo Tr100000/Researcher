@@ -103,7 +103,7 @@ public class ResearchGraph {
             for (Identifier parentId : node.prerequisiteIds()) {
                 Research parent = map.get(parentId);
                 if (checkForAlternatePaths(graph, parent, node)) {
-                    Researcher.LOGGER.warn("Redundant edge found: {} -> {}", graph.nodeIds.get(parent), graph.nodeIds.get(node));
+                    Researcher.LOGGER.warn("Redundant edge in research graph: {} -> {}", graph.nodeIds.get(parent), graph.nodeIds.get(node));
                 }
             }
         }

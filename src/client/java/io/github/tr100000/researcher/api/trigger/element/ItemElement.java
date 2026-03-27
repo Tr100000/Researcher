@@ -8,20 +8,20 @@ import net.minecraft.world.level.ItemLike;
 
 public class ItemElement implements TriggerDisplayElement {
     protected final ItemStack stack;
-    protected final boolean useStackTooltip;
+    protected final boolean showStackTooltip;
 
-    public ItemElement(ItemLike item, boolean useStackTooltip) {
-        this(item.asItem().getDefaultInstance(), useStackTooltip);
+    public ItemElement(ItemLike item, boolean showStackTooltip) {
+        this(item.asItem().getDefaultInstance(), showStackTooltip);
     }
 
-    public ItemElement(ItemStack stack, boolean useStackTooltip) {
+    public ItemElement(ItemStack stack, boolean showStackTooltip) {
         this.stack = stack;
-        this.useStackTooltip = useStackTooltip;
+        this.showStackTooltip = showStackTooltip;
     }
 
     @Override
     public int extractRenderState(GuiGraphicsExtractor graphics, int x, int y, int mouseX, int mouseY, float delta) {
-        if (useStackTooltip) {
+        if (showStackTooltip) {
             GuiHelper.fakeItem(graphics, stack, x, y, mouseX, mouseY);
         }
         else {

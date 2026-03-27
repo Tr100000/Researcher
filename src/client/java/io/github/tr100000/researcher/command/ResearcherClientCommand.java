@@ -12,10 +12,12 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NullMarked;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
+@NullMarked
 public final class ResearcherClientCommand {
     private ResearcherClientCommand() {}
 
