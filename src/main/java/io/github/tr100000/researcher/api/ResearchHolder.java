@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -19,55 +20,69 @@ import java.util.Set;
 import java.util.function.Function;
 
 public interface ResearchHolder {
+    @Contract(pure = true)
     boolean isInitialized();
+
+    @Contract(pure = true)
     Map<Identifier, Research> getAll();
+
+    @Contract(pure = true)
     ResearchGraph getGraph();
+
+    @Contract(value = "null -> null", pure = true)
     @Nullable Research get(@Nullable Identifier id);
+
+    @Contract(value = "null -> null", pure = true)
     @Nullable Identifier getId(@Nullable Research research);
-    boolean isRecipeUnlockable(Identifier recipeId);
+
+    @Contract(value = "null -> false", pure = true)
+    boolean isRecipeUnlockable(@Nullable Identifier recipeId);
+
+    @Contract(pure = true)
+    Collection<Identifier> recipeUnlockedBy(Identifier recipeId);
+
+    @Contract(pure = true)
     ResearchItemsTrigger.@Nullable TriggerInstance getResearchConditions(Research research);
 
+    @Contract(pure = true)
     default Collection<Research> listAll() {
         return getAll().values();
     }
 
+    @Contract(pure = true)
     default Set<Research> listAllAsSet() {
         return ImmutableSet.copyOf(getAll().values());
     }
 
+    @Contract(pure = true)
     default Set<Identifier> listAllIds() {
         return getAll().keySet();
     }
 
+    @Contract(pure = true)
     default Identifier getIdOrEmpty(Research research) {
         Identifier id = getId(research);
         if (id == null) id = ModUtils.id("");
         return id;
     }
 
+    @Contract(pure = true)
     default Identifier getIdOrThrow(Research research) {
         Identifier id = getId(research);
-        return Objects.requireNonNull(id, "id must not be null");
+        return Objects.requireNonNull(id, "id is null");
     }
 
-    @Nullable
-    default Research getUnlockingResearch(Identifier recipeId) {
-        for (Research research : listAll()) {
-            if (research.recipeUnlocks().contains(recipeId)) {
-                return research;
-            }
-        }
-        return null;
-    }
-
+    @Contract(pure = true)
     default List<Research> directPredecessorsOf(Research research) {
         return getGraph().predecessors(research);
     }
 
+    @Contract(pure = true)
     default Set<Research> getDepthMapPredecessors(Research research) {
         return new ObjectOpenHashSet<>(directPredecessorsOf(research));
     }
 
+    @Contract(pure = true)
     default Set<Research> allPredecessorsOf(@Nullable Research research) {
         Set<Research> predecessors = new ObjectOpenHashSet<>(getGraph().predecessors(research));
         if (!predecessors.isEmpty()) {
@@ -89,22 +104,27 @@ public interface ResearchHolder {
         return depthMap;
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> predecessorDepthMap(Research research) {
         return predecessorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), this::getDepthMapPredecessors);
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> predecessorDepthMap(Research research, Function<Research, Set<Research>> researchToPredecessors) {
         return predecessorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), researchToPredecessors);
     }
 
+    @Contract(pure = true)
     default List<Research> directSuccessorsOf(Research research) {
         return getGraph().successors(research);
     }
 
+    @Contract(pure = true)
     default Set<Research> getDepthMapSuccessors(Research research) {
         return new ObjectOpenHashSet<>(directSuccessorsOf(research));
     }
 
+    @Contract(pure = true)
     default Set<Research> allSuccessorsOf(Research research) {
         Set<Research> successors = new ObjectOpenHashSet<>(getGraph().successors(research));
         if (!successors.isEmpty()) {
@@ -126,18 +146,22 @@ public interface ResearchHolder {
         return depthMap;
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> successorDepthMap(Research research) {
         return successorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), this::getDepthMapSuccessors);
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> successorDepthMap(Research research, Function<Research, Set<Research>> researchToSuccessors) {
         return successorDepthMapImpl(research, 0, new Object2IntLinkedOpenHashMap<>(), researchToSuccessors);
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> getRelatedMap(Research research) {
         return getRelatedMap(research, this::getDepthMapPredecessors, this::getDepthMapSuccessors);
     }
 
+    @Contract(pure = true)
     default Map<Research, Integer> getRelatedMap(Research research, Function<Research, Set<Research>> researchToPredecessors, Function<Research, Set<Research>> researchToSuccessors) {
         Map<Research, Integer> relatedMap = new Object2IntOpenHashMap<>();
 
@@ -148,10 +172,12 @@ public interface ResearchHolder {
         return relatedMap;
     }
 
+    @Contract(pure = true)
     default Set<Research> getRootNodes() {
         return new ObjectOpenHashSet<>(getGraph().rootNodes());
     }
 
+    @Contract(pure = true)
     default boolean isValid(Research research) {
         return getGraph().containsNode(research);
     }

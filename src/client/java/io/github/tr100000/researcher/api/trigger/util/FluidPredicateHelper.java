@@ -13,6 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public final class FluidPredicateHelper {
 
     private static final Component FLUID_LIST = ModUtils.getScreenTranslated("predicate.fluid.list");
 
+    @Contract(mutates = "param2")
     public static void tooltip(FluidPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.fluids().isPresent()) {
             textHolder.accept(FLUID_LIST);
@@ -39,6 +41,7 @@ public final class FluidPredicateHelper {
         }
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(FluidPredicate predicate) {
         TriggerDisplayElement element;
         boolean shouldHaveTooltip = false;
@@ -65,6 +68,7 @@ public final class FluidPredicateHelper {
         return element;
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(Fluid fluid) {
         return new GroupedElement(
                 new ItemElement(fluid.getBucket(), false),
@@ -72,6 +76,7 @@ public final class FluidPredicateHelper {
         );
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(Holder<Fluid> fluid) {
         return element(fluid.value());
     }

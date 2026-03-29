@@ -461,8 +461,8 @@
   "screen.researcher.trigger.voluntary_exile.many.with_conditions": "Trigger a raid* %s times",
   "screen.researcher.trigger.voluntary_exile.one": "Trigger a raid",
   "screen.researcher.trigger.voluntary_exile.one.with_conditions": "Trigger a raid*",
+  "screen.researcher.unlocked_by_header": "Unlocked by researching any of:",
   "screen.researcher.unlocks": "Unlocks:",
   "screen.researcher.unpin": "Unpin",
-  "tooltip.researcher.invalid_unlock": "Failed to load recipe unlock: %s",
-  "tooltip.researcher.requires_research": "Requires research: %s"
+  "tooltip.researcher.invalid_unlock": "Failed to load recipe unlock: %s"
 }

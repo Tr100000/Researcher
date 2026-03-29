@@ -28,6 +28,8 @@ import net.minecraft.core.component.predicates.WrittenBookPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -93,6 +95,7 @@ public final class ComponentsPredicateHelper {
     private static final Component VILLAGER_TYPE_LIST = ModUtils.getScreenTranslated("predicate.components.villager_type.list");
 
     @SuppressWarnings("unchecked")
+    @Contract(mutates = "param2")
     public static void tooltip(DataComponentMatchers predicate, IndentedTextHolder textHolder) {
         textHolder.accept(COMPONENTS_HEADER);
         textHolder.push();
@@ -121,8 +124,8 @@ public final class ComponentsPredicateHelper {
     }
 
     private static void damageTooltip(DamagePredicate predicate, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(predicate.durability(), DAMAGE_DURABILITY, textHolder);
-        NumberRangeUtils.tooltip(predicate.damage(), DAMAGE_DAMAGE, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.durability(), DAMAGE_DURABILITY, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.damage(), DAMAGE_DAMAGE, textHolder);
     }
 
     private static void enchantmentsTooltip(EnchantmentsPredicate predicate, IndentedTextHolder textHolder) {
@@ -134,7 +137,7 @@ public final class ComponentsPredicateHelper {
                     p.enchantments().get().forEach(entry -> textHolder.accept(entry.value().description()));
                     t.pop();
                 }
-                NumberRangeUtils.tooltip(p.level(), ENCHANTMENTS_LEVELS, t);
+                MinMaxBoundsUtils.tooltip(p.level(), ENCHANTMENTS_LEVELS, t);
             }, ENCHANTMENTS_HEADER);
         });
     }
@@ -181,7 +184,7 @@ public final class ComponentsPredicateHelper {
     }
 
     private static void fireworksTooltip(FireworksPredicate predicate, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(predicate.flightDuration(), FIREWORKS_FLIGHT_DURATION, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.flightDuration(), FIREWORKS_FLIGHT_DURATION, textHolder);
         if (predicate.explosions().isPresent()) {
             PredicateHelper.collectionTooltip(predicate.explosions().get(), (p, t) -> {
                 PredicateHelper.tooltip(p, ComponentsPredicateHelper::fireworkExplosionPredicateTooltip, FIREWORK_EXPLOSION_HEADER);
@@ -205,7 +208,7 @@ public final class ComponentsPredicateHelper {
         if (predicate.title().isPresent()) {
             textHolder.accept(Component.translatable(WRITTEN_BOOK_CONTENT_TITLE, predicate.title()));
         }
-        NumberRangeUtils.tooltip(predicate.generation(), WRITTEN_BOOK_CONTENT_GENERATION, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.generation(), WRITTEN_BOOK_CONTENT_GENERATION, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.resolved(), WRITTEN_BOOK_CONTENT_RESOLVED, WRITTEN_BOOK_CONTENT_NOT_RESOLVED, textHolder);
     }
 
@@ -228,7 +231,7 @@ public final class ComponentsPredicateHelper {
         if (predicate.id().isPresent()) {
             textHolder.accept(Component.translatable(ATTRIBUTE_MODIFIER_ID_KEY, predicate.id().get()));
         }
-        NumberRangeUtils.tooltip(predicate.amount(), ATTRIBUTE_MODIFIER_AMOUNT, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.amount(), ATTRIBUTE_MODIFIER_AMOUNT, textHolder);
         if (predicate.operation().isPresent()) {
             textHolder.accept(Component.translatable(ATTRIBUTE_MODIFIER_OPERATION_KEY, predicate.operation().get().getSerializedName()));
         }
@@ -284,6 +287,7 @@ public final class ComponentsPredicateHelper {
         }
     }
 
+    @ApiStatus.Internal
     public static void printNonRegistered() {
         BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.forEach(type -> {
             if (!PREDICATE_HANDLER_REGISTRY.containsKey(type)) {

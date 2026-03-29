@@ -396,7 +396,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         return getProgress(research).isFinished();
     }
 
-    public boolean canCraftRecipe(Identifier recipeId) {
+    public boolean canCraftRecipe(@Nullable Identifier recipeId) {
         if (!researchManager.isRecipeUnlockable(recipeId)) return true;
         for (Map.Entry<Research, ResearchProgress> entry : progressMap.entrySet()) {
             if (entry.getValue().isFinished() && entry.getKey().recipeUnlocks().contains(recipeId)) {

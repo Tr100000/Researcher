@@ -11,6 +11,7 @@ import net.minecraft.advancements.criterion.BlockPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public final class BlockPredicateHelper {
 
     private static final Component BLOCK_LIST = ModUtils.getScreenTranslated("predicate.block.list");
 
+    @Contract(mutates = "param2")
     public static void tooltip(BlockPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.blocks().isPresent()) {
             textHolder.accept(BLOCK_LIST);
@@ -44,6 +46,7 @@ public final class BlockPredicateHelper {
         }
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable BlockPredicate predicate) {
         if (predicate == null) return anyBlockElement();
 
@@ -72,6 +75,7 @@ public final class BlockPredicateHelper {
         return element;
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable Block block) {
         if (block == null) return anyBlockElement();
 
@@ -81,12 +85,14 @@ public final class BlockPredicateHelper {
         );
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable Holder<Block> block) {
         if (block == null) return anyBlockElement();
 
         return element(block.value());
     }
 
+    @Contract(value = "-> new", pure = true)
     private static TriggerDisplayElement anyBlockElement() {
         return new TextElement(ANY_BLOCK);
     }

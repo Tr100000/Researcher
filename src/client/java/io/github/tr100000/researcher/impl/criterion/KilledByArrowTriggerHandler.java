@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.KilledByArrowTrigger;
@@ -21,7 +21,7 @@ public class KilledByArrowTriggerHandler extends AbstractTriggerHandler<KilledBy
 
     @Override
     protected void fillTooltip(ResearchCriterion<KilledByArrowTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(criterion.conditions().uniqueEntityTypes(), NUM_ENTITY_TYPES, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().uniqueEntityTypes(), NUM_ENTITY_TYPES, textHolder);
         PredicateHelper.optionalTooltip(criterion.conditions().firedFromWeapon(), ItemPredicateHelper::tooltip, WEAPON_CONDITIONS_HEADER);
         playerTooltip(criterion, textHolder);
         criterion.conditions().victims().forEach(victim -> {

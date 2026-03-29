@@ -4,17 +4,30 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchProgress;
 import io.github.tr100000.researcher.ResearchStatus;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public interface PlayerResearchHolder {
+    @Contract(pure = true)
     @Nullable Identifier getCurrentResearchingId();
+
+    @Contract(pure = true)
     @Nullable Research getCurrentResearching();
+
+    @Contract(pure = true)
     List<Identifier> getPinnedResearches();
+
+    @Contract(value = "null -> false", pure = true)
     boolean canResearch(@Nullable Research research);
-    boolean canCraftRecipe(Identifier recipeId);
+
+    @Contract(value = "null -> true", pure = true)
+    boolean canCraftRecipe(@Nullable Identifier recipeId);
+
+    @Contract(value = "null -> false", pure = true)
     boolean hasFinished(@Nullable Research research);
+
     ResearchProgress getProgress(Research research);
 
     default ResearchStatus getStatus(Research research) {

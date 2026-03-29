@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.DistancePredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.LevitationTrigger;
@@ -21,7 +21,7 @@ public class LevitationTriggerHandler extends AbstractTriggerHandler<LevitationT
     protected void fillTooltip(ResearchCriterion<LevitationTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
         PredicateHelper.optionalTooltip(criterion.conditions().distance(), DistancePredicateHelper::tooltip, DISTANCE)
                 .ifPresent(textHolder::accept);
-        NumberRangeUtils.tooltip(criterion.conditions().duration(), DURATION, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().duration(), DURATION, textHolder);
         playerTooltip(criterion, textHolder);
     }
 }

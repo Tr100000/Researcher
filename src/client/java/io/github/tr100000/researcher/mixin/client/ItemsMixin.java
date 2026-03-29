@@ -23,4 +23,9 @@ public abstract class ItemsMixin {
     private static void clinit(CallbackInfo ci) {
         RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM).register((_, _, object) -> EntityPredicateHelper.onItemRegistered(object));
     }
+
+    @Inject(method = "<clinit>", at = @At("TAIL"))
+    private static void clinitEnd(CallbackInfo ci) {
+        EntityPredicateHelper.registerDefault();
+    }
 }

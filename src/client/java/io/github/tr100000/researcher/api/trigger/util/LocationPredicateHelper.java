@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.LocationPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Contract;
 
 public final class LocationPredicateHelper {
     private LocationPredicateHelper() {}
@@ -24,6 +25,7 @@ public final class LocationPredicateHelper {
     private static final Component LOCATION_SKY_VISIBLE = ModUtils.getScreenTranslated("predicate.location.sky_visible");
     private static final Component LOCATION_SKY_NOT_VISIBLE = ModUtils.getScreenTranslated("predicate.location.sky_not_visible");
 
+    @Contract(mutates = "param2")
     public static void tooltip(LocationPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.position().isPresent()) {
             textHolder.accept(LOCATION_POSITION);
@@ -33,9 +35,9 @@ public final class LocationPredicateHelper {
             MinMaxBounds.Doubles yRange = predicate.position().get().y();
             MinMaxBounds.Doubles zRange = predicate.position().get().z();
 
-            NumberRangeUtils.tooltip(xRange, LOCATION_POSITION_X, textHolder);
-            NumberRangeUtils.tooltip(yRange, LOCATION_POSITION_Y, textHolder);
-            NumberRangeUtils.tooltip(zRange, LOCATION_POSITION_Z, textHolder);
+            MinMaxBoundsUtils.tooltip(xRange, LOCATION_POSITION_X, textHolder);
+            MinMaxBoundsUtils.tooltip(yRange, LOCATION_POSITION_Y, textHolder);
+            MinMaxBoundsUtils.tooltip(zRange, LOCATION_POSITION_Z, textHolder);
 
             textHolder.pop();
         }
@@ -56,7 +58,7 @@ public final class LocationPredicateHelper {
         }
         PredicateHelper.optionalBooleanTooltip(predicate.smokey(), LOCATION_SMOKEY, LOCATION_NOT_SMOKEY, textHolder);
         if (predicate.light().isPresent()) {
-            NumberRangeUtils.tooltip(predicate.light().get().composite(), LOCATION_LIGHT, textHolder);
+            MinMaxBoundsUtils.tooltip(predicate.light().get().composite(), LOCATION_LIGHT, textHolder);
         }
         if (predicate.block().isPresent()) {
             textHolder.accept(LOCATION_BLOCK);

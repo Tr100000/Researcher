@@ -9,7 +9,7 @@ import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.util.BlockPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.BeeNestDestroyedTrigger;
@@ -31,7 +31,7 @@ public class BeeNestDestroyedTriggerHandler implements TriggerHandler<BeeNestDes
 
         PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                     .ifPresent(textHolder::accept);
-        NumberRangeUtils.tooltip(criterion.conditions().beesInside(), NUM_BEES_INSIDE, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().beesInside(), NUM_BEES_INSIDE, textHolder);
         PredicateHelper.optionalTooltip(criterion.conditions().player(), EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
 

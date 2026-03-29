@@ -17,13 +17,13 @@ public final class RecipeUnlockDisplayRegistry {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends Recipe<?>> void register(RecipeSerializer<T> recipeType, Function<RecipeHolder<T>, RecipeUnlockDisplay> displayFactory) {
-        Objects.requireNonNull(recipeType, "recipeType must not be null");
-        Objects.requireNonNull(displayFactory, "displayFactory must not be null");
+        Objects.requireNonNull(recipeType, "recipeType is null");
+        Objects.requireNonNull(displayFactory, "displayFactory is null");
         REGISTRY.put(recipeType, (Function)displayFactory);
     }
 
     public static @Nullable RecipeUnlockDisplay getDisplay(RecipeHolder<?> recipeEntry) {
-        Objects.requireNonNull(recipeEntry, "recipeEntry must not be null");
+        Objects.requireNonNull(recipeEntry, "recipeEntry is null");
         if (REGISTRY.containsKey(recipeEntry.value().getSerializer())) {
             return REGISTRY.get(recipeEntry.value().getSerializer()).apply(recipeEntry);
         }

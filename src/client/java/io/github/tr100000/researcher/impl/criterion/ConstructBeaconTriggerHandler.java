@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.ConstructBeaconTrigger;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ public class ConstructBeaconTriggerHandler extends AbstractTriggerHandler<Constr
 
     @Override
     protected void fillTooltip(ResearchCriterion<ConstructBeaconTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(criterion.conditions().level(), BEACON_LEVEL, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().level(), BEACON_LEVEL, textHolder);
         playerTooltip(criterion, textHolder);
     }
 }

@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.ItemDurabilityTrigger;
@@ -20,8 +20,8 @@ public class ItemDurabilityChangedTriggerHandler extends AbstractTriggerHandler<
 
     @Override
     protected void fillTooltip(ResearchCriterion<ItemDurabilityTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(criterion.conditions().durability(), DURABILITY, textHolder);
-        NumberRangeUtils.tooltip(criterion.conditions().delta(), DELTA, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().durability(), DURABILITY, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().delta(), DELTA, textHolder);
         PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);

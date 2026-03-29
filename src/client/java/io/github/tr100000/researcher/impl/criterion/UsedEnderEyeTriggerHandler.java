@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.UsedEnderEyeTrigger;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ public class UsedEnderEyeTriggerHandler extends AbstractTriggerHandler<UsedEnder
 
     @Override
     protected void fillTooltip(ResearchCriterion<UsedEnderEyeTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(criterion.conditions().distance(), STRONGHOLD_DISTANCE, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().distance(), STRONGHOLD_DISTANCE, textHolder);
         playerTooltip(criterion, textHolder);
     }
 }

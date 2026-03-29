@@ -7,6 +7,7 @@ import io.github.tr100000.researcher.criterion.ResearchUnlockedTrigger;
 import io.github.tr100000.trutils.api.utils.RegistryHelper;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
+import org.jetbrains.annotations.ApiStatus;
 
 public final class ResearcherCriteriaTriggers {
     private ResearcherCriteriaTriggers() {}
@@ -18,6 +19,7 @@ public final class ResearcherCriteriaTriggers {
     public static final ResearchItemsTrigger RESEARCH_ITEMS = REGISTRY.add(new ResearchItemsTrigger(), "research_items");
     public static final ResearchUnlockedTrigger HAS_RESEARCH = REGISTRY.add(new ResearchUnlockedTrigger(), "has_research");
 
+    @ApiStatus.Internal
     public static void register() {
         REGISTRY.register();
     }

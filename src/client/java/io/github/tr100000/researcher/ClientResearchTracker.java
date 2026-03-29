@@ -10,6 +10,7 @@ import io.github.tr100000.researcher.graph.ResearchGraph;
 import io.github.tr100000.researcher.networking.ResearchUpdateS2CPacket;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +39,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
 
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
+    private final Map<Identifier, Set<Identifier>> recipeUnlockedByMap = new Object2ObjectOpenHashMap<>();
     private final Map<Research, ResearchItemsTrigger.TriggerInstance> researchConditions = new Object2ObjectOpenHashMap<>();
     private @Nullable ResearchGraph graph;
 
@@ -54,6 +58,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
             progressMap.clear();
             researchMap.clear();
             unlockableRecipes.clear();
+            recipeUnlockedByMap.clear();
             researchConditions.clear();
             graph = null;
         }
@@ -83,6 +88,10 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         if (prepared.isEmpty()) return;
         prepared.forEach((id, entry) -> {
             researchMap.put(id, entry);
+            entry.recipeUnlocks().forEach(unlockedRecipe -> {
+                unlockableRecipes.add(unlockedRecipe);
+                recipeUnlockedByMap.computeIfAbsent(unlockedRecipe, _ -> new ObjectAVLTreeSet<>()).add(id);
+            });
             unlockableRecipes.addAll(entry.recipeUnlocks());
             if (entry.getConditions() instanceof ResearchItemsTrigger.TriggerInstance triggerInstance) {
                 researchConditions.put(entry, triggerInstance);
@@ -114,8 +123,13 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         return researchMap.inverse().get(research);
     }
 
-    public boolean isRecipeUnlockable(Identifier recipeId) {
+    public boolean isRecipeUnlockable(@Nullable Identifier recipeId) {
         return unlockableRecipes.contains(recipeId);
+    }
+
+    @Override
+    public Collection<Identifier> recipeUnlockedBy(Identifier recipeId) {
+        return recipeUnlockedByMap.getOrDefault(recipeId, Collections.emptySet());
     }
 
     public ResearchItemsTrigger.@Nullable TriggerInstance getResearchConditions(Research research) {
@@ -152,7 +166,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
         return graph.successors(research).stream().filter(this::isAvailableOrFinished).collect(Collectors.toCollection(ObjectOpenHashSet::new));
     }
 
-    public boolean canCraftRecipe(Identifier recipeId) {
+    public boolean canCraftRecipe(@Nullable Identifier recipeId) {
         return !isRecipeUnlockable(recipeId) || hasUnlockedRecipe(recipeId);
     }
 

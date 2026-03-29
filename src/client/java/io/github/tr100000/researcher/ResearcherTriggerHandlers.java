@@ -62,9 +62,7 @@ public final class ResearcherTriggerHandlers {
     private ResearcherTriggerHandlers() {}
 
     public static void register() {
-        register(null, () -> ErrorTriggerHandler.NULL);
         register(CriteriaTriggers.IMPOSSIBLE, () -> ErrorTriggerHandler.IMPOSSIBLE);
-
         register(CriteriaTriggers.PLAYER_KILLED_ENTITY, () -> OnKilledTriggerHandler.PLAYER_KILLED_ENTITY);
         register(CriteriaTriggers.ENTITY_KILLED_PLAYER, () -> OnKilledTriggerHandler.ENTITY_KILLED_PLAYER);
         register(CriteriaTriggers.ENTER_BLOCK, EnterBlockTriggerHandler::new);

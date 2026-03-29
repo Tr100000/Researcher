@@ -8,6 +8,7 @@ import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.advancements.criterion.TagPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -54,22 +55,27 @@ public final class PredicateHelper {
         return Optional.empty();
     }
 
+    @Contract(mutates = "param4")
     public static void optionalBooleanTooltip(Optional<Boolean> optional, Component trueText, Component falseText, IndentedTextHolder textHolder) {
         optional.ifPresent(value -> textHolder.accept(value ? trueText : falseText));
     }
 
+    @Contract(mutates = "param4")
     public static void optionalBooleanTooltip(Optional<Boolean> optional, Supplier<Component> trueText, Supplier<Component> falseText, IndentedTextHolder textHolder) {
         optional.ifPresent(value -> textHolder.accept(value ? trueText.get() : falseText.get()));
     }
 
+    @Contract(mutates = "param2")
     public static <T> void tagTooltip(TagPredicate<T> predicate, IndentedTextHolder textHolder) {
         textHolder.accept(Component.translatable(predicate.expected() ? TAG_EXPECTED : TAG_NOT_EXPECTED, predicate.tag().location().toString()));
     }
 
+    @Contract(mutates = "param2")
     public static void nbtTooltip(NbtPredicate predicate, IndentedTextHolder textHolder) {
         textHolder.accept(Component.translatable(NBT_KEY, predicate.tag().toString()));
     }
 
+    @Contract(mutates = "param2")
     public static void stateTooltip(StatePropertiesPredicate predicate, IndentedTextHolder textHolder) {
         predicate.properties().forEach(condition -> {
             if (condition.valueMatcher() instanceof StatePropertiesPredicate.ExactMatcher(String value)) {
@@ -89,9 +95,10 @@ public final class PredicateHelper {
         });
     }
 
+    @Contract(mutates = "param3")
     public static <T, P extends Predicate<T>> void collectionTooltip(CollectionPredicate<T, P> predicate, BiConsumer<P, IndentedTextHolder> handler, IndentedTextHolder textHolder) {
         if (predicate.size().isPresent()) {
-            NumberRangeUtils.tooltip(predicate.size().get(), COLLECTION_SIZE, textHolder);
+            MinMaxBoundsUtils.tooltip(predicate.size().get(), COLLECTION_SIZE, textHolder);
         }
         if (predicate.contains().isPresent()) {
             List<P> containsPredicates = predicate.contains().get().unpack();
@@ -100,7 +107,7 @@ public final class PredicateHelper {
         if (predicate.counts().isPresent()) {
             predicate.counts().get().unpack().forEach(entry -> {
                 PredicateHelper.tooltip(entry.test(), (p, t) -> {
-                    NumberRangeUtils.tooltip(entry.count(), COLLECTION_COUNT, t);
+                    MinMaxBoundsUtils.tooltip(entry.count(), COLLECTION_COUNT, t);
                     handler.accept(p, t);
                 }, COLLECTION_COUNT_HEADER);
             });

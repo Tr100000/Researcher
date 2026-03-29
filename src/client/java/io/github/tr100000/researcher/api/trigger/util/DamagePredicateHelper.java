@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.DamagePredicate;
 import net.minecraft.advancements.criterion.DamageSourcePredicate;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Contract;
 
 public final class DamagePredicateHelper {
     private DamagePredicateHelper() {}
@@ -18,9 +19,10 @@ public final class DamagePredicateHelper {
     private static final Component DAMAGE_DIRECT = ModUtils.getScreenTranslated("predicate.damage.must_be_direct");
     private static final Component DAMAGE_INDIRECT = ModUtils.getScreenTranslated("predicate.damage.must_be_indirect");
 
+    @Contract(mutates = "param2")
     public static void tooltip(DamagePredicate predicate, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(predicate.dealtDamage(), DAMAGE_DEALT, textHolder);
-        NumberRangeUtils.tooltip(predicate.takenDamage(), DAMAGE_TAKEN, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.dealtDamage(), DAMAGE_DEALT, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.takenDamage(), DAMAGE_TAKEN, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.blocked(), DAMAGE_BLOCKED, DAMAGE_NOT_BLOCKED, textHolder);
         predicate.type().ifPresent(t -> tooltip(t, textHolder));
         predicate.sourceEntity().ifPresent(sourceEntityPredicate -> {
@@ -31,6 +33,7 @@ public final class DamagePredicateHelper {
         });
     }
 
+    @Contract(mutates = "param2")
     public static void tooltip(DamageSourcePredicate predicate, IndentedTextHolder textHolder) {
         predicate.isDirect().ifPresent(mustBeDirect -> textHolder.accept(mustBeDirect ? DAMAGE_DIRECT : DAMAGE_INDIRECT));
 

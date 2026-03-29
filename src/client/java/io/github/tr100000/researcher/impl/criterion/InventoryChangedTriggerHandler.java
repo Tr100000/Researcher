@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.network.chat.Component;
@@ -35,8 +35,8 @@ public class InventoryChangedTriggerHandler extends AbstractTriggerHandler<Inven
     }
 
     private void slotConditionsTooltip(InventoryChangeTrigger.TriggerInstance.Slots slots, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(slots.occupied(), INVENTORY_OCCUPIED_SLOTS, textHolder);
-        NumberRangeUtils.tooltip(slots.full(), INVENTORY_FULL_SLOTS, textHolder);
-        NumberRangeUtils.tooltip(slots.empty(), INVENTORY_EMPTY_SLOTS, textHolder);
+        MinMaxBoundsUtils.tooltip(slots.occupied(), INVENTORY_OCCUPIED_SLOTS, textHolder);
+        MinMaxBoundsUtils.tooltip(slots.full(), INVENTORY_FULL_SLOTS, textHolder);
+        MinMaxBoundsUtils.tooltip(slots.empty(), INVENTORY_EMPTY_SLOTS, textHolder);
     }
 }

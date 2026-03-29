@@ -50,7 +50,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.withDefaultNamespace("blast_furnace"),
                         Identifier.withDefaultNamespace("this_recipe_does_not_exist")
                 )
-                .toUnlock(ItemCraftedTrigger.TriggerInstance.of(ItemPredicate.Builder.item().of(itemLookup, Items.BLAST_FURNACE)), 2)
+                .toUnlock(ItemCraftedTrigger.TriggerInstance.of(ItemPredicate.Builder.item().of(itemLookup, Items.FURNACE)), 2)
                 .export(exporter);
 
         Identifier ironTools = new ResearchBuilder(id("iron_tools"))

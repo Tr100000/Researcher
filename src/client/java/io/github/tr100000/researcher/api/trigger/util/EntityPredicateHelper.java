@@ -44,6 +44,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -144,6 +145,7 @@ public final class EntityPredicateHelper {
     private static final Component SHEEP_SHEARED = ModUtils.getScreenTranslated("predicate.entity.sheep.sheared");
     private static final Component SHEEP_NOT_SHEARED = ModUtils.getScreenTranslated("predicate.entity.sheep.not_sheared");
 
+    @Contract(mutates = "param2")
     public static void tooltip(EntityPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.entityType().isPresent() && predicate.entityType().get().types().size() > 1) {
             textHolder.accept(ENTITY_TYPE);
@@ -226,6 +228,7 @@ public final class EntityPredicateHelper {
         }
     }
 
+    @Contract(mutates = "param2")
     public static void tooltip(@Nullable ContextAwarePredicate predicate, IndentedTextHolder textHolder) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
         entityPredicate.ifPresentOrElse(p -> tooltip(p, textHolder), () -> textHolder.accept(PREDICATE_MISSING));
@@ -235,6 +238,7 @@ public final class EntityPredicateHelper {
         return PredicateHelper.optionalTooltip(predicate, EntityPredicateHelper::tooltip, headerText);
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(EntityType<?> entityType) {
         return new GroupedElement(
                 new IconElement(ENTITY_TYPE_ICONS.getOrDefault(entityType, Icon.ERROR)),
@@ -242,6 +246,7 @@ public final class EntityPredicateHelper {
         );
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable EntityPredicate predicate) {
         if (predicate != null && predicate.entityType().isPresent()) {
             List<TriggerDisplayElement> list = predicate.entityType().get().types().stream().map(Holder::value).map(EntityPredicateHelper::element).toList();
@@ -255,17 +260,20 @@ public final class EntityPredicateHelper {
         return new TextElement(ANY_ENTITY);
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable ContextAwarePredicate predicate) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
         return entityPredicate.map(EntityPredicateHelper::element).orElseGet(() -> new TextElement(ANY_ENTITY));
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement vehicleElement(@Nullable ContextAwarePredicate predicate) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
         Optional<EntityPredicate> vehiclePredicate = entityPredicate.flatMap(EntityPredicate::vehicle);
         return element(vehiclePredicate.orElse(null));
     }
 
+    @Contract(pure = true)
     private static Optional<EntityPredicate> entityPredicateFromLootContextPredicate(@Nullable ContextAwarePredicate predicate) {
         if (predicate == null) return Optional.empty();
 
@@ -277,13 +285,14 @@ public final class EntityPredicateHelper {
         return Optional.empty();
     }
 
+    @Contract(mutates = "param2")
     public static void effectTooltip(MobEffectsPredicate predicate, IndentedTextHolder textHolder) {
         predicate.effectMap().forEach((entry, data) -> {
             textHolder.accept(Component.translatable(EFFECT_HEADER_KEY, entry.unwrapKey().orElseThrow().identifier().toLanguageKey("effect")));
             textHolder.push();
 
-            NumberRangeUtils.tooltip(data.amplifier(), EFFECT_AMPLIFIER, textHolder);
-            NumberRangeUtils.tooltip(data.duration(), EFFECT_DURATION, textHolder);
+            MinMaxBoundsUtils.tooltip(data.amplifier(), EFFECT_AMPLIFIER, textHolder);
+            MinMaxBoundsUtils.tooltip(data.duration(), EFFECT_DURATION, textHolder);
             PredicateHelper.optionalBooleanTooltip(data.ambient(), EFFECT_AMBIENT, EFFECT_NOT_AMBIENT, textHolder);
             PredicateHelper.optionalBooleanTooltip(data.visible(), EFFECT_VISIBLE, EFFECT_NOT_VISIBLE, textHolder);
 
@@ -291,6 +300,7 @@ public final class EntityPredicateHelper {
         });
     }
 
+    @Contract(mutates = "param2")
     public static void flagsTooltip(EntityFlagsPredicate predicate, IndentedTextHolder textHolder) {
         PredicateHelper.optionalBooleanTooltip(predicate.isOnGround(), FLAGS_ON_GROUND, FLAGS_NOT_ON_GROUND, textHolder);
         PredicateHelper.optionalBooleanTooltip(predicate.isOnFire(), FLAGS_ON_FIRE, FLAGS_NOT_ON_FIRE, textHolder);
@@ -303,6 +313,7 @@ public final class EntityPredicateHelper {
         PredicateHelper.optionalBooleanTooltip(predicate.isFallFlying(), FLAGS_FALL_FLYING, FLAGS_NOT_FALL_FLYING, textHolder);
     }
 
+    @Contract(mutates = "param2")
     public static void equipmentTooltip(EntityEquipmentPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.head().isPresent()) {
             textHolder.accept(EQUIPMENT_HEAD);
@@ -348,11 +359,12 @@ public final class EntityPredicateHelper {
         }
     }
 
+    @Contract(mutates = "param2")
     public static void typeSpecificTooltip(EntitySubPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate instanceof LightningBoltPredicate(
                 MinMaxBounds.Ints blocksSetOnFire, Optional<EntityPredicate> entityStruck
         )) {
-            NumberRangeUtils.tooltip(blocksSetOnFire, LIGHTNING_BLOCKS_SET_ON_FIRE, textHolder);
+            MinMaxBoundsUtils.tooltip(blocksSetOnFire, LIGHTNING_BLOCKS_SET_ON_FIRE, textHolder);
             if (entityStruck.isPresent()) {
                 textHolder.accept(LIGHTNING_ENTITY_STRUCK);
                 textHolder.push();
@@ -370,19 +382,19 @@ public final class EntityPredicateHelper {
         if (predicate instanceof PlayerPredicate(
                 MinMaxBounds.Ints experienceLevel, FoodPredicate food, GameTypePredicate gameType, List<PlayerPredicate.StatMatcher<?>> stats, Object2BooleanMap<ResourceKey<Recipe<?>>> recipes, Map<Identifier, PlayerPredicate.AdvancementPredicate> advancements, Optional<EntityPredicate> lookingAt, Optional<InputPredicate> input
         )) {
-            NumberRangeUtils.tooltip(experienceLevel, PLAYER_EXPERIENCE_LEVEL, textHolder);
+            MinMaxBoundsUtils.tooltip(experienceLevel, PLAYER_EXPERIENCE_LEVEL, textHolder);
             if (gameType != GameTypePredicate.ANY) {
                 textHolder.accept(PLAYER_GAME_MODE);
                 textHolder.push();
                 gameType.types().forEach(mode -> textHolder.accept(mode.getLongDisplayName()));
                 textHolder.pop();
             }
-            NumberRangeUtils.tooltip(food.level(), PLAYER_FOOD_LEVEL, textHolder);
-            NumberRangeUtils.tooltip(food.saturation(), PLAYER_FOOD_SATURATION, textHolder);
+            MinMaxBoundsUtils.tooltip(food.level(), PLAYER_FOOD_LEVEL, textHolder);
+            MinMaxBoundsUtils.tooltip(food.saturation(), PLAYER_FOOD_SATURATION, textHolder);
             if (!stats.isEmpty()) {
                 textHolder.accept(PLAYER_STATS);
                 textHolder.push();
-                stats.forEach(matcher -> NumberRangeUtils.tooltip(matcher.range(), Component.translatable(matcher.value().unwrapKey().orElseThrow().identifier().toLanguageKey("stat")), textHolder));
+                stats.forEach(matcher -> MinMaxBoundsUtils.tooltip(matcher.range(), Component.translatable(matcher.value().unwrapKey().orElseThrow().identifier().toLanguageKey("stat")), textHolder));
                 textHolder.pop();
             }
             recipes.forEach((key, expected) -> {
@@ -425,7 +437,7 @@ public final class EntityPredicateHelper {
         if (predicate instanceof SlimePredicate(
                 MinMaxBounds.Ints size
         )) {
-            NumberRangeUtils.tooltip(size, SLIME_SIZE, textHolder);
+            MinMaxBoundsUtils.tooltip(size, SLIME_SIZE, textHolder);
         }
 
         if (predicate instanceof RaiderPredicate(
@@ -454,6 +466,7 @@ public final class EntityPredicateHelper {
         ENTITY_TYPE_ICONS.put(entityType, icon);
     }
 
+    @ApiStatus.Internal
     public static void printNonRegistered() {
         BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
             if (!ENTITY_TYPE_ICONS.containsKey(entityType)) {
@@ -472,7 +485,8 @@ public final class EntityPredicateHelper {
         }
     }
 
-    static {
+    @ApiStatus.Internal
+    public static void registerDefault() {
         registerItemForEntityType(EntityType.ARMOR_STAND, Items.ARMOR_STAND);
         registerItemForEntityType(EntityType.ARROW, Items.ARROW);
         registerItemForEntityType(EntityType.SPECTRAL_ARROW, Items.SPECTRAL_ARROW);
@@ -493,5 +507,6 @@ public final class EntityPredicateHelper {
         registerItemForEntityType(EntityType.TNT, Items.TNT);
         registerItemForEntityType(EntityType.TRIDENT, Items.TRIDENT);
         registerItemForEntityType(EntityType.WIND_CHARGE, Items.WIND_CHARGE);
+        registerItemForEntityType(EntityType.WITHER_SKULL, Items.WITHER_SKELETON_SKULL);
     }
 }

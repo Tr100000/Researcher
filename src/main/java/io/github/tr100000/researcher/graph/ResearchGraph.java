@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -29,6 +31,7 @@ public class ResearchGraph {
 
     private ResearchGraph() {}
 
+    @Contract(pure = true)
     public static ResearchGraph build(Map<Identifier, Research> map) {
         ResearchGraph graph = new ResearchGraph();
 
@@ -130,38 +133,52 @@ public class ResearchGraph {
         return false;
     }
 
+    @UnmodifiableView
+    @Contract(pure = true)
     public List<Research> nodes() {
         return Collections.unmodifiableList(nodes);
     }
 
+    @UnmodifiableView
+    @Contract(pure = true)
     public List<Edge> edges() {
         return Collections.unmodifiableList(edges);
     }
 
+    @UnmodifiableView
+    @Contract(pure = true)
     public List<Research> rootNodes() {
         return Collections.unmodifiableList(rootNodes);
     }
 
+    @UnmodifiableView
+    @Contract(pure = true)
     public List<Research> predecessors(@Nullable Research node) {
         return Collections.unmodifiableList(upward.getOrDefault(node, Collections.emptyList()));
     }
 
+    @UnmodifiableView
+    @Contract(pure = true)
     public List<Research> successors(@Nullable Research node) {
         return Collections.unmodifiableList(downward.getOrDefault(node, Collections.emptyList()));
     }
 
+    @Contract(pure = true)
     public int inDegree(@Nullable Research node) {
         return predecessors(node).size();
     }
 
+    @Contract(pure = true)
     public int outDegree(@Nullable Research node) {
         return successors(node).size();
     }
 
+    @Contract(value = "null -> false", pure = true)
     public boolean containsNode(@Nullable Research node) {
         return nodes.contains(node);
     }
 
+    @Contract(pure = true)
     public List<Research> getTopologicalOrder() {
         Map<Research, Integer> inDegreeMap = new Object2IntOpenHashMap<>(nodes.size());
         for (Research node : nodes) {

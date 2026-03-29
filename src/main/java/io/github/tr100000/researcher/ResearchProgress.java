@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.Contract;
 
 public class ResearchProgress {
     public static final Codec<ResearchProgress> CODEC = Codec.either(
@@ -38,6 +39,7 @@ public class ResearchProgress {
         this.count = count;
     }
 
+    @Contract(value = "_ -> new", pure = true)
     private static DataResult<ResearchProgress> createFromBoolean(boolean isFinished) {
         if (isFinished) {
             return DataResult.success(new ResearchProgress(true));
@@ -47,23 +49,28 @@ public class ResearchProgress {
         }
     }
 
+    @Contract(pure = true)
     public boolean isFinished() {
         return finished;
     }
 
+    @Contract(pure = true)
     public int getCount() {
         return count;
     }
 
+    @Contract(pure = true)
     public boolean hasProgress() {
         return isFinished() || getCount() > 0;
     }
 
+    @Contract(pure = true)
     public float getProgress01(int max) {
         if (isFinished()) return 1;
         return (float)count / max;
     }
 
+    @Contract(pure = true)
     public int getScaledProgress(int max, int scale) {
         return (int)(getProgress01(max) * scale);
     }
@@ -91,6 +98,7 @@ public class ResearchProgress {
         }
     }
 
+    @Contract("_ -> new")
     public static ResearchProgress fromPacket(FriendlyByteBuf buf) {
         if (buf.readBoolean()) {
             return new ResearchProgress(true);

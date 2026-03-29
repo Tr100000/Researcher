@@ -8,10 +8,16 @@
     "ClientPacketListenerMixin",
     "compat.jei.RecipesGuiAccessor"
   ],
+  "mixins": [
+    "ItemsMixin",
+    "compat.jei.CraftingRecipeCategoryMixin",
+    "compat.jei.JeiStarterMixin",
+    "compat.jei.RecipeManagerInternalMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
-    "ItemsMixin"
-  ]
+  "overwrites": {
+    "requireAnnotations": true
+  }
 }

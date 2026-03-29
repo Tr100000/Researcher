@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0-beta.1+26.1]
+
+**Updated to 26.1**
+
+### Added
+- The researches needed to unlock a recipe are now shown in recipe viewers
+  - This currently only works with JEI
+
+### Changed
+- Some things
+
+### Fixed
+- Many things
+
 ## [0.2.0-beta.1+1.21.11]
 
 ### Added

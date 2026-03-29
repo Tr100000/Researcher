@@ -6,6 +6,7 @@ import io.github.tr100000.researcher.api.trigger.element.SpacingElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class TriggerDisplay implements TriggerDisplayElement {
         return totalWidth + EDGE_PADDING;
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement makeCountElement(ResearchCriterion<?> criterion) {
         return new GroupedElement(
                 new TextElement(Component.literal(String.valueOf(criterion.count()))),

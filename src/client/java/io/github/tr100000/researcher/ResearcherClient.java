@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
 import io.github.tr100000.researcher.api.trigger.util.ComponentsPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
+import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.RrvDelegate;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
@@ -71,7 +72,7 @@ public class ResearcherClient implements ClientModInitializer {
 //            recipeViewerDelegate = new ReiDelegate();
         }
         else if (FabricLoader.getInstance().isModLoaded("jei")) {
-//            recipeViewerDelegate = new JeiDelegate();
+            recipeViewerDelegate = new JeiDelegate();
         }
         else if (FabricLoader.getInstance().isModLoaded("rrv")) {
             recipeViewerDelegate = new RrvDelegate();

@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.EnchantedItemTrigger;
@@ -21,7 +21,7 @@ public class EnchantedItemTriggerHandler extends AbstractTriggerHandler<Enchante
     protected void fillTooltip(ResearchCriterion<EnchantedItemTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
         PredicateHelper.optionalTooltip(criterion.conditions().item(), ItemPredicateHelper::tooltip, ITEM_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
-        NumberRangeUtils.tooltip(criterion.conditions().levels(), LEVEL_TEXT, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().levels(), LEVEL_TEXT, textHolder);
         playerTooltip(criterion, textHolder);
     }
 }

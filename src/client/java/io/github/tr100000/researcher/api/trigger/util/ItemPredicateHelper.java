@@ -11,6 +11,7 @@ import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ public final class ItemPredicateHelper {
 
     private static final Component ANY_ITEM = ModUtils.getScreenTranslated("predicate.item.any");
 
+    @Contract(mutates = "param2")
     public static void tooltip(ItemPredicate predicate, IndentedTextHolder textHolder) {
         if (predicate.items().isPresent()) {
             textHolder.accept(ITEM_LIST);
@@ -30,12 +32,13 @@ public final class ItemPredicateHelper {
             predicate.items().get().forEach(entry -> textHolder.accept(entry.value().getName(entry.value().getDefaultInstance())));
             textHolder.pop();
         }
-        NumberRangeUtils.tooltip(predicate.count(), ITEM_COUNT, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.count(), ITEM_COUNT, textHolder);
         if (!predicate.components().isEmpty()) {
             ComponentsPredicateHelper.tooltip(predicate.components(), textHolder);
         }
     }
 
+    @Contract(pure = true)
     public static Optional<TriggerDisplayElement> element(ItemPredicate predicate) {
         if (predicate.items().isPresent() && predicate.items().get().size() > 0) {
             List<TriggerDisplayElement> subElements = predicate.items().get()
@@ -49,10 +52,12 @@ public final class ItemPredicateHelper {
         return Optional.empty();
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(Optional<ItemPredicate> predicate) {
         return predicate.flatMap(ItemPredicateHelper::element).orElseGet(ItemPredicateHelper::anyItemElement);
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement entryElement(Holder<Item> item) {
         return new GroupedElement(
                 new ItemElement(item.value(), true),
@@ -60,6 +65,7 @@ public final class ItemPredicateHelper {
         );
     }
 
+    @Contract(value = "-> new", pure = true)
     private static TriggerDisplayElement anyItemElement() {
         return new TextElement(ANY_ITEM);
     }

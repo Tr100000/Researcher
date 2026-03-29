@@ -3,7 +3,7 @@ package io.github.tr100000.researcher.impl.criterion;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.NumberRangeUtils;
+import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import net.minecraft.advancements.criterion.TargetBlockTrigger;
@@ -19,7 +19,7 @@ public class TargetHitTriggerHandler extends AbstractTriggerHandler<TargetBlockT
 
     @Override
     protected void fillTooltip(ResearchCriterion<TargetBlockTrigger.TriggerInstance> criterion, IndentedTextHolder textHolder) {
-        NumberRangeUtils.tooltip(criterion.conditions().signalStrength(), SIGNAL_STRENGTH, textHolder);
+        MinMaxBoundsUtils.tooltip(criterion.conditions().signalStrength(), SIGNAL_STRENGTH, textHolder);
         PredicateHelper.optionalTooltip(criterion.conditions().projectile(), EntityPredicateHelper::tooltip, PROJECTILE_CONDITIONS_HEADER)
                 .ifPresent(textHolder::accept);
         playerTooltip(criterion, textHolder);

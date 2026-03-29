@@ -20,6 +20,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,26 +52,33 @@ public record Research(Optional<Component> titleText, Optional<Component> descri
             Research::new
     );
 
+    @Contract(pure = true)
     public String getTranslationKey(ResearchHolder researchManager) {
         return researchManager.getIdOrEmpty(this).toLanguageKey(ResearchManager.PATH);
     }
 
+    @Contract(pure = true)
     public String getDescriptionTranslationKey(ResearchHolder researchManager) {
         return researchManager.getIdOrEmpty(this).toLanguageKey(ResearchManager.PATH, "desc");
     }
 
+    @Contract(pure = true)
     public Component getTitle(ResearchHolder researchManager) {
         return titleText.orElseGet(() -> Component.translatable(getTranslationKey(researchManager)));
     }
 
+    @Contract(pure = true)
     public Component getDescription(ResearchHolder researchManager) {
         return descriptionText.orElseGet(() -> Component.translatableWithFallback(getDescriptionTranslationKey(researchManager), ""));
     }
 
+    @Contract(pure = true)
+    @UnmodifiableView
     public List<Research> prerequisites(ResearchHolder researchManager) {
         return prerequisiteIds().stream().map(researchManager::get).toList();
     }
 
+    @Contract(pure = true)
     public MutableComponent getChatAnnouncementText(ResearchHolder researchManager, ServerPlayer player) {
         Component titleText = getTitle(researchManager);
         Component descriptionText = getDescription(researchManager);
@@ -83,18 +92,22 @@ public record Research(Optional<Component> titleText, Optional<Component> descri
         return Component.translatable("chat.researcher.research", player.getDisplayName(), researchText);
     }
 
+    @Contract(pure = true)
     public CriterionTrigger<?> getTrigger() {
         return trigger().criterion().trigger();
     }
 
+    @Contract(pure = true)
     public CriterionTriggerInstance getConditions() {
         return trigger().criterion().triggerInstance();
     }
 
+    @Contract(pure = true)
     public static Comparator<Research> idComparator(ResearchHolder researchManager) {
         return Comparator.comparing(researchManager::getIdOrEmpty);
     }
 
+    @Contract(pure = true)
     public static Comparator<Research> statusComparator(PlayerResearchHolder researchManager) {
         return Comparator.comparing(researchManager::getStatus);
     }

@@ -11,6 +11,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import org.jetbrains.annotations.Contract;
 
 public record ResearchCriterion<T extends CriterionTriggerInstance>(Criterion<T> criterion, int count) {
     public static final Codec<ResearchCriterion<?>> CODEC = RecordCodecBuilder.create(
@@ -32,10 +33,12 @@ public record ResearchCriterion<T extends CriterionTriggerInstance>(Criterion<T>
         this(new Criterion<>(trigger, conditions), count);
     }
 
+    @Contract(pure = true)
     public T conditions() {
         return criterion().triggerInstance();
     }
 
+    @Contract(pure = true)
     public CriterionTrigger<T> trigger() {
         return criterion().trigger();
     }
