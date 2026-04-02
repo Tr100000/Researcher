@@ -19,7 +19,7 @@ public abstract class ServerPlayerMixin implements PlayerResearchTrackerGetter {
     private PlayerResearchTracker researchTracker;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void init(MinecraftServer server, ServerLevel world, GameProfile profile, ClientInformation clientOptions, CallbackInfo ci) {
+    private void init(MinecraftServer server, ServerLevel level, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
         researchTracker = server.getPlayerList().researcher$getPlayerTracker((ServerPlayer)(Object)this);
     }
 

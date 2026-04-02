@@ -29,7 +29,7 @@ public class StartResearchButton extends AbstractButton {
     }
 
     public static StartResearchButton create(int x, int y, ClientResearchTracker researchTracker, Research research, boolean pin, boolean isCurrent) {
-        StartResearchButton button = new StartResearchButton(x, y, 0, 20, Component.empty(), researchTracker.getIdOrEmpty(research), pin, isCurrent);
+        StartResearchButton button = new StartResearchButton(x, y, 120, 20, Component.empty(), researchTracker.getIdOrEmpty(research), pin, isCurrent);
         button.updateText(isCurrent);
         return button;
     }

@@ -18,7 +18,7 @@ public abstract class ClientPacketListenerMixin implements ClientResearchTracker
     private ClientResearchTracker researchTracker;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void init(Minecraft client, Connection clientConnection, CommonListenerCookie clientConnectionState, CallbackInfo ci) {
+    private void init(Minecraft minecraft, Connection connection, CommonListenerCookie cookie, CallbackInfo ci) {
         researchTracker = new ClientResearchTracker();
     }
 

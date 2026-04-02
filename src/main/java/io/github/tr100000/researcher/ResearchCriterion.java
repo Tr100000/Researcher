@@ -21,7 +21,7 @@ public record ResearchCriterion<T extends CriterionTriggerInstance>(Criterion<T>
             ).apply(instance, ResearchCriterion::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchCriterion<?>> PACKET_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchCriterion<?>> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.fromCodecWithRegistriesTrusted(Criterion.CODEC), ResearchCriterion::criterion,
             ByteBufCodecs.VAR_INT, ResearchCriterion::count,
             ResearchCriterion::new

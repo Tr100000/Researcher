@@ -17,7 +17,7 @@ public class ResearchProgress {
             researchProgress -> researchProgress.isFinished() ? Either.left(researchProgress) : Either.right(researchProgress)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchProgress> PACKET_CODEC = StreamCodec.ofMember(ResearchProgress::toPacket, ResearchProgress::fromPacket);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchProgress> STREAM_CODEC = StreamCodec.ofMember(ResearchProgress::toPacket, ResearchProgress::fromPacket);
 
     private boolean finished;
     private int count;

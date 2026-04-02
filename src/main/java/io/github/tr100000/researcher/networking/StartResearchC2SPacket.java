@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public record StartResearchC2SPacket(Mode mode, Optional<Identifier> researchId) implements CustomPacketPayload {
     public static final Type<StartResearchC2SPacket> ID = ResearcherNetworking.payloadId("start_research");
-    public static final StreamCodec<RegistryFriendlyByteBuf, StartResearchC2SPacket> CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, StartResearchC2SPacket> STREAM_CODEC = StreamCodec.composite(
             PacketCodecUtils.ofEnum(Mode.class), StartResearchC2SPacket::mode,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC), StartResearchC2SPacket::researchId,
             StartResearchC2SPacket::new

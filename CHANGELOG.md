@@ -1,11 +1,7 @@
-**Updated to 26.1**
-
 ### Added
-- The researches needed to unlock a recipe are now shown in recipe viewers
-  - This currently only works with JEI
+- Added research finished events (both client and server)
 
 ### Changed
-- Some things
-
-### Fixed
-- Many things
+- Optimized png images
+- JSON field names now use snake case instead of camel case
+- Mess with data serialization

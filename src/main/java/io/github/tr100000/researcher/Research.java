@@ -35,17 +35,17 @@ public record Research(Optional<Component> titleText, Optional<Component> descri
         instance -> instance.group(
                 ComponentSerialization.CODEC.optionalFieldOf("title").forGetter(Research::titleText),
                 ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(Research::descriptionText),
-                ResearchCriterion.CODEC.optionalFieldOf("toUnlock", ResearchCriterion.IMPOSSIBLE).forGetter(Research::trigger),
+                ResearchCriterion.CODEC.optionalFieldOf("to_unlock", ResearchCriterion.IMPOSSIBLE).forGetter(Research::trigger),
                 Identifier.CODEC.listOf().optionalFieldOf("prerequisites", Collections.emptyList()).forGetter(Research::prerequisiteIds),
-                Identifier.CODEC.listOf().optionalFieldOf("recipeUnlocks", Collections.emptyList()).forGetter(Research::recipeUnlocks),
+                Identifier.CODEC.listOf().optionalFieldOf("recipe_unlocks", Collections.emptyList()).forGetter(Research::recipeUnlocks),
                 Icon.CODEC.optionalFieldOf("display", DEFAULT_ICON).forGetter(Research::display)
         ).apply(instance, Research::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Research> PACKET_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, Research> STREAM_CODEC = StreamCodec.composite(
             ComponentSerialization.OPTIONAL_STREAM_CODEC, Research::titleText,
             ComponentSerialization.OPTIONAL_STREAM_CODEC, Research::descriptionText,
-            ResearchCriterion.PACKET_CODEC, Research::trigger,
+            ResearchCriterion.STREAM_CODEC, Research::trigger,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::prerequisiteIds,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::recipeUnlocks,
             Icon.PACKET_CODEC, Research::display,

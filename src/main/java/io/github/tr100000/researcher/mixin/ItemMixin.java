@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Item.class)
 public abstract class ItemMixin {
     @Inject(method = "onCraftedBy", at = @At("TAIL"))
-    public void onCraftByPlayer(ItemStack stack, Player player, CallbackInfo ci) {
+    public void onCraftedByPlayer(ItemStack itemStack, Player player, CallbackInfo ci) {
         if (player instanceof ServerPlayer serverPlayer) {
-            ResearcherCriteriaTriggers.ITEM_CRAFTED.trigger(serverPlayer, stack);
+            ResearcherCriteriaTriggers.ITEM_CRAFTED.trigger(serverPlayer, itemStack);
         }
     }
 }

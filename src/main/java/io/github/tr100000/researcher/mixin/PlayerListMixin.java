@@ -53,7 +53,7 @@ public abstract class PlayerListMixin implements ServerResearchTrackerGetter {
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void placeNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci) {
+    private void placeNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
         playersToSyncWith(player)
                 .map(ServerPlayer::researcher$getPlayerTracker)
                 .forEach(player.researcher$getPlayerTracker()::syncWith);

@@ -21,10 +21,10 @@ public record ResearchUpdateS2CPacket(
         List<Identifier> pinnedResearches
 ) implements CustomPacketPayload {
     public static final Type<ResearchUpdateS2CPacket> ID = ResearcherNetworking.payloadId("research_update");
-    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchUpdateS2CPacket> CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchUpdateS2CPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, ResearchUpdateS2CPacket::clearCurrent,
-            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, ResearchProgress.PACKET_CODEC), ResearchUpdateS2CPacket::progressMap,
-            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, Research.PACKET_CODEC), ResearchUpdateS2CPacket::loadedResearch,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, ResearchProgress.STREAM_CODEC), ResearchUpdateS2CPacket::progressMap,
+            ByteBufCodecs.map(Object2ObjectOpenHashMap::new, Identifier.STREAM_CODEC, Research.STREAM_CODEC), ResearchUpdateS2CPacket::loadedResearch,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC), ResearchUpdateS2CPacket::currentResearching,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), ResearchUpdateS2CPacket::pinnedResearches,
             ResearchUpdateS2CPacket::new

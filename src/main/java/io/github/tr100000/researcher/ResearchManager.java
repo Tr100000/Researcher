@@ -10,6 +10,7 @@ import io.github.tr100000.researcher.graph.ResearchGraph;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -28,9 +29,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class ResearchManager extends SimpleJsonResourceReloadListener<Research> implements ResearchHolder {
+@SuppressWarnings("UnstableApiUsage")
+public class ResearchManager extends SimpleJsonResourceReloadListener<Research> implements FabricResourceReloader, ResearchHolder {
     public static final String PATH = "research";
     public static final Identifier ID = ModUtils.id(PATH);
+    public static final StateKey<ResearchManager> STATE_KEY = new StateKey<>();
     private final ReloadableServerResources parent;
     private final BiMap<Identifier, Research> researchMap = HashBiMap.create();
     private final Set<Identifier> unlockableRecipes = new ObjectOpenHashSet<>();
@@ -43,6 +46,16 @@ public class ResearchManager extends SimpleJsonResourceReloadListener<Research> 
     public ResearchManager(HolderLookup.Provider lookup, ReloadableServerResources parent) {
         super(lookup.createSerializationContext(JsonOps.INSTANCE), Research.CODEC, FileToIdConverter.json(PATH));
         this.parent = parent;
+    }
+
+    @Override
+    public void prepareSharedState(SharedState currentReload) {
+        currentReload.set(STATE_KEY, this);
+    }
+
+    @Override
+    public Identifier fabric$getId() {
+        return ID;
     }
 
     @Override

@@ -10,9 +10,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.TransmuteRecipe;
@@ -33,7 +36,7 @@ public class Researcher implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(ResearcherCommand::register);
         CommandRegistrationCallback.EVENT.register(ResearchCommand::register);
 
-        PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+        PlayerBlockBreakEvents.AFTER.register((_, player, _, state, _) -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 ResearcherCriteriaTriggers.BLOCK_BROKEN.trigger(serverPlayer, state);
             }
@@ -42,10 +45,10 @@ public class Researcher implements ModInitializer {
         ResearcherNetworking.registerPayloads();
         ResearcherNetworking.registerServerRecievers();
 
-//        ResourceLoader.get(ResourceType.SERVER_DATA).addReloaderOrdering(
-//                ResourceReloaderKeys.Server.RECIPES,
-//                ResearchManager.ID
-//        );
+        ResourceLoader.get(PackType.SERVER_DATA).addListenerOrdering(
+                ResourceReloaderKeys.Server.RECIPES,
+                ResearchManager.ID
+        );
 
         RecipeSynchronization.synchronizeRecipeSerializer(ShapedRecipe.SERIALIZER);
         RecipeSynchronization.synchronizeRecipeSerializer(ShapelessRecipe.SERIALIZER);

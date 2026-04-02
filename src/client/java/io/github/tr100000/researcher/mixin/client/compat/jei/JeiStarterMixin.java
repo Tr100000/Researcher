@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(JeiStarter.class)
 public abstract class JeiStarterMixin {
     @Inject(method = "start", at = @At(value = "INVOKE", target = "Lmezz/jei/common/Internal;setRuntime(Lmezz/jei/api/runtime/IJeiRuntime;)V"))
-    private void onRuntimeAvailable(CallbackInfo ci, @Local(name = "jeiRuntime") JeiRuntime runtime) {
-        JeiDelegate.runtimeAvailable(runtime);
+    private void onRuntimeAvailable(CallbackInfo ci, @Local(name = "jeiRuntime") JeiRuntime jeiRuntime) {
+        JeiDelegate.runtimeAvailable(jeiRuntime);
     }
 
     @Inject(method = "stop", at = @At(value = "INVOKE", target = "Lmezz/jei/common/Internal;onRuntimeStopped()V"))

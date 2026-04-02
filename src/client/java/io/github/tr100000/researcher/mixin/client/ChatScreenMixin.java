@@ -25,16 +25,16 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "mouseClicked", at = @At("TAIL"))
-    private void mouseClicked(MouseButtonEvent click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClicked(MouseButtonEvent event, boolean doubleClick, CallbackInfoReturnable<Boolean> cir) {
         ClientResearchTracker researchTracker = minecraft.getConnection().researcher$getClientTracker();
 
         int y = 0;
         if (researchTracker.getCurrentResearching() != null) {
-            unsetResearchIfTouching(y + 1, researchTracker.getCurrentResearchingId(), false, click);
+            unsetResearchIfTouching(y + 1, researchTracker.getCurrentResearchingId(), false, event);
             y += 27;
         }
         for (Identifier id : researchTracker.getPinnedResearches()) {
-            unsetResearchIfTouching(y + 1, id, true, click);
+            unsetResearchIfTouching(y + 1, id, true, event);
             y += 27;
         }
     }

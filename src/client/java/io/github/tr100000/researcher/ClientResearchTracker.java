@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
 import io.github.tr100000.researcher.api.ResearchHolder;
+import io.github.tr100000.researcher.api.ResearcherClientEvents;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
 import io.github.tr100000.researcher.graph.ResearchGraph;
@@ -70,6 +71,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
             progressMap.put(research, progress);
             if (!packet.clearCurrent() && progress.isFinished()) {
                 client.getToastManager().addToast(new ResearchToast(research));
+                ResearcherClientEvents.RESEARCH_FINISHED.invoker().onResearchFinished(this, research);
                 shouldPinAvailable.set(true);
             }
             if (!progress.hasProgress()) {

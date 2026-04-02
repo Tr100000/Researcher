@@ -12,8 +12,8 @@ public class ResearcherNetworking {
     protected ResearcherNetworking() {}
 
     public static void registerPayloads() {
-        PayloadTypeRegistry.clientboundPlay().registerLarge(ResearchUpdateS2CPacket.ID, ResearchUpdateS2CPacket.CODEC, Integer.MAX_VALUE);
-        PayloadTypeRegistry.serverboundPlay().register(StartResearchC2SPacket.ID, StartResearchC2SPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().registerLarge(ResearchUpdateS2CPacket.ID, ResearchUpdateS2CPacket.STREAM_CODEC, Integer.MAX_VALUE);
+        PayloadTypeRegistry.serverboundPlay().register(StartResearchC2SPacket.ID, StartResearchC2SPacket.STREAM_CODEC);
     }
 
     public static void registerServerRecievers() {

@@ -2,14 +2,12 @@ package io.github.tr100000.researcher;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.internal.Streams;
-import com.google.gson.stream.JsonReader;
-import com.mojang.datafixers.util.Pair;
+import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
+import io.github.tr100000.researcher.api.ResearcherEvents;
 import io.github.tr100000.researcher.networking.ResearchUpdateS2CPacket;
 import io.github.tr100000.researcher.networking.StartResearchC2SPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -21,10 +19,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.util.StrictJsonParser;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import java.io.BufferedWriter;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -80,24 +81,18 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
 
     private void load() {
         if (Files.isRegularFile(filePath)) {
-            try (JsonReader jsonReader = new JsonReader(Files.newBufferedReader(filePath))) {
-                JsonElement json = Streams.parse(jsonReader);
-                DataResult<Pair<Data, JsonElement>> result = Data.CODEC.decode(JsonOps.INSTANCE, json);
-                if (result.isSuccess()) {
-                    loadData(result.getOrThrow().getFirst());
-                }
-                else {
-                    Researcher.LOGGER.error("Error while loading research data, creating empty!");
-                    loadData(Data.createEmpty());
-                }
+            try (Reader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+                JsonElement json = StrictJsonParser.parse(reader);
+                Data result = Data.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
+                loadData(result);
             }
             catch (Exception e) {
-                Researcher.LOGGER.error("Failed to load research data!", e);
+                Researcher.LOGGER.error("Couldn't load player research data, creating empty!", e);
                 loadData(Data.createEmpty());
             }
         }
         else {
-            Researcher.LOGGER.error("Path {} is not a regular file, creating empty!", filePath);
+            Researcher.LOGGER.error("Path {} was not a regular file, creating empty!", filePath);
             loadData(Data.createEmpty());
         }
     }
@@ -248,11 +243,13 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         progressUpdates.add(research);
         endTracking(research);
         playerManager.broadcastSystemMessage(research.getChatAnnouncementText(researchManager, owner), false);
-        ResearcherCriteriaTriggers.HAS_RESEARCH.trigger(owner, researchId);
         if (researchId.equals(currentResearching)) {
             currentResearching = null;
         }
         pinnedResearches.remove(researchId);
+
+        ResearcherCriteriaTriggers.HAS_RESEARCH.trigger(owner, researchId);
+        ResearcherEvents.RESEARCH_FINISHED.invoker().onResearchFinished(this, research);
     }
 
     public boolean incrementCriterion(Research research, int count) {

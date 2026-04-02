@@ -184,6 +184,11 @@ modrinth {
         required.project "trutils"
         required.project "fzzy-config"
     }
+
+    gameVersions.add(project.minecraft_version)
+    if (project.modrinth_extra_minecraft_versions) {
+        project.modrinth_extra_minecraft_versions.split(",").each { gameVersions.add(it.trim()) }
+    }
 }
 
 publishing {
