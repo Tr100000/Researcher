@@ -31,6 +31,8 @@ public class Researcher implements ModInitializer {
     public void onInitialize() {
         ResearcherConfigs.init();
 
+        ResearcherRegistries.register();
+        ResearcherRewardTypes.register();
         ResearcherCriteriaTriggers.register();
 
         CommandRegistrationCallback.EVENT.register(ResearcherCommand::register);

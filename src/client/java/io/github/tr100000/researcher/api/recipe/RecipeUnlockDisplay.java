@@ -7,15 +7,28 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
+import java.util.List;
 import java.util.Objects;
 
 public interface RecipeUnlockDisplay {
-    RecipeUnlockDisplay ERROR = new Impl(Icon.ERROR, ClientTooltipComponent.create(Component.literal("Error").getVisualOrderText()));
+    RecipeUnlockDisplay ERROR = of(Icon.ERROR, ClientTooltipComponent.create(Component.literal("Error").getVisualOrderText()));
 
     Icon icon();
-    ClientTooltipComponent tooltip();
+    List<ClientTooltipComponent> tooltip();
 
-    record Impl(Icon icon, ClientTooltipComponent tooltip) implements RecipeUnlockDisplay {}
+    record Impl(Icon icon, List<ClientTooltipComponent> tooltip) implements RecipeUnlockDisplay {}
+
+    static RecipeUnlockDisplay of(Icon icon, ClientTooltipComponent tooltip) {
+        return new Impl(icon, List.of(tooltip));
+    }
+
+    static RecipeUnlockDisplay of(Icon icon, ClientTooltipComponent... tooltip) {
+        return new Impl(icon, List.of(tooltip));
+    }
+
+    static RecipeUnlockDisplay of(Icon icon, List<ClientTooltipComponent> tooltip) {
+        return new Impl(icon, tooltip);
+    }
 
     static ContextMap contextParameterMap() {
         return SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));

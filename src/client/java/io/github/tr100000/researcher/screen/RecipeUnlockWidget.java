@@ -32,7 +32,7 @@ public class RecipeUnlockWidget extends AbstractWidget {
 
     public final Identifier id;
     public final Icon icon;
-    public final ClientTooltipComponent tooltip;
+    public final List<ClientTooltipComponent> tooltip;
     public final boolean isError;
 
     public static RecipeUnlockWidget fromId(int x, int y, Identifier id) {
@@ -64,8 +64,8 @@ public class RecipeUnlockWidget extends AbstractWidget {
     @Override
     protected void extractWidgetRenderState(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         IconRenderers.draw(icon, graphics, getX(), getY());
-        if (isHovered() && graphics.containsPointInScissor(mouseX, mouseY)) {
-            GuiHelper.tooltip(graphics, client.font, List.of(tooltip),  mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
+        if (!tooltip.isEmpty() && isHovered() && graphics.containsPointInScissor(mouseX, mouseY)) {
+            GuiHelper.tooltip(graphics, client.font, tooltip,  mouseX, mouseY, DefaultTooltipPositioner.INSTANCE);
             graphics.requestCursor(isError ? CursorTypes.NOT_ALLOWED : CursorTypes.POINTING_HAND);
         }
     }

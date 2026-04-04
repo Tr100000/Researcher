@@ -9,6 +9,7 @@
     "compat.jei.RecipesGuiAccessor"
   ],
   "mixins": [
+    "BuiltInRegistriesMixin",
     "ItemsMixin",
     "compat.jei.CraftingRecipeCategoryMixin",
     "compat.jei.JeiStarterMixin",

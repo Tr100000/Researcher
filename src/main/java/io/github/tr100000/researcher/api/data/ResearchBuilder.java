@@ -2,6 +2,7 @@ package io.github.tr100000.researcher.api.data;
 
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchCriterion;
+import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ public class ResearchBuilder {
     private ResearchCriterion<?> trigger = ResearchCriterion.IMPOSSIBLE;
     private final List<Identifier> prerequisiteIds = new ObjectArrayList<>();
     private final List<Identifier> recipeUnlocks = new ObjectArrayList<>();
+    private final List<ResearchReward> rewards = new ObjectArrayList<>();
     private Icon display = Research.DEFAULT_ICON;
 
     public ResearchBuilder(Identifier id) {
@@ -69,7 +72,7 @@ public class ResearchBuilder {
     }
 
     @Contract(value = "_ -> this", mutates = "this")
-    public ResearchBuilder prerequisites(List<Identifier> prerequisiteIds) {
+    public ResearchBuilder prerequisites(Collection<Identifier> prerequisiteIds) {
         this.prerequisiteIds.addAll(prerequisiteIds);
         return this;
     }
@@ -80,7 +83,7 @@ public class ResearchBuilder {
     }
 
     @Contract(value = "_ -> this", mutates = "this")
-    public ResearchBuilder recipeUnlocks(List<Identifier> recipeUnlocks) {
+    public ResearchBuilder recipeUnlocks(Collection<Identifier> recipeUnlocks) {
         this.recipeUnlocks.addAll(recipeUnlocks);
         return this;
     }
@@ -88,6 +91,15 @@ public class ResearchBuilder {
     @Contract(value = "_ -> this", mutates = "this")
     public ResearchBuilder recipeUnlocks(Identifier... recipeUnlocks) {
         return recipeUnlocks(List.of(recipeUnlocks));
+    }
+
+    public ResearchBuilder rewards(Collection<ResearchReward> rewards) {
+        this.rewards.addAll(rewards);
+        return this;
+    }
+
+    public ResearchBuilder rewards(ResearchReward... rewards) {
+        return rewards(List.of(rewards));
     }
 
     @Contract(value = "_ -> this", mutates = "this")
@@ -108,6 +120,14 @@ public class ResearchBuilder {
 
     @Contract(value = "-> new", pure = true)
     public Research build() {
-        return new Research(Optional.ofNullable(titleText), Optional.ofNullable(descriptionText), trigger, prerequisiteIds, recipeUnlocks, display);
+        return new Research(
+                Optional.ofNullable(titleText),
+                Optional.ofNullable(descriptionText),
+                trigger,
+                prerequisiteIds,
+                recipeUnlocks,
+                rewards,
+                display
+        );
     }
 }

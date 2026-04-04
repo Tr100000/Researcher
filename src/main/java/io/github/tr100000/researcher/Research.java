@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.api.PlayerResearchHolder;
 import io.github.tr100000.researcher.api.ResearchHolder;
+import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.TextureIcon;
 import net.minecraft.ChatFormatting;
@@ -28,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public record Research(Optional<Component> titleText, Optional<Component> descriptionText, ResearchCriterion<?> trigger, List<Identifier> prerequisiteIds, List<Identifier> recipeUnlocks, Icon display) {
+public record Research(Optional<Component> titleText, Optional<Component> descriptionText, ResearchCriterion<?> trigger, List<Identifier> prerequisiteIds, List<Identifier> recipeUnlocks, List<ResearchReward> rewards, Icon display) {
     public static final Icon DEFAULT_ICON = new TextureIcon(ModUtils.id("textures/research/default.png"));
 
     public static final Codec<Research> CODEC = RecordCodecBuilder.create(
@@ -38,6 +39,7 @@ public record Research(Optional<Component> titleText, Optional<Component> descri
                 ResearchCriterion.CODEC.optionalFieldOf("to_unlock", ResearchCriterion.IMPOSSIBLE).forGetter(Research::trigger),
                 Identifier.CODEC.listOf().optionalFieldOf("prerequisites", Collections.emptyList()).forGetter(Research::prerequisiteIds),
                 Identifier.CODEC.listOf().optionalFieldOf("recipe_unlocks", Collections.emptyList()).forGetter(Research::recipeUnlocks),
+                ResearchReward.CODEC.listOf().optionalFieldOf("rewards", Collections.emptyList()).forGetter(Research::rewards),
                 Icon.CODEC.optionalFieldOf("display", DEFAULT_ICON).forGetter(Research::display)
         ).apply(instance, Research::new)
     );
@@ -48,6 +50,7 @@ public record Research(Optional<Component> titleText, Optional<Component> descri
             ResearchCriterion.STREAM_CODEC, Research::trigger,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::prerequisiteIds,
             Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::recipeUnlocks,
+            ResearchReward.STREAM_CODEC.apply(ByteBufCodecs.list()), Research::rewards,
             Icon.PACKET_CODEC, Research::display,
             Research::new
     );

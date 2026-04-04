@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.api.data.ResearchExporter;
 import io.github.tr100000.researcher.api.data.ResearchProvider;
 import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
 import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
+import io.github.tr100000.researcher.reward.FireworksReward;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.BrewedPotionTrigger;
@@ -49,6 +50,9 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .recipeUnlocks(
                         Identifier.withDefaultNamespace("blast_furnace"),
                         Identifier.withDefaultNamespace("this_recipe_does_not_exist")
+                )
+                .rewards(
+                        new FireworksReward(10, true)
                 )
                 .toUnlock(ItemCraftedTrigger.TriggerInstance.of(ItemPredicate.Builder.item().of(itemLookup, Items.FURNACE)), 2)
                 .export(exporter);

@@ -38,7 +38,7 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
+        return RecipeUnlockDisplay.of(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
     }
 
     public static RecipeUnlockDisplay createTransmute(RecipeHolder<TransmuteRecipe> entry) {
@@ -56,6 +56,6 @@ public final class CraftingRecipeUnlockDisplay {
                 contextParameterMap
         );
         ItemStack resultStack = recipeDisplay.result().resolveForFirstStack(contextParameterMap);
-        return new RecipeUnlockDisplay.Impl(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
+        return RecipeUnlockDisplay.of(new ItemIcon(ItemStackTemplate.fromNonEmptyStack(resultStack)), tooltip);
     }
 }

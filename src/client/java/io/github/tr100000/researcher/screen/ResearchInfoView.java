@@ -1,16 +1,18 @@
 package io.github.tr100000.researcher.screen;
 
 import io.github.tr100000.researcher.ClientResearchTracker;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.ResearchProgress;
+import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.researcher.api.trigger.TriggerHandler;
 import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.Nullable;
@@ -22,7 +24,6 @@ public class ResearchInfoView extends AbstractResearchView {
     private static final int CRITERION_BORDER = 0xFFABABAB;
     private static final int CRITERION_PROGRESS = 0xFF149900;
 
-    private boolean showUnlocks = true;
     private @Nullable ClientResearchTracker researchTracker;
 
     private @Nullable TriggerDisplayElement currentDisplay;
@@ -38,8 +39,11 @@ public class ResearchInfoView extends AbstractResearchView {
         researchTracker = client.getConnection().researcher$getClientTracker();
         boolean isResearchable = researchTracker.getResearchConditions(research) != null && !researchTracker.hasFinished(research) && researchTracker.canResearch(research);
 
-        int y = 52;
+        int y = 42;
+
         if (!research.recipeUnlocks().isEmpty()) {
+            addDrawableChild(new StringWidget(12, y, ResearchScreen.sidebarWidth - 24, 10, ModUtils.getScreenTranslated("unlocks"), client.font));
+            y += 10;
             int x = 14;
             for (Identifier unlock : research.recipeUnlocks()) {
                 if (x > getWidth() - 12) {
@@ -49,14 +53,24 @@ public class ResearchInfoView extends AbstractResearchView {
                 addDrawableChild(RecipeUnlockWidget.fromId(x, y, unlock));
                 x += 18;
             }
-
-            showUnlocks = true;
-        }
-        else {
-            showUnlocks = false;
+            y += 18;
         }
 
-        addDrawableChild(new ResearchDescriptionWidget(12, y + 18, getWidth() - 24, getHeight() - y - 23, research.getDescription(parent.researchManager), client.font));
+        if (!research.rewards().isEmpty()) {
+            addDrawableChild(new StringWidget(12, y, ResearchScreen.sidebarWidth - 24, 10, ModUtils.getScreenTranslated("rewards"), client.font));
+            y += 10;
+            int x = 14;
+            for (ResearchReward reward : research.rewards()) {
+                if (x > getWidth() - 12) {
+                    x = 14;
+                    y += 18;
+                }
+                addDrawableChild(ResearchRewardWidget.create(x, y, reward));
+            }
+            y += 18;
+        }
+
+        addDrawableChild(new ResearchDescriptionWidget(12, y + 2, getWidth() - 24, getHeight() - y - 23, research.getDescription(parent.researchManager), client.font));
         if (researchTracker.canResearch(research)) {
             boolean isCurrent = researchTracker.isCurrentOrPinned(research);
             addDrawableChild(StartResearchButton.create(getWidth() - 8, getHeight() - 28, researchTracker, research, !isResearchable, isCurrent));
@@ -73,9 +87,6 @@ public class ResearchInfoView extends AbstractResearchView {
         graphics.fill(0, 0, width, height, BACKGROUND_COLOR);
         graphics.text(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);
         extractCriterion(currentDisplay, ResearchScreen.selected.trigger(), progress, graphics, mouseX, mouseY, 12, 20, delta);
-        if (showUnlocks) {
-            graphics.text(client.font, Component.translatable("screen.researcher.unlocks"), 12, 42, CommonColors.WHITE);
-        }
         graphics.outline(0, 0, width, height, BORDER_COLOR);
         super.extractView(graphics, mouseX, mouseY, delta);
     }

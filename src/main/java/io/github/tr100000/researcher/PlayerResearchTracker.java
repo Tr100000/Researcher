@@ -248,6 +248,8 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         }
         pinnedResearches.remove(researchId);
 
+        research.rewards().forEach(r -> r.grant(owner, research));
+
         ResearcherCriteriaTriggers.HAS_RESEARCH.trigger(owner, researchId);
         ResearcherEvents.RESEARCH_FINISHED.invoker().onResearchFinished(this, research);
     }

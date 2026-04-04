@@ -1,13 +1,12 @@
 package io.github.tr100000.researcher;
 
 import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
-import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
-import io.github.tr100000.researcher.api.trigger.util.ComponentsPredicateHelper;
-import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
+import io.github.tr100000.researcher.api.reward.ResearchClientRewardRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.RrvDelegate;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
+import io.github.tr100000.researcher.impl.reward.ResearcherClientRewards;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
 import io.github.tr100000.researcher.screen.ResearchHud;
 import io.github.tr100000.researcher.screen.ResearchScreen;
@@ -53,6 +52,10 @@ public class ResearcherClient implements ClientModInitializer {
         RecipeUnlockDisplayRegistry.register(ShapelessRecipe.SERIALIZER, CraftingRecipeUnlockDisplay::createShapeless);
         RecipeUnlockDisplayRegistry.register(TransmuteRecipe.SERIALIZER, CraftingRecipeUnlockDisplay::createTransmute);
 
+        ResearchClientRewardRegistry.register(ResearcherRewardTypes.EXPERIENCE, ResearcherClientRewards::ofExperience);
+        ResearchClientRewardRegistry.register(ResearcherRewardTypes.FIREWORKS, ResearcherClientRewards::ofFireworks);
+        ResearchClientRewardRegistry.register(ResearcherRewardTypes.LOOT, ResearcherClientRewards::ofLoot);
+
         HudElementRegistry.attachElementAfter(VanillaHudElements.CHAT, ResearchHud.LAYER_ID, ResearchHud::render);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -76,12 +79,6 @@ public class ResearcherClient implements ClientModInitializer {
         }
         else if (FabricLoader.getInstance().isModLoaded("rrv")) {
             recipeViewerDelegate = new RrvDelegate();
-        }
-
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            TriggerHandlerRegistry.printNonRegistered();
-            EntityPredicateHelper.printNonRegistered();
-            ComponentsPredicateHelper.printNonRegistered();
         }
     }
 }

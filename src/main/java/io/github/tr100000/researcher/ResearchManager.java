@@ -72,7 +72,7 @@ public class ResearchManager extends SimpleJsonResourceReloadListener<Research> 
         prepared.forEach((id, entry) -> {
             if (researchCostMultiplier > 1) {
                 int cost = Math.max(1, (int)Math.ceil(entry.trigger().count() * researchCostMultiplier));
-                entry = new Research(entry.titleText(), entry.descriptionText(), new ResearchCriterion<>(entry.trigger().criterion(), cost), entry.prerequisiteIds(), entry.recipeUnlocks(), entry.display());
+                entry = new Research(entry.titleText(), entry.descriptionText(), new ResearchCriterion<>(entry.trigger().criterion(), cost), entry.prerequisiteIds(), entry.recipeUnlocks(), entry.rewards(), entry.display());
             }
             researchMap.put(id, entry);
             entry.recipeUnlocks().forEach(unlock -> parent.getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE, unlock)).ifPresentOrElse(
