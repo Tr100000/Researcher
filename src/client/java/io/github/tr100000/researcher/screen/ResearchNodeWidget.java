@@ -20,10 +20,9 @@ public class ResearchNodeWidget extends AbstractButton {
     private final ClientTooltipPositioner tooltipPositioner = new TooltipPositionerImpl();
     private final ResearchTooltipWrapper tooltipWrapper = new ResearchTooltipWrapper(true);
     private final ResearchScreen screen;
-    private final ScrollableView parentView;
+    private final ResearchNodeContainingView parentView;
 
     public final Research research;
-    private int depth = 0;
 
     public static final int FILL_LOCKED = 0xFFB82121;
     public static final int FILL_AVAILABLE = 0xFFBABABA;
@@ -31,16 +30,15 @@ public class ResearchNodeWidget extends AbstractButton {
     public static final int FILL_PROGRESS_BACKGROUND = CommonColors.GRAY;
     public static final int FILL_PROGRESS_BAR = 0xFF28C900;
 
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, Research research) {
+    public ResearchNodeWidget(ResearchScreen screen, ResearchNodeContainingView parentView, int x, int y, int width, int height, Research research) {
         super(x, y, width, height, research.getTitle(client.getConnection().researcher$getClientTracker()));
         this.screen = screen;
         this.parentView = parentView;
         this.research = research;
     }
 
-    public ResearchNodeWidget(ResearchScreen screen, ScrollableView parentView, int x, int y, int width, int height, int depth, Research research) {
+    public ResearchNodeWidget(ResearchScreen screen, ResearchNodeContainingView parentView, int x, int y, int width, int height, int depth, Research research) {
         this(screen, parentView, x, y, width, height, research);
-        this.depth = depth;
     }
 
     @Override
@@ -72,13 +70,14 @@ public class ResearchNodeWidget extends AbstractButton {
         return screen.researchManager.canResearch(research) ? FILL_AVAILABLE : FILL_LOCKED;
     }
 
-    public int getDepth() {
-        return depth;
-    }
-
     @Override
     public void onPress(InputWithModifiers input) {
-        screen.initWith(research);
+        if (input.hasShiftDown()) {
+            parentView.onNodeShiftClicked(this);
+        }
+        else {
+            screen.initWith(research);
+        }
     }
 
     @Override

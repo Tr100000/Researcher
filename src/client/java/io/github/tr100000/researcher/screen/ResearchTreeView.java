@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ResearchTreeView extends AbstractResearchView implements ScrollableView {
+public class ResearchTreeView extends ResearchNodeContainingView {
     private final BiMap<GraphLayout.RenderedNode, ResearchNodeWidget> renderedNodeWidgets = HashBiMap.create();
     private GraphLayout.@Nullable RenderedGraph renderedGraph;
     private final BiMap<Research, ResearchNodeWidget> nodeWidgets = HashBiMap.create();
@@ -29,13 +29,14 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     private final List<ResearchNodeWidget> topNodes = new ObjectArrayList<>();
     private final List<ResearchNodeWidget> bottomNodes = new ObjectArrayList<>();
 
+    private @Nullable ResearchNodeWidget highlightLocked = null;
     private double offsetX;
     private double offsetY;
 
     private final ClientResearchTracker researchTracker;
 
-    private static final int CONNECTION_COLOR = 0xFF888888;
-    private static final int CONNECTION_COLOR_HOVERED = 0xFFE0B804;
+    private static final int CONNECTION_COLOR = 0xFFAAAAAA;
+    private static final int CONNECTION_COLOR_HOVERED = 0xFFEBC000;
 
     public ResearchTreeView(ResearchScreen parent, int width, int height) {
         super(parent, ResearchScreen.sidebarWidth, 0, width, height);
@@ -121,11 +122,11 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         int newMouseX = mouseX - getOffsetX();
         int newMouseY = mouseY - getOffsetY();
 
-        ResearchNodeWidget hovered = getCurrentHovered(graphics, newMouseX, newMouseY);
+        ResearchNodeWidget hovered = highlightLocked != null ? highlightLocked : getCurrentHovered(graphics, newMouseX, newMouseY);
+        extractConnections(graphics, hovered);
         if (hovered != null) {
             highlightConnected(graphics, hovered);
         }
-        extractConnections(graphics, hovered);
 
         super.extractView(graphics, newMouseX, newMouseY, delta);
 
@@ -172,9 +173,9 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
     }
 
     private void highlightConnected(final GuiGraphicsExtractor graphics, ResearchNodeWidget node) {
-        successorConnections.get(node).forEach(successor -> extractHighlight(graphics, successor));
-        predecessorConnections.get(node).forEach(predecessor -> extractHighlight(graphics, predecessor));
-        extractHighlight(graphics, node);
+        successorConnections.get(node).forEach(successor -> extractHighlight(graphics, successor, 1));
+        predecessorConnections.get(node).forEach(predecessor -> extractHighlight(graphics, predecessor, 1));
+        extractHighlight(graphics, node, 2);
     }
 
     private void extractFakeConnections(final GuiGraphicsExtractor graphics, @Nullable ResearchNodeWidget currentHovered) {
@@ -208,13 +209,25 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
         }
     }
 
-    private void extractHighlight(final GuiGraphicsExtractor graphics, ResearchNodeWidget node) {
-        graphics.outline(node.getX() - 1, node.getY() - 1, node.getWidth() + 2, node.getHeight() + 2, CONNECTION_COLOR_HOVERED);
+    private void extractHighlight(final GuiGraphicsExtractor graphics, ResearchNodeWidget node, int size) {
+        for (int i = 1; i <= size; i++) {
+            graphics.outline(node.getX() - i, node.getY() - i, node.getWidth() + i * 2, node.getHeight() + i * 2, CONNECTION_COLOR_HOVERED);
+        }
     }
 
     @Override
-    public void mouseMoved(double mouseX, double mouseY) {
-        super.mouseMoved(mouseX - getOffsetX(), mouseY - getOffsetY());
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
+        boolean mouseClicked = super.mouseClicked(event, doubled);
+        if (!mouseClicked && highlightLocked != null) {
+            highlightLocked = null;
+            return true;
+        }
+        return mouseClicked;
+    }
+
+    @Override
+    public void onNodeShiftClicked(ResearchNodeWidget widget) {
+        highlightLocked = widget;
     }
 
     @Override
@@ -225,18 +238,8 @@ public class ResearchTreeView extends AbstractResearchView implements Scrollable
             return true;
         }
         else {
-            return super.mouseDragged(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), dx, dy);
+            return super.mouseDragged(event, dx, dy);
         }
-    }
-
-    @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
-        return super.mouseClicked(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), doubled);
-    }
-
-    @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
-        return super.mouseReleased(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()));
     }
 
     @Override

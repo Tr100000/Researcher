@@ -53,7 +53,7 @@ public class ResearchInfoView extends AbstractResearchView {
                 addDrawableChild(RecipeUnlockWidget.fromId(x, y, unlock));
                 x += 18;
             }
-            y += 18;
+            y += 20;
         }
 
         if (!research.rewards().isEmpty()) {
@@ -67,10 +67,10 @@ public class ResearchInfoView extends AbstractResearchView {
                 }
                 addDrawableChild(ResearchRewardWidget.create(x, y, reward));
             }
-            y += 18;
+            y += 20;
         }
 
-        addDrawableChild(new ResearchDescriptionWidget(12, y + 2, getWidth() - 24, getHeight() - y - 23, research.getDescription(parent.researchManager), client.font));
+        addDrawableChild(new ResearchDescriptionWidget(12, y, getWidth() - 24, getHeight() - y - 21, research.getDescription(parent.researchManager), client.font));
         if (researchTracker.canResearch(research)) {
             boolean isCurrent = researchTracker.isCurrentOrPinned(research);
             addDrawableChild(StartResearchButton.create(getWidth() - 8, getHeight() - 28, researchTracker, research, !isResearchable, isCurrent));

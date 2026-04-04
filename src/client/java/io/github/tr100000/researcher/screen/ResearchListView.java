@@ -6,36 +6,37 @@ import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 // TODO fix scrolling
-public class ResearchListView extends AbstractResearchView implements ScrollableView {
+public class ResearchListView extends ResearchNodeContainingView {
     private static final int BACKGROUND_COLOR = 0xFF202020;
     private static final int BORDER_COLOR = 0xFF000000;
 
     private final List<ResearchNodeWidget> researchWidgets = new ObjectArrayList<>();
     private final Map<ResearchNodeWidget, String> researchTitles = new Object2ObjectOpenHashMap<>();
 
-    private final Renderable searchFieldRenderable;
-
-    private double offsetX;
+    private boolean isScrollable;
+    private int maxScroll;
     private double offsetY;
 
     public ResearchListView(ResearchScreen parent, int height) {
         super(parent, 0, ResearchScreen.infoViewHeight, ResearchScreen.sidebarWidth, height);
-        this.scissorRect = new ScreenRectangle(0, y, parent.width, height);
+        this.scissorRect = new ScreenRectangle(0, y, width, height);
 
-        EditBox searchField = addChild(new EditBox(client.font, 4, ResearchScreen.infoViewHeight + 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search")));
+        EditBox searchField = addDrawableChild(new EditBox(client.font, 4, ResearchScreen.infoViewHeight + 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search")));
         searchField.setResponder(this::searchAndReposition);
-        this.searchFieldRenderable = searchField;
 
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
         researchList.sort(Research.statusComparator(parent.researchManager).thenComparing(Research.idComparator(parent.researchManager)));
@@ -70,13 +71,34 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
                 widget.setPosition(-100, -100);
             }
         }
+
+        offsetY = 0;
+        ScreenRectangle rect = getContentsRect();
+        isScrollable = rect.height() > getHeight();
+        maxScroll = rect.height() - getHeight() - ResearchScreen.infoViewHeight;
+    }
+
+    @Override
+    public ScreenRectangle getContentsRect() {
+        return children().stream()
+                .filter(g -> !(g instanceof LayoutElement e && e.getX() < 0))
+                .map(GuiEventListener::getRectangle)
+                .reduce(ScreenRectangle.empty(), AbstractResearchView::rectUnionOf);
+    }
+
+    @Override
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {
+        children().forEach(child -> {
+            if (child instanceof AbstractWidget widgetChild && widgetChild.getX() > 0) {
+                consumer.accept(widgetChild);
+            }
+        });
     }
 
     @Override
     public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         graphics.fill(0, getY() - 1, getWidth(), parent.height, BACKGROUND_COLOR);
         graphics.outline(0, getY() - 1, getWidth(), parent.height, BORDER_COLOR);
-        searchFieldRenderable.extractRenderState(graphics, mouseX, mouseY, delta);
 
         graphics.pose().translate(getOffsetX(), getOffsetY());
 
@@ -86,37 +108,13 @@ public class ResearchListView extends AbstractResearchView implements Scrollable
         super.extractView(graphics, newMouseX, newMouseY, delta);
     }
 
-
-    @Override
-    public void mouseMoved(double mouseX, double mouseY) {
-        super.mouseMoved(mouseX - getOffsetX(), mouseY - getOffsetY());
-    }
-
-    @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        return super.mouseDragged(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), dx, dy);
-    }
-
-    @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
-        return super.mouseClicked(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), doubled);
-    }
-
-    @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
-        return super.mouseReleased(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()));
-    }
-
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-//        offsetX += horizontalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
-//        offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        if (isScrollable) {
+            offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+            offsetY = Mth.clamp(offsetY, -maxScroll, 0);
+        }
         return true;
-    }
-
-    @Override
-    public int getOffsetX() {
-        return (int)offsetX;
     }
 
     @Override

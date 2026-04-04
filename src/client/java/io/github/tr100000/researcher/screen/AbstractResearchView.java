@@ -4,13 +4,18 @@ import io.github.tr100000.trutils.api.gui.AbstractView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public abstract class AbstractResearchView extends AbstractView implements LayoutElement {
+public abstract class AbstractResearchView extends AbstractView implements ScrollableView, LayoutElement {
     protected static final Minecraft client = Minecraft.getInstance();
 
     protected @Nullable ScreenRectangle scissorRect;
@@ -64,17 +69,17 @@ public abstract class AbstractResearchView extends AbstractView implements Layou
     }
 
     @Override
+    public ScreenRectangle getRectangle() {
+        return LayoutElement.super.getRectangle();
+    }
+
+    @Override
     public void visitWidgets(Consumer<AbstractWidget> consumer) {
         children().forEach(child -> {
             if (child instanceof AbstractWidget widgetChild) {
                 consumer.accept(widgetChild);
             }
         });
-    }
-
-    @Override
-    public ScreenRectangle getRectangle() {
-        return LayoutElement.super.getRectangle();
     }
 
     @Override
@@ -90,5 +95,50 @@ public abstract class AbstractResearchView extends AbstractView implements Layou
 
     public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         super.extractRenderState(graphics, mouseX, mouseY, delta);
+    }
+
+    public ScreenRectangle getContentsRect() {
+        return children().stream()
+                .map(GuiEventListener::getRectangle)
+                .reduce(ScreenRectangle.empty(), AbstractResearchView::rectUnionOf);
+    }
+
+    public Vector2ic centerOfContents() {
+        ScreenRectangle rect = getContentsRect();
+        return new Vector2i(rect.getCenterInAxis(ScreenAxis.HORIZONTAL), rect.getCenterInAxis(ScreenAxis.VERTICAL));
+    }
+
+    public boolean shouldBeScrollable(int edgePadding) {
+        ScreenRectangle rect = getContentsRect();
+        ScreenRectangle paddedRect = new ScreenRectangle(rect.left() - edgePadding, rect.right() - edgePadding, rect.width() + edgePadding * 2, rect.height() + edgePadding * 2);
+        return paddedRect.width() > getWidth() || paddedRect.height() > getHeight();
+    }
+
+    protected static ScreenRectangle rectUnionOf(ScreenRectangle a, ScreenRectangle b) {
+        int xMin = Math.min(a.left(), b.left());
+        int xMax = Math.max(a.right(), b.right());
+        int yMin = Math.min(a.top(), b.top());
+        int yMax = Math.max(a.bottom(), b.bottom());
+        return new ScreenRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        super.mouseMoved(mouseX - getOffsetX(), mouseY - getOffsetY());
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+        return super.mouseDragged(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), dx, dy);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
+        return super.mouseClicked(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), doubled);
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        return super.mouseReleased(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()));
     }
 }
