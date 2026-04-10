@@ -212,6 +212,7 @@ public class GraphLayout {
         reorderNodes(aggregateGraph, settings);
 
         List<RenderedNode> renderedNodes = new ObjectArrayList<>();
+        List<RenderedNode> allRenderedNodes = new ObjectArrayList<>();
         List<RenderedEdge> renderedEdges = new ObjectArrayList<>();
 
         List<Integer> layerHeights = new IntArrayList(aggregateGraph.layers().size());
@@ -287,6 +288,7 @@ public class GraphLayout {
             for (Node node : layer) {
                 RenderedNode rendered = new RenderedNode(node, nodeHorizontalPositions.get(node), y);
                 nodeRenderedMap.put(node, rendered);
+                allRenderedNodes.add(rendered);
                 if (!node.isDummy()) renderedNodes.add(rendered);
             }
 
@@ -315,7 +317,12 @@ public class GraphLayout {
 
         Optional<RenderedNode> centered = renderedNodes.stream().filter(n -> n.original() == centeredNode).findAny();
 
-        return new RenderedGraph(centered.orElse(null), renderedNodes, renderedEdges);
+        return new RenderedGraph(
+                centered.orElse(null),
+                renderedNodes,
+                allRenderedNodes,
+                renderedEdges
+        );
     }
 
     public record Settings(@Nullable Research centered, int nodeSize, int centeredNodeSize, int dummyNodeSize, int nodeSpacing, int edgeBusMargin, int edgeBusSpacing, int reorderIterations) {}
@@ -347,7 +354,7 @@ public class GraphLayout {
 
     public record RealEdge(Node from, Node to, List<Edge> segments) {}
 
-    public record RenderedGraph(@Nullable RenderedNode centeredNode, List<RenderedNode> nodes, List<RenderedEdge> edges) {}
+    public record RenderedGraph(@Nullable RenderedNode centeredNode, List<RenderedNode> nodes, List<RenderedNode> allNodes, List<RenderedEdge> edges) {}
 
     public record RenderedNode(Node original, int x, int y) {
         public @Nullable Research research() {
@@ -386,7 +393,7 @@ public class GraphLayout {
 
         void occupy(int y, IntRange range) {
             if (range.min() == range.max()) return;
-            occupied.computeIfAbsent(y, ignored -> new ObjectArrayList<>()).add(range);
+            occupied.computeIfAbsent(y, _ -> new ObjectArrayList<>()).add(range);
         }
 
         boolean isOccupied(int y, IntRange range, int margin) {

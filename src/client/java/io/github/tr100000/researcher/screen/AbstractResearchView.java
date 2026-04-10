@@ -100,7 +100,8 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
     public ScreenRectangle getContentsRect() {
         return children().stream()
                 .map(GuiEventListener::getRectangle)
-                .reduce(ScreenRectangle.empty(), AbstractResearchView::rectUnionOf);
+                .reduce(AbstractResearchView::combineRects)
+                .orElseGet(ScreenRectangle::empty);
     }
 
     public Vector2ic centerOfContents() {
@@ -110,16 +111,20 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
 
     public boolean shouldBeScrollable(int edgePadding) {
         ScreenRectangle rect = getContentsRect();
-        ScreenRectangle paddedRect = new ScreenRectangle(rect.left() - edgePadding, rect.right() - edgePadding, rect.width() + edgePadding * 2, rect.height() + edgePadding * 2);
+        ScreenRectangle paddedRect = rectWithPadding(rect, edgePadding);
         return paddedRect.width() > getWidth() || paddedRect.height() > getHeight();
     }
 
-    protected static ScreenRectangle rectUnionOf(ScreenRectangle a, ScreenRectangle b) {
+    protected static ScreenRectangle combineRects(ScreenRectangle a, ScreenRectangle b) {
         int xMin = Math.min(a.left(), b.left());
         int xMax = Math.max(a.right(), b.right());
         int yMin = Math.min(a.top(), b.top());
         int yMax = Math.max(a.bottom(), b.bottom());
         return new ScreenRectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+    }
+
+    protected static ScreenRectangle rectWithPadding(ScreenRectangle rect, int padding) {
+        return new ScreenRectangle(rect.left() - padding, rect.top() - padding, rect.width() + padding * 2, rect.height() + padding * 2);
     }
 
     @Override

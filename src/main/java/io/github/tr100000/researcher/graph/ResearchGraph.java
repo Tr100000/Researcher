@@ -52,9 +52,9 @@ public class ResearchGraph {
 
                 Research prerequisite = map.get(prerequisiteId);
                 graph.edges.add(new Edge(prerequisite, node));
-                graph.downward.computeIfAbsent(prerequisite, ignored -> new ObjectArrayList<>());
+                graph.downward.computeIfAbsent(prerequisite, _ -> new ObjectArrayList<>());
                 graph.downward.get(prerequisite).add(node);
-                graph.upward.computeIfAbsent(node, ignored -> new ObjectArrayList<>());
+                graph.upward.computeIfAbsent(node, _ -> new ObjectArrayList<>());
                 graph.upward.get(node).add(prerequisite);
             }
         }

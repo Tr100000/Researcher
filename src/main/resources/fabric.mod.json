@@ -30,10 +30,10 @@
   ],
   "accessWidener": "researcher.classtweaker",
   "depends": {
-    "fabricloader": ">=0.18",
+    "fabricloader": ">=0.19",
     "minecraft": "~26.1",
     "java": ">=25",
-    "fabric-api": ">=0.144",
+    "fabric-api": ">=0.145",
     "trutils": ">=0.2-",
     "fzzy_config": ">=0.7.6"
   },

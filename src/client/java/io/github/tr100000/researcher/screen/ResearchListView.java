@@ -73,17 +73,19 @@ public class ResearchListView extends ResearchNodeContainingView {
         }
 
         offsetY = 0;
-        ScreenRectangle rect = getContentsRect();
+        ScreenRectangle rect = rectWithPadding(getContentsRect(), 4);
         isScrollable = rect.height() > getHeight();
-        maxScroll = rect.height() - getHeight() - ResearchScreen.infoViewHeight;
+        maxScroll = rect.height() - getHeight();
     }
 
     @Override
     public ScreenRectangle getContentsRect() {
         return children().stream()
-                .filter(g -> !(g instanceof LayoutElement e && e.getX() < 0))
+                .filter(LayoutElement.class::isInstance)
+                .filter(g -> ((LayoutElement) g).getX() > 0)
                 .map(GuiEventListener::getRectangle)
-                .reduce(ScreenRectangle.empty(), AbstractResearchView::rectUnionOf);
+                .reduce(AbstractResearchView::combineRects)
+                .orElseGet(ScreenRectangle::empty);
     }
 
     @Override

@@ -12,7 +12,9 @@ import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.graph.GraphLayout;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jspecify.annotations.Nullable;
@@ -30,6 +32,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private final List<ResearchNodeWidget> bottomNodes = new ObjectArrayList<>();
 
     private @Nullable ResearchNodeWidget highlightLocked = null;
+    private MinMaxBounds.Ints horizontalScrollBounds = MinMaxBounds.Ints.ANY;
+    private MinMaxBounds.Ints verticalScrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetX;
     private double offsetY;
 
@@ -48,6 +52,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         clearChildren();
         offsetX = 0;
         offsetY = 0;
+        horizontalScrollBounds = null;
+        verticalScrollBounds = null;
 
         final int nodeSize = 48;
         final int centeredNodeSize = 64;
@@ -102,6 +108,32 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         }
 
         Researcher.LOGGER.debug("Rendered graph with {} nodes and {} edges", renderedGraph.nodes().size(), renderedGraph.edges().size());
+
+        ScreenRectangle rect = rectWithPadding(getContentsRect(), 16);
+        if (rect.width() > getWidth()) {
+            horizontalScrollBounds = MinMaxBounds.Ints.between(-rect.right() + getWidth(), -rect.left());
+        }
+        else {
+            horizontalScrollBounds = MinMaxBounds.Ints.exactly(getWidth() / 2 - rect.getCenterInAxis(ScreenAxis.HORIZONTAL));
+        }
+        if (rect.height() > getHeight()) {
+            verticalScrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+        }
+        else {
+            verticalScrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+        }
+        enforceScrollBounds();
+    }
+
+    @Override
+    public ScreenRectangle getContentsRect() {
+        if (renderedGraph != null) {
+            return renderedGraph.allNodes().stream()
+                    .map(n -> new ScreenRectangle(n.x() - n.width() / 2, n.y() - n.height() / 2, n.width(), n.height()))
+                    .reduce(AbstractResearchView::combineRects)
+                    .orElseGet(ScreenRectangle::empty);
+        }
+        else return ScreenRectangle.empty();
     }
 
     private GraphLayout.@Nullable RenderedEdge getRenderedEdge(ResearchNodeWidget from, ResearchNodeWidget to) {
@@ -175,7 +207,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private void highlightConnected(final GuiGraphicsExtractor graphics, ResearchNodeWidget node) {
         successorConnections.get(node).forEach(successor -> extractHighlight(graphics, successor, 1));
         predecessorConnections.get(node).forEach(predecessor -> extractHighlight(graphics, predecessor, 1));
-        extractHighlight(graphics, node, 2);
+        extractHighlight(graphics, node, highlightLocked != null ? 2 : 1);
     }
 
     private void extractFakeConnections(final GuiGraphicsExtractor graphics, @Nullable ResearchNodeWidget currentHovered) {
@@ -246,7 +278,13 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         offsetX += horizontalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
         offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        enforceScrollBounds();
         return true;
+    }
+
+    private void enforceScrollBounds() {
+        offsetX = Math.clamp(offsetX, horizontalScrollBounds.min().orElse(0), horizontalScrollBounds.max().orElse(0));
+        offsetY = Math.clamp(offsetY, verticalScrollBounds.min().orElse(0), verticalScrollBounds.max().orElse(0));
     }
 
     @Override
