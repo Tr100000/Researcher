@@ -55,6 +55,7 @@ public class ResearchScreen extends Screen {
 
         infoView = new ResearchInfoView(this);
         listView = new ResearchListView(this, height - infoViewHeight);
+        treeView = new ResearchTreeView(this, width - sidebarWidth, height);
 
         initWith(selected);
     }
@@ -63,11 +64,15 @@ public class ResearchScreen extends Screen {
         clearWidgets();
         setSelected(current);
 
+        assert infoView != null;
         addRenderableWidget(infoView);
         infoView.initWith(current);
+
+        assert listView != null;
         addRenderableWidget(listView);
 
-        treeView = addRenderableWidget(new ResearchTreeView(this, width - sidebarWidth, height));
+        assert treeView != null;
+        addRenderableWidget(treeView);
         treeView.initWith(current);
 
         setInitialFocus(treeView);

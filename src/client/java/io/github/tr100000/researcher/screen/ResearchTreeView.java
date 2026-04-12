@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ResearchTreeView extends ResearchNodeContainingView {
+    private GraphLayout.RenderedGraph renderedGraph = GraphLayout.RenderedGraph.EMPTY;
     private final BiMap<GraphLayout.RenderedNode, ResearchNodeWidget> renderedNodeWidgets = HashBiMap.create();
-    private GraphLayout.@Nullable RenderedGraph renderedGraph;
     private final BiMap<Research, ResearchNodeWidget> nodeWidgets = HashBiMap.create();
     private final Multimap<ResearchNodeWidget, ResearchNodeWidget> successorConnections = HashMultimap.create();
     private final Multimap<ResearchNodeWidget, ResearchNodeWidget> predecessorConnections = HashMultimap.create();
@@ -50,10 +50,11 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     public void initWith(Research research) {
         clearChildren();
+        highlightLocked = null;
+        horizontalScrollBounds = MinMaxBounds.Ints.ANY;
+        verticalScrollBounds = MinMaxBounds.Ints.ANY;
         offsetX = 0;
         offsetY = 0;
-        horizontalScrollBounds = null;
-        verticalScrollBounds = null;
 
         final int nodeSize = 48;
         final int centeredNodeSize = 64;
@@ -127,17 +128,13 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     @Override
     public ScreenRectangle getContentsRect() {
-        if (renderedGraph != null) {
-            return renderedGraph.allNodes().stream()
-                    .map(n -> new ScreenRectangle(n.x() - n.width() / 2, n.y() - n.height() / 2, n.width(), n.height()))
-                    .reduce(AbstractResearchView::combineRects)
-                    .orElseGet(ScreenRectangle::empty);
-        }
-        else return ScreenRectangle.empty();
+        return renderedGraph.allNodes().stream()
+                .map(n -> new ScreenRectangle(n.x() - n.width() / 2, n.y() - n.height() / 2, n.width(), n.height()))
+                .reduce(AbstractResearchView::combineRects)
+                .orElseGet(ScreenRectangle::empty);
     }
 
     private GraphLayout.@Nullable RenderedEdge getRenderedEdge(ResearchNodeWidget from, ResearchNodeWidget to) {
-        if (renderedGraph == null) return null;
         for (GraphLayout.RenderedEdge c : renderedGraph.edges()) {
             if (c.matches(from.research, to.research)) return c;
         }
@@ -178,8 +175,6 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     }
 
     private void extractConnections(final GuiGraphicsExtractor graphics, @Nullable ResearchNodeWidget currentHovered) {
-        if (renderedGraph == null) return;
-
         extractFakeConnections(graphics, currentHovered);
 
         renderedGraph.edges().forEach(edge -> extractConnection(graphics, edge, CONNECTION_COLOR));
@@ -300,7 +295,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     @Override
     public void clearChildren() {
         super.clearChildren();
-        renderedGraph = null;
+        renderedGraph = GraphLayout.RenderedGraph.EMPTY;
         renderedNodeWidgets.clear();
         nodeWidgets.clear();
         successorConnections.clear();

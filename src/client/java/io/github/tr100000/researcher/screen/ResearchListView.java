@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-// TODO fix scrolling
 public class ResearchListView extends ResearchNodeContainingView {
     private static final int BACKGROUND_COLOR = 0xFF202020;
     private static final int BORDER_COLOR = 0xFF000000;

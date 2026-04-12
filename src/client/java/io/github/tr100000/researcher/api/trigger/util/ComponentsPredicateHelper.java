@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.predicates.AnyValue;
 import net.minecraft.core.component.predicates.AttributeModifiersPredicate;
 import net.minecraft.core.component.predicates.BundlePredicate;
 import net.minecraft.core.component.predicates.ContainerPredicate;
@@ -44,6 +45,7 @@ public final class ComponentsPredicateHelper {
 
     private static final Component COMPONENTS_HEADER = ModUtils.getScreenTranslated("predicate.components");
     private static final String EXACT_VALUE_KEY = ModUtils.getScreenTranslationKey("predicate.components.exact");
+    private static final String ANY_VALUE_KEY = ModUtils.getScreenTranslationKey("predicate.components.any");
 
     private static final Component DAMAGE_HEADER = ModUtils.getScreenTranslated("predicate.components.damage");
     private static final Component DAMAGE_DURABILITY = ModUtils.getScreenTranslated("predicate.components.damage.durability");
@@ -102,8 +104,9 @@ public final class ComponentsPredicateHelper {
 
         predicate.exact().expectedComponents.forEach(component -> {
             Identifier typeId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
+            assert typeId != null;
             if (component.type().codec() == null) {
-                textHolder.accept(Component.literal(String.format("WARN: %s is not a persistent component and should not be used in a predicate!", typeId)));
+                textHolder.accept(Component.literal(String.format("%s is not a persistent component and should not be used in a predicate!", typeId)));
                 return;
             }
 
@@ -114,6 +117,9 @@ public final class ComponentsPredicateHelper {
         predicate.partial().forEach((type, partialPredicate) -> {
             if (PREDICATE_HANDLER_REGISTRY.containsKey(type)) {
                 PREDICATE_HANDLER_REGISTRY.get(type).accept(partialPredicate, textHolder);
+            }
+            else if (partialPredicate instanceof AnyValue(DataComponentType<?> componentType)) {
+                textHolder.accept(Component.translatable(ANY_VALUE_KEY, Objects.requireNonNull(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType))));
             }
             else {
                 textHolder.accept(Component.literal(String.format("No handler for %s", BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.getKey(type))));
@@ -258,7 +264,7 @@ public final class ComponentsPredicateHelper {
     }
 
     private static void jukeboxPlayableTooltip(JukeboxPlayablePredicate predicate, IndentedTextHolder textHolder) {
-        if (predicate.song().isPresent() && predicate.song().get().stream().findAny().isPresent()) {
+        if (predicate.song().isPresent() && predicate.song().get().size() > 0) {
             textHolder.accept(JUKEBOX_PLAYABLE_LIST);
             textHolder.push();
             predicate.song().get().forEach(entry -> textHolder.accept(entry.value().description()));
@@ -280,7 +286,7 @@ public final class ComponentsPredicateHelper {
         Objects.requireNonNull(type, "type is null");
         Objects.requireNonNull(handler, "handler is null");
         if (headerText != null) {
-            PREDICATE_HANDLER_REGISTRY.put(type, (p, t) -> PredicateHelper.tooltip(p, (BiConsumer)handler, headerText));
+            PREDICATE_HANDLER_REGISTRY.put(type, (p, _) -> PredicateHelper.tooltip(p, (BiConsumer)handler, headerText));
         }
         else {
             PREDICATE_HANDLER_REGISTRY.put(type, (BiConsumer)handler);

@@ -2,6 +2,7 @@ package io.github.tr100000.researcher.config;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Researcher;
+import me.fzzyhmstrs.fzzy_config.annotations.RootConfig;
 import me.fzzyhmstrs.fzzy_config.annotations.Translation;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable;
@@ -11,6 +12,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 
+@RootConfig
 @Translation(prefix = "config.researcher.client")
 public class ResearcherClientConfig extends Config {
     public ResearcherClientConfig() {

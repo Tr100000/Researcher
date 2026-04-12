@@ -134,6 +134,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         });
         this.currentResearching = data.currentResearching.orElse(null);
         this.pinnedResearches = new ObjectArrayList<>(data.pinnedResearches);
+        validatePinnedResearches();
     }
 
     private Data getData() {
@@ -205,7 +206,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
     }
 
     public ResearchProgress getProgress(Research research) {
-        return progressMap.computeIfAbsent(research, r -> new ResearchProgress());
+        return progressMap.computeIfAbsent(research, _ -> new ResearchProgress());
     }
 
     private void updateProgressWithoutSync(Research research, ResearchProgress progress) {
@@ -301,7 +302,6 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
             }
             return true;
         }
-
         else {
             return false;
         }
@@ -311,10 +311,11 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         if (dirty || !progressUpdates.isEmpty() || forceNextUpdate) {
             Map<Identifier, ResearchProgress> updatedProgressMap = new HashMap<>();
             progressUpdates.forEach(research -> updatedProgressMap.put(researchManager.getIdOrThrow(research), getProgress(research)));
+            validatePinnedResearches();
 
             progressUpdates.clear();
             if (dirty || !updatedProgressMap.isEmpty() || forceNextUpdate) {
-                Researcher.LOGGER.info("Sending research update to {}", owner.getName().tryCollapseToString());
+                Researcher.LOGGER.info("Sending research update to {}", owner.getName().getString());
                 ServerPlayNetworking.send(owner, new ResearchUpdateS2CPacket(
                         dirty,
                         updatedProgressMap,
@@ -327,6 +328,10 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
             dirty = false;
             forceNextUpdate = false;
         }
+    }
+
+    private void validatePinnedResearches() {
+        pinnedResearches.removeIf(r -> !canResearch(parent().get(r)));
     }
 
     @ApiStatus.Internal

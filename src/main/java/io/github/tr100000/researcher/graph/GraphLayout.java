@@ -354,7 +354,9 @@ public class GraphLayout {
 
     public record RealEdge(Node from, Node to, List<Edge> segments) {}
 
-    public record RenderedGraph(@Nullable RenderedNode centeredNode, List<RenderedNode> nodes, List<RenderedNode> allNodes, List<RenderedEdge> edges) {}
+    public record RenderedGraph(@Nullable RenderedNode centeredNode, List<RenderedNode> nodes, List<RenderedNode> allNodes, List<RenderedEdge> edges) {
+        public static final RenderedGraph EMPTY = new RenderedGraph(null, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+    }
 
     public record RenderedNode(Node original, int x, int y) {
         public @Nullable Research research() {
