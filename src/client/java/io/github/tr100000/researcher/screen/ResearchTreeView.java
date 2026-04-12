@@ -36,11 +36,11 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private MinMaxBounds.Ints verticalScrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetX;
     private double offsetY;
+    private int highlightColor;
 
     private final ClientResearchTracker researchTracker;
 
     private static final int CONNECTION_COLOR = 0xFFAAAAAA;
-    private static final int CONNECTION_COLOR_HOVERED = 0xFFEBC000;
 
     public ResearchTreeView(ResearchScreen parent, int width, int height) {
         super(parent, ResearchScreen.sidebarWidth, 0, width, height);
@@ -55,6 +55,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         verticalScrollBounds = MinMaxBounds.Ints.ANY;
         offsetX = 0;
         offsetY = 0;
+        highlightColor = ResearcherConfigs.client.highlightColor.toInt();
 
         final int nodeSize = 48;
         final int centeredNodeSize = 64;
@@ -180,8 +181,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         renderedGraph.edges().forEach(edge -> extractConnection(graphics, edge, CONNECTION_COLOR));
 
         if (currentHovered != null) {
-            successorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, currentHovered, node, CONNECTION_COLOR_HOVERED));
-            predecessorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, node, currentHovered, CONNECTION_COLOR_HOVERED));
+            successorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, currentHovered, node, highlightColor));
+            predecessorConnections.get(currentHovered).forEach(node -> extractConnection(graphics, node, currentHovered, highlightColor));
         }
     }
 
@@ -212,14 +213,14 @@ public class ResearchTreeView extends ResearchNodeContainingView {
             int x = node.getX() + node.getWidth() / 2;
             int startY = node.getY();
             int endY = startY - length;
-            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
+            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? highlightColor : CONNECTION_COLOR);
         }
 
         for (ResearchNodeWidget node : bottomNodes) {
             int x = node.getX() + node.getWidth() / 2;
             int startY = node.getY() + node.getHeight();
             int endY = startY + length;
-            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? CONNECTION_COLOR_HOVERED : CONNECTION_COLOR);
+            extractFakeConnection(graphics, x, startY, endY, node == currentHovered ? highlightColor : CONNECTION_COLOR);
         }
     }
 
@@ -238,7 +239,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     private void extractHighlight(final GuiGraphicsExtractor graphics, ResearchNodeWidget node, int size) {
         for (int i = 1; i <= size; i++) {
-            graphics.outline(node.getX() - i, node.getY() - i, node.getWidth() + i * 2, node.getHeight() + i * 2, CONNECTION_COLOR_HOVERED);
+            graphics.outline(node.getX() - i, node.getY() - i, node.getWidth() + i * 2, node.getHeight() + i * 2, highlightColor);
         }
     }
 

@@ -1,3 +1,6 @@
+### Added
+- Added an option to change the highlight color in the research screen
+
 ### Changed
 - Somewhat improved the config layout
 - Pinned researches that can't be researched are now automatically unpinned

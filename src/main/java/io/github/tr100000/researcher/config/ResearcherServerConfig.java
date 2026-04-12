@@ -17,7 +17,7 @@ public class ResearcherServerConfig extends Config {
     }
 
     @RequiresAction(action = Action.RELOAD_DATA)
-    public ValidatedFloat researchCostMultiplier = new ValidatedFloat(1, 100000, 0.1F, ValidatedNumber.WidgetType.TEXTBOX);
+    public ValidatedFloat researchCostMultiplier = new ValidatedFloat(1, 10000, 0.1F, ValidatedNumber.WidgetType.TEXTBOX);
 
     @RequiresAction(action = Action.RELOG)
     public ValidatedEnum<ResearchSyncMode> researchSyncMode = new ValidatedEnum<>(ResearchSyncMode.NONE);
