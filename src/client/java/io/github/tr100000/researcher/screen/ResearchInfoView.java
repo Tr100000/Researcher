@@ -66,6 +66,7 @@ public class ResearchInfoView extends AbstractResearchView {
                     y += 18;
                 }
                 addDrawableChild(ResearchRewardWidget.create(x, y, reward));
+                x += 18;
             }
             y += 20;
         }

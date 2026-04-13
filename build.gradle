@@ -64,9 +64,9 @@ dependencies {
     implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     if (project.recipe_viewer == "jei") {
-        runtimeOnly "mezz.jei:jei-26.1.1-fabric:${project.jei_version}"
+        runtimeOnly "mezz.jei:jei-26.1.2-fabric:${project.jei_version}"
     }
-    compileOnly "mezz.jei:jei-26.1.1-fabric:${project.jei_version}"
+    compileOnly "mezz.jei:jei-26.1.2-fabric:${project.jei_version}"
 
     if (project.recipe_viewer == "rei") {
         runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"

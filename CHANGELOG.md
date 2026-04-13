@@ -7,3 +7,4 @@
 
 ### Fixed
 - Fixed a minor data component predicate issue
+- Fixed research reward icons being on top of each other in some cases
