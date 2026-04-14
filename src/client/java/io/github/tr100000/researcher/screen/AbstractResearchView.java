@@ -6,11 +6,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -63,6 +60,8 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
         return height;
     }
 
+    public void onResize() {}
+
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
@@ -104,17 +103,6 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
                 .orElseGet(ScreenRectangle::empty);
     }
 
-    public Vector2ic centerOfContents() {
-        ScreenRectangle rect = getContentsRect();
-        return new Vector2i(rect.getCenterInAxis(ScreenAxis.HORIZONTAL), rect.getCenterInAxis(ScreenAxis.VERTICAL));
-    }
-
-    public boolean shouldBeScrollable(int edgePadding) {
-        ScreenRectangle rect = getContentsRect();
-        ScreenRectangle paddedRect = rectWithPadding(rect, edgePadding);
-        return paddedRect.width() > getWidth() || paddedRect.height() > getHeight();
-    }
-
     protected static ScreenRectangle combineRects(ScreenRectangle a, ScreenRectangle b) {
         int xMin = Math.min(a.left(), b.left());
         int xMax = Math.max(a.right(), b.right());
@@ -130,11 +118,6 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         super.mouseMoved(mouseX - getOffsetX(), mouseY - getOffsetY());
-    }
-
-    @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        return super.mouseDragged(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), dx, dy);
     }
 
     @Override

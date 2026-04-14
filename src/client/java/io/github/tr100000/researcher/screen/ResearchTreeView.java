@@ -111,6 +111,16 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
         Researcher.LOGGER.debug("Rendered graph with {} nodes and {} edges", renderedGraph.nodes().size(), renderedGraph.edges().size());
 
+        onResize();
+    }
+
+    @Override
+    public void onResize() {
+        this.x = ResearchScreen.sidebarWidth;
+        this.width = parent.width - ResearchScreen.sidebarWidth;
+        this.height = parent.height;
+        this.scissorRect = new ScreenRectangle(x, y, width, height);
+
         ScreenRectangle rect = rectWithPadding(getContentsRect(), 16);
         if (rect.width() > getWidth()) {
             horizontalScrollBounds = MinMaxBounds.Ints.between(-rect.right() + getWidth(), -rect.left());

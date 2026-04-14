@@ -5,14 +5,15 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.Map;
@@ -25,16 +26,15 @@ public class ResearchListView extends ResearchNodeContainingView {
 
     private final List<ResearchNodeWidget> researchWidgets = new ObjectArrayList<>();
     private final Map<ResearchNodeWidget, String> researchTitles = new Object2ObjectOpenHashMap<>();
+    private final EditBox searchField;
 
-    private boolean isScrollable;
-    private int maxScroll;
+    private MinMaxBounds.Ints scrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetY;
 
     public ResearchListView(ResearchScreen parent, int height) {
         super(parent, 0, ResearchScreen.infoViewHeight, ResearchScreen.sidebarWidth, height);
-        this.scissorRect = new ScreenRectangle(0, y, width, height);
 
-        EditBox searchField = addDrawableChild(new EditBox(client.font, 4, ResearchScreen.infoViewHeight + 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search")));
+        searchField = new EditBox(client.font, 4, 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search"));
         searchField.setResponder(this::searchAndReposition);
 
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
@@ -44,19 +44,19 @@ public class ResearchListView extends ResearchNodeContainingView {
                 continue;
             }
 
-            ResearchNodeWidget widget = addDrawableChild(new ResearchNodeWidget(parent, this, 0, 0, 30, 30, research));
+            ResearchNodeWidget widget = new ResearchNodeWidget(parent, this, 0, 0, 30, 30, research);
             researchWidgets.add(widget);
             researchTitles.put(widget, research.getTitle(parent.researchManager).getString().toUpperCase());
         }
 
-        searchAndReposition("");
+        onResize();
     }
 
     public void searchAndReposition(String text) {
         Predicate<CharSequence> predicate = Predicates.containsPattern(text.toUpperCase());
 
         int x = 4;
-        int y = getY() + 22;
+        int y = 22;
         for (ResearchNodeWidget widget : researchWidgets) {
             if (predicate.test(researchTitles.get(widget))) {
                 widget.setPosition(x, y);
@@ -73,8 +73,27 @@ public class ResearchListView extends ResearchNodeContainingView {
 
         offsetY = 0;
         ScreenRectangle rect = rectWithPadding(getContentsRect(), 4);
-        isScrollable = rect.height() > getHeight();
-        maxScroll = rect.height() - getHeight();
+        if (rect.height() > getHeight()) {
+            scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+        }
+        else {
+            scrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+        }
+    }
+
+    @Override
+    public void onResize() {
+        clearChildren();
+        this.y = ResearchScreen.infoViewHeight;
+        this.width = ResearchScreen.sidebarWidth;
+        this.height = parent.height - ResearchScreen.infoViewHeight;
+        this.scissorRect = new ScreenRectangle(0, y, width, height);
+
+        searchField.setWidth(ResearchScreen.sidebarWidth - 8);
+        addDrawableChild(searchField);
+        researchWidgets.forEach(this::addDrawableChild);
+
+        searchAndReposition(searchField.getValue());
     }
 
     @Override
@@ -111,15 +130,13 @@ public class ResearchListView extends ResearchNodeContainingView {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if (isScrollable) {
-            offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
-            offsetY = Mth.clamp(offsetY, -maxScroll, 0);
-        }
+        offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        offsetY = Math.clamp(offsetY, scrollBounds.min().orElse(0), scrollBounds.max().orElse(0));
         return true;
     }
 
     @Override
     public int getOffsetY() {
-        return (int)offsetY;
+        return (int)offsetY + getY();
     }
 }

@@ -26,14 +26,27 @@ public class ResearchInfoView extends AbstractResearchView {
 
     private @Nullable ClientResearchTracker researchTracker;
 
+    private @Nullable Research research;
     private @Nullable TriggerDisplayElement currentDisplay;
 
     public ResearchInfoView(ResearchScreen parent) {
         super(parent, 0, 0, ResearchScreen.sidebarWidth, ResearchScreen.infoViewHeight);
-        this.scissorRect = new ScreenRectangle(0, 0, parent.width, parent.height);
     }
 
     public void initWith(Research research) {
+        this.research = research;
+        onResize();
+
+        currentDisplay = prepareDisplay(research.trigger());
+    }
+
+    @Override
+    public void onResize() {
+        this.width = ResearchScreen.sidebarWidth;
+        this.height = ResearchScreen.infoViewHeight;
+        this.scissorRect = new ScreenRectangle(0, 0, parent.width, parent.height);
+
+        assert research != null;
         clearChildren();
 
         researchTracker = client.getConnection().researcher$getClientTracker();
@@ -76,8 +89,6 @@ public class ResearchInfoView extends AbstractResearchView {
             boolean isCurrent = researchTracker.isCurrentOrPinned(research);
             addDrawableChild(StartResearchButton.create(getWidth() - 8, getHeight() - 28, researchTracker, research, !isResearchable, isCurrent));
         }
-
-        currentDisplay = prepareDisplay(research.trigger());
     }
 
     @Override
