@@ -9,9 +9,13 @@ import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
 import io.github.tr100000.researcher.api.trigger.TriggerHandler;
 import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
+import io.github.tr100000.researcher.config.ResearcherConfigs;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -29,6 +33,9 @@ public class ResearchInfoView extends AbstractResearchView {
     private @Nullable Research research;
     private @Nullable TriggerDisplayElement currentDisplay;
 
+    private MinMaxBounds.Ints scrollBounds = MinMaxBounds.Ints.ANY;
+    private double offsetY;
+
     public ResearchInfoView(ResearchScreen parent) {
         super(parent, 0, 0, ResearchScreen.sidebarWidth, ResearchScreen.infoViewHeight);
     }
@@ -44,7 +51,7 @@ public class ResearchInfoView extends AbstractResearchView {
     public void onResize() {
         this.width = ResearchScreen.sidebarWidth;
         this.height = ResearchScreen.infoViewHeight;
-        this.scissorRect = new ScreenRectangle(0, 0, parent.width, parent.height);
+        this.scissorRect = new ScreenRectangle(0, 0, width, height);
 
         assert research != null;
         clearChildren();
@@ -84,23 +91,58 @@ public class ResearchInfoView extends AbstractResearchView {
             y += 20;
         }
 
-        addDrawableChild(new ResearchDescriptionWidget(12, y, getWidth() - 24, getHeight() - y - 21, research.getDescription(parent.researchManager), client.font));
+        addDrawableChild(new ResearchDescriptionWidget(12, y, getWidth() - 24, research.getDescription(parent.researchManager), client.font));
         if (researchTracker.canResearch(research)) {
             boolean isCurrent = researchTracker.isCurrentOrPinned(research);
             addDrawableChild(StartResearchButton.create(getWidth() - 8, getHeight() - 28, researchTracker, research, !isResearchable, isCurrent));
         }
+
+        offsetY = 0;
+        ScreenRectangle rect = rectWithPadding(getContentsRect(), 4);
+        if (rect.height() > getHeight()) {
+            scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+        }
+        else {
+            scrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+        }
+    }
+
+    @Override
+    public ScreenRectangle getContentsRect() {
+        ScreenRectangle viewRect = new ScreenRectangle(0, 0, width, height);
+        return children().stream()
+                .map(GuiEventListener::getRectangle)
+                .reduce(viewRect, AbstractResearchView::combineRects);
     }
 
     @Override
     public void extractView(final GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         if (currentDisplay == null || ResearchScreen.selected == null || researchTracker == null) return;
 
-        ResearchProgress progress = researchTracker.getProgress(ResearchScreen.selected);
         graphics.fill(0, 0, width, height, BACKGROUND_COLOR);
-        graphics.text(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);
-        extractCriterion(currentDisplay, ResearchScreen.selected.trigger(), progress, graphics, mouseX, mouseY, 12, 20, delta);
         graphics.outline(0, 0, width, height, BORDER_COLOR);
-        super.extractView(graphics, mouseX, mouseY, delta);
+
+        graphics.pose().translate(getOffsetX(), getOffsetY());
+
+        int newMouseX = mouseX - getOffsetX();
+        int newMouseY = mouseY - getOffsetY();
+
+        ResearchProgress progress = researchTracker.getProgress(ResearchScreen.selected);
+        graphics.text(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);
+        extractCriterion(currentDisplay, ResearchScreen.selected.trigger(), progress, graphics, newMouseX, newMouseY, 12, 20, delta);
+        super.extractView(graphics, newMouseX, newMouseY, delta);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        offsetY = Math.clamp(offsetY, scrollBounds.min().orElse(0), scrollBounds.max().orElse(0));
+        return true;
+    }
+
+    @Override
+    public int getOffsetY() {
+        return (int)offsetY;
     }
 
     public static <T extends CriterionTriggerInstance> TriggerDisplayElement prepareDisplay(ResearchCriterion<T> criterion) {

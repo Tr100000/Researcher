@@ -4,7 +4,6 @@ import io.github.tr100000.trutils.api.gui.AbstractView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -96,12 +95,7 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
         super.extractRenderState(graphics, mouseX, mouseY, delta);
     }
 
-    public ScreenRectangle getContentsRect() {
-        return children().stream()
-                .map(GuiEventListener::getRectangle)
-                .reduce(AbstractResearchView::combineRects)
-                .orElseGet(ScreenRectangle::empty);
-    }
+    public abstract ScreenRectangle getContentsRect();
 
     protected static ScreenRectangle combineRects(ScreenRectangle a, ScreenRectangle b) {
         int xMin = Math.min(a.left(), b.left());

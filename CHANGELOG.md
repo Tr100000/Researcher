@@ -3,6 +3,7 @@
 
 ### Changed
 - You can now resize the sidebar in the research screen
+- The research info panel is now scrollable
 - Somewhat improved the config layout
 - Pinned researches that can't be researched are now automatically unpinned
 
