@@ -45,7 +45,7 @@ public class ResearchProgress {
             return DataResult.success(new ResearchProgress(true));
         }
         else {
-            return DataResult.error(() -> "");
+            return DataResult.error(() -> "Illegal progress value in research data");
         }
     }
 

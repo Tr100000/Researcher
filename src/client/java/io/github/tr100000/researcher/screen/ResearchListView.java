@@ -11,7 +11,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
-import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 
@@ -77,7 +76,7 @@ public class ResearchListView extends ResearchNodeContainingView {
             scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
         }
         else {
-            scrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+            scrollBounds = MinMaxBounds.Ints.exactly(0);
         }
     }
 

@@ -57,7 +57,7 @@ dependencies {
 
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation "maven.modrinth:trutils:${project.trutils_version}"
-    implementation "maven.modrinth:codec2schema:${project.codec2schema_version}"
+    compileOnly "maven.modrinth:codec2schema:${project.codec2schema_version}"
     implementation("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}") {
         exclude group: "me.lucko", module: "fabric-permissions-api"
     }

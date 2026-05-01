@@ -2,8 +2,8 @@ package io.github.tr100000.researcher.compat;
 
 import cc.cassian.rrv.api.ActionType;
 import cc.cassian.rrv.api.recipe.ReliableClientRecipe;
+import cc.cassian.rrv.client.recipe.ClientRecipeCache;
 import cc.cassian.rrv.common.overlay.itemlist.view.ItemViewOverlay;
-import cc.cassian.rrv.common.recipe.ClientRecipeCache;
 import cc.cassian.rrv.common.recipe.inventory.RecipeViewMenu;
 import cc.cassian.rrv.common.recipe.inventory.RecipeViewScreen;
 import io.github.tr100000.trutils.api.utils.RecipeViewerDelegate;
@@ -34,14 +34,9 @@ public class RrvDelegate implements RecipeViewerDelegate {
     }
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     public boolean showRecipe(Identifier id) {
-        LocalPlayer player = client.player;
-        if (player == null) return false;
-
-        ReliableClientRecipe recipe = ClientRecipeCache.INSTANCE.getRecipe(id);
-        if (recipe == null) return false;
-        return openRecipeScreen(client.screen, player.getInventory(), List.of(recipe));
+        ItemViewOverlay.INSTANCE.openRecipeView(id, false);
+        return didOpenRecipeScreen();
     }
 
     @Override
