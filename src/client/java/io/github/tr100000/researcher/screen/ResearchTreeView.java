@@ -14,15 +14,19 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.Mth;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
 public class ResearchTreeView extends ResearchNodeContainingView {
+    private static final float[] ZOOM_LEVELS = new float[] {
+            1.0f, 0.84f, 0.71f, 0.59f, 0.5f
+    };
+
     private GraphLayout.RenderedGraph renderedGraph = GraphLayout.RenderedGraph.EMPTY;
     private final BiMap<GraphLayout.RenderedNode, ResearchNodeWidget> renderedNodeWidgets = HashBiMap.create();
     private final BiMap<Research, ResearchNodeWidget> nodeWidgets = HashBiMap.create();
@@ -37,6 +41,9 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private double offsetX;
     private double offsetY;
     private int highlightColor;
+
+    private int zoomLevel = 0;
+    private float scale = 1.0f;
 
     private final ClientResearchTracker researchTracker;
 
@@ -56,6 +63,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         offsetX = 0;
         offsetY = 0;
         highlightColor = ResearcherConfigs.client.highlightColor.toInt();
+
+        resetZoom();
 
         final int nodeSize = 48;
         final int centeredNodeSize = 64;
@@ -122,17 +131,24 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         this.scissorRect = new ScreenRectangle(x, y, width, height);
 
         ScreenRectangle rect = rectWithPadding(getContentsRect(), 16);
-        if (rect.width() > getWidth()) {
-            horizontalScrollBounds = MinMaxBounds.Ints.between(-rect.right() + getWidth(), -rect.left());
+        float rectScreenWidth = rect.width() * scale;
+        float rectScreenHeight = rect.height() * scale;
+        float rectScreenLeft = rect.left() * scale;
+        float rectScreenTop = rect.top() * scale;
+        float rectScreenRight = rect.right() * scale;
+        float rectScreenBottom = rect.bottom() * scale;
+
+        if (rectScreenWidth > width) {
+            horizontalScrollBounds = MinMaxBounds.Ints.between((int)(width - rectScreenRight), (int)-rectScreenLeft);
         }
         else {
-            horizontalScrollBounds = MinMaxBounds.Ints.exactly(getWidth() / 2 - rect.getCenterInAxis(ScreenAxis.HORIZONTAL));
+            horizontalScrollBounds = MinMaxBounds.Ints.exactly((int)(width / 2.0f - (rectScreenLeft + rectScreenRight) / 2));
         }
-        if (rect.height() > getHeight()) {
-            verticalScrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+        if (rectScreenHeight > height) {
+            verticalScrollBounds = MinMaxBounds.Ints.between((int)(height - rectScreenBottom), (int)-rectScreenTop);
         }
         else {
-            verticalScrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+            verticalScrollBounds = MinMaxBounds.Ints.exactly((int)(height / 2.0f - (rectScreenTop + rectScreenBottom) / 2));
         }
         enforceScrollBounds();
     }
@@ -158,9 +174,10 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         assert scissorRect != null;
         graphics.enableScissor(scissorRect.left(), scissorRect.top(), scissorRect.right(), scissorRect.bottom());
         graphics.pose().translate(getOffsetX(), getOffsetY());
+        graphics.pose().scale(scale);
 
-        int newMouseX = mouseX - getOffsetX();
-        int newMouseY = mouseY - getOffsetY();
+        int newMouseX = (int)toOffsetX(mouseX);
+        int newMouseY = (int)toOffsetY(mouseY);
 
         ResearchNodeWidget hovered = highlightLocked != null ? highlightLocked : getCurrentHovered(graphics, newMouseX, newMouseY);
         extractConnections(graphics, hovered);
@@ -175,7 +192,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     }
 
     private @Nullable ResearchNodeWidget getCurrentHovered(final GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        if (!graphics.containsPointInScissor(mouseX + getOffsetX(), mouseY + getOffsetY())) return null;
+        if (!graphics.containsPointInScissor((int)offsetToScreenX(mouseX), (int)offsetToScreenY(mouseY))) return null;
 
         for (ResearchNodeWidget node : nodeWidgets.values()) {
             if (node.isMouseOver(mouseX, mouseY)) {
@@ -301,6 +318,60 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     @Override
     public int getOffsetY() {
         return (int)offsetY + getY();
+    }
+
+    @Override
+    public double toOffsetX(double x) {
+        return (x - getOffsetX()) / scale;
+    }
+
+    @Override
+    public double toOffsetY(double y) {
+        return (y - getOffsetY()) / scale;
+    }
+
+    @Override
+    public double offsetToScreenX(double offsetX) {
+        return getOffsetX() + offsetX * scale;
+    }
+
+    @Override
+    public double offsetToScreenY(double offsetY) {
+        return getOffsetY() + offsetY * scale;
+    }
+
+    public void zoomIn() {
+        setZoomLevel(zoomLevel - 1);
+    }
+
+    public void zoomOut() {
+        setZoomLevel(zoomLevel + 1);
+    }
+
+    private void setZoomLevel(int zoomLevel) {
+        int oldZoomLevel = this.zoomLevel;
+        this.zoomLevel = Mth.clamp(zoomLevel, 0, ZOOM_LEVELS.length - 1);
+        if (oldZoomLevel != this.zoomLevel) {
+            scale = ZOOM_LEVELS[zoomLevel];
+            onResize();
+        }
+    }
+
+    public void resetZoom() {
+        setZoomLevel(0);
+    }
+
+    public boolean canZoomIn() {
+        return zoomLevel > 0;
+    }
+
+    public boolean canZoomOut() {
+        return zoomLevel < ZOOM_LEVELS.length - 1;
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
     }
 
     @Override

@@ -111,16 +111,16 @@ public abstract class AbstractResearchView extends AbstractView implements Scrol
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
-        super.mouseMoved(mouseX - getOffsetX(), mouseY - getOffsetY());
+        super.mouseMoved(toOffsetX(mouseX), toOffsetY(mouseY));
     }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubled) {
-        return super.mouseClicked(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()), doubled);
+        return super.mouseClicked(new MouseButtonEvent(toOffsetX(event.x()), toOffsetY(event.y()), event.buttonInfo()), doubled);
     }
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        return super.mouseReleased(new MouseButtonEvent(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo()));
+        return super.mouseReleased(new MouseButtonEvent(toOffsetX(event.x()), toOffsetY(event.y()), event.buttonInfo()));
     }
 }

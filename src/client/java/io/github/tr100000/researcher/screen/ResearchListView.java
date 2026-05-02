@@ -121,8 +121,8 @@ public class ResearchListView extends ResearchNodeContainingView {
 
         graphics.pose().translate(getOffsetX(), getOffsetY());
 
-        int newMouseX = mouseX - getOffsetX();
-        int newMouseY = mouseY - getOffsetY();
+        int newMouseX = (int)toOffsetX(mouseX);
+        int newMouseY = (int)toOffsetY(mouseY);
 
         super.extractView(graphics, newMouseX, newMouseY, delta);
     }

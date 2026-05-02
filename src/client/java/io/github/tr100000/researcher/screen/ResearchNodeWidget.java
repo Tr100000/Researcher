@@ -71,6 +71,11 @@ public class ResearchNodeWidget extends AbstractButton {
     }
 
     @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return parentView.isMouseOver(parentView.offsetToScreenX(mouseX), parentView.offsetToScreenY(mouseY)) && super.isMouseOver(mouseX, mouseY);
+    }
+
+    @Override
     public void onPress(InputWithModifiers input) {
         if (input.hasShiftDown()) {
             parentView.onNodeShiftClicked(this);
@@ -92,9 +97,10 @@ public class ResearchNodeWidget extends AbstractButton {
     private class TooltipPositionerImpl implements ClientTooltipPositioner {
         @Override
         public Vector2ic positionTooltip(int screenWidth, int screenHeight, int x, int y, int width, int height) {
-            Vector2i vector2i = new Vector2i(x, y).add(12, -12).add(parentView.getOffsetX(), parentView.getOffsetY());
-            this.preventOverflow(screenWidth, screenHeight, vector2i, width, height);
-            return vector2i;
+            Vector2i worldVec = new Vector2i(x, y).add(12, -12);
+            Vector2i result = new Vector2i((int)parentView.offsetToScreenX(worldVec.x()), (int)parentView.offsetToScreenY(worldVec.y()));
+            this.preventOverflow(screenWidth, screenHeight, result, width, height);
+            return result;
         }
 
         private void preventOverflow(int screenWidth, int screenHeight, Vector2i pos, int width, int height) {

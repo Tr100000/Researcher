@@ -91,7 +91,10 @@ public class ResearchInfoView extends AbstractResearchView {
             y += 20;
         }
 
-        addDrawableChild(new ResearchDescriptionWidget(12, y, getWidth() - 24, research.getDescription(parent.researchManager), client.font));
+        ResearchDescriptionWidget descriptionWidget = new ResearchDescriptionWidget(12, y, getWidth() - 24, research.getDescription(parent.researchManager), client.font);
+        if (descriptionWidget.getHeight() > 0)
+            addDrawableChild(descriptionWidget);
+
         if (researchTracker.canResearch(research)) {
             boolean isCurrent = researchTracker.isCurrentOrPinned(research);
             addDrawableChild(StartResearchButton.create(getWidth() - 8, getHeight() - 28, researchTracker, research, !isResearchable, isCurrent));
@@ -124,8 +127,8 @@ public class ResearchInfoView extends AbstractResearchView {
 
         graphics.pose().translate(getOffsetX(), getOffsetY());
 
-        int newMouseX = mouseX - getOffsetX();
-        int newMouseY = mouseY - getOffsetY();
+        int newMouseX = (int)toOffsetX(mouseX);
+        int newMouseY = (int)toOffsetY(mouseY);
 
         ResearchProgress progress = researchTracker.getProgress(ResearchScreen.selected);
         graphics.text(client.font, researchTracker.getTitleWithStatus(ResearchScreen.selected), 8, 8, CommonColors.WHITE);

@@ -9,11 +9,23 @@ public interface ScrollableView {
         return 0;
     }
 
+    default double toOffsetX(double x) {
+        return x - getOffsetX();
+    }
+
+    default double toOffsetY(double y) {
+        return y - getOffsetY();
+    }
+
     default double offsetToScreenX(double offsetX) {
         return getOffsetX() + offsetX;
     }
 
     default double offsetToScreenY(double offsetY) {
         return getOffsetY() + offsetY;
+    }
+
+    default float getScale() {
+        return 1.0f;
     }
 }

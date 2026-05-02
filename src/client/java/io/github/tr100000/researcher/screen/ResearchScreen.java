@@ -2,11 +2,13 @@ package io.github.tr100000.researcher.screen;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import io.github.tr100000.researcher.ClientResearchTracker;
+import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -26,9 +28,11 @@ public class ResearchScreen extends Screen {
 
     public final @Nullable Screen parent;
 
-    protected @Nullable ResearchTreeView treeView;
-    protected @Nullable ResearchInfoView infoView;
-    protected @Nullable ResearchListView listView;
+    protected ResearchTreeView treeView = null;
+    protected ResearchInfoView infoView = null;
+    protected ResearchListView listView = null;
+    protected Button zoomInButton = null;
+    protected Button zoomOutButton = null;
 
     private boolean isDraggingHorizontal = false;
     private boolean isDraggingVertical = false;
@@ -64,6 +68,8 @@ public class ResearchScreen extends Screen {
         listView = new ResearchListView(this, height - infoViewHeight);
         treeView = new ResearchTreeView(this, width - sidebarWidth, height);
 
+        initTreeViewZoomButtons();
+
         assert selected != null;
         initWith(selected);
     }
@@ -72,18 +78,31 @@ public class ResearchScreen extends Screen {
         clearWidgets();
         setSelected(current);
 
-        assert infoView != null;
         addRenderableWidget(infoView);
         infoView.initWith(current);
 
-        assert listView != null;
         addRenderableWidget(listView);
 
-        assert treeView != null;
         addRenderableWidget(treeView);
         treeView.initWith(current);
 
+        addRenderableWidget(zoomInButton);
+        addRenderableWidget(zoomOutButton);
+        updateZoomButtons();
+
         setInitialFocus(treeView);
+    }
+
+    private void initTreeViewZoomButtons() {
+        zoomInButton = new ResearchTreeZoomButton(sidebarWidth + 5, height - 40, ModUtils.getScreenTranslated("zoom_in"), _ -> {
+                    treeView.zoomIn();
+                    updateZoomButtons();
+                });
+        zoomOutButton = new ResearchTreeZoomButton(sidebarWidth + 5, height - 20, ModUtils.getScreenTranslated("zoom_out"), _ -> {
+                    treeView.zoomOut();
+                    updateZoomButtons();
+                });
+        updateZoomButtons();
     }
 
     @Override
@@ -142,15 +161,39 @@ public class ResearchScreen extends Screen {
     }
 
     private void resizeChildren() {
-        assert treeView != null;
         treeView.onResize();
-        assert infoView != null;
         infoView.onResize();
-        assert listView != null;
         listView.onResize();
+
+        zoomInButton.setPosition(sidebarWidth + 5, height - 40);
+        zoomInButton.setSize(15, 15);
+        zoomOutButton.setPosition(sidebarWidth + 5, height - 20);
+        zoomOutButton.setSize(15, 15);
 
         ResearcherConfigs.client.researchScreenSidebarWidth.validateAndSet(sidebarWidth);
         ResearcherConfigs.client.researchScreenInfoViewHeight.validateAndSet(infoViewHeight);
+    }
+
+    @Override
+    public void mouseMoved(double x, double y) {
+        if (checkZoomButtonNotHovered(x, y, zoomInButton) && checkZoomButtonNotHovered(x, y, zoomOutButton)) {
+            listView.setIsHovered(true);
+            treeView.setIsHovered(true);
+        }
+    }
+
+    private boolean checkZoomButtonNotHovered(double mouseX, double mouseY, Button button) {
+        if (button.isMouseOver(mouseX, mouseY)) {
+            listView.setIsHovered(false);
+            treeView.setIsHovered(false);
+            return false;
+        }
+        else return true;
+    }
+
+    private void updateZoomButtons() {
+        zoomInButton.active = treeView.canZoomIn();
+        zoomOutButton.active = treeView.canZoomOut();
     }
 
     @Override

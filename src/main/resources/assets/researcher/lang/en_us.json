@@ -482,5 +482,7 @@
   "screen.researcher.unlocked_by_header": "Unlocked by researching any of:",
   "screen.researcher.unlocks": "Unlocks:",
   "screen.researcher.unpin": "Unpin",
+  "screen.researcher.zoom_in": "+",
+  "screen.researcher.zoom_out": "-",
   "tooltip.researcher.invalid_unlock": "Failed to load recipe unlock: %s"
 }
