@@ -290,6 +290,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         if (event.button() == 0) {
             this.offsetX += dx;
             this.offsetY += dy;
+            enforceScrollBounds();
             return true;
         }
         else {

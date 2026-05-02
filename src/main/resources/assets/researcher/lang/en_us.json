@@ -25,6 +25,8 @@
   "config.researcher.client.pinAvailableResearches": "Auto-Pin Researches",
   "config.researcher.client.pinAvailableResearches.desc": "Automatically pins researches to your hud as they become available.",
   "config.researcher.client.researchHud": "Enable Research Hud",
+  "config.researcher.client.researchScreenAllowResize": "Enable Resizing Handles",
+  "config.researcher.client.researchScreenAllowZoom": "Show Zooming Buttons",
   "config.researcher.client.researchScreenGroup": "Research Screen Settings",
   "config.researcher.client.researchScreenInfoViewHeight": "Info Panel Height",
   "config.researcher.client.researchScreenSidebarWidth": "Sidebar Width",

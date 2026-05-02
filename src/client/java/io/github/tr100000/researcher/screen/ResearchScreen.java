@@ -48,6 +48,14 @@ public class ResearchScreen extends Screen {
         infoViewHeight = ResearcherConfigs.client.researchScreenInfoViewHeight.get();
     }
 
+    private static boolean allowResize() {
+        return ResearcherConfigs.client.researchScreenAllowResize.get();
+    }
+
+    private static boolean allowZoom() {
+        return ResearcherConfigs.client.researchScreenAllowZoom.get();
+    }
+
     public static void setSelected(@Nullable Research selected) {
         ResearchScreen.selected = selected;
     }
@@ -68,7 +76,8 @@ public class ResearchScreen extends Screen {
         listView = new ResearchListView(this, height - infoViewHeight);
         treeView = new ResearchTreeView(this, width - sidebarWidth, height);
 
-        initTreeViewZoomButtons();
+        if (allowZoom())
+            initTreeViewZoomButtons();
 
         assert selected != null;
         initWith(selected);
@@ -86,9 +95,11 @@ public class ResearchScreen extends Screen {
         addRenderableWidget(treeView);
         treeView.initWith(current);
 
-        addRenderableWidget(zoomInButton);
-        addRenderableWidget(zoomOutButton);
-        updateZoomButtons();
+        if (allowZoom()) {
+            addRenderableWidget(zoomInButton);
+            addRenderableWidget(zoomOutButton);
+            updateZoomButtons();
+        }
 
         setInitialFocus(treeView);
     }
@@ -112,30 +123,34 @@ public class ResearchScreen extends Screen {
         if (selected != null) {
             super.extractRenderState(graphics, mouseX, mouseY, delta);
 
-            if (isWithinRange(mouseY, infoViewHeight - 1, 1) && mouseX < sidebarWidth) {
-                graphics.requestCursor(CursorTypes.RESIZE_NS);
-                graphics.horizontalLine(0, sidebarWidth - 2, infoViewHeight - 1, ResearcherConfigs.client.highlightColor.toInt());
-            }
-            else if (isWithinRange(mouseX, sidebarWidth - 1, 1)) {
-                graphics.requestCursor(CursorTypes.RESIZE_EW);
-                graphics.verticalLine(sidebarWidth - 1, 0, height, ResearcherConfigs.client.highlightColor.toInt());
+            if (allowResize()) {
+                if (isWithinRange(mouseY, infoViewHeight - 1, 1) && mouseX < sidebarWidth) {
+                    graphics.requestCursor(CursorTypes.RESIZE_NS);
+                    graphics.horizontalLine(0, sidebarWidth - 2, infoViewHeight - 1, ResearcherConfigs.client.highlightColor.toInt());
+                }
+                else if (isWithinRange(mouseX, sidebarWidth - 1, 1)) {
+                    graphics.requestCursor(CursorTypes.RESIZE_EW);
+                    graphics.verticalLine(sidebarWidth - 1, 0, height, ResearcherConfigs.client.highlightColor.toInt());
+                }
             }
         }
     }
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        if ((isDraggingHorizontal && !isDraggingVertical) || (isWithinRange((int)event.y(), infoViewHeight - 1, 1) && event.x() < sidebarWidth)) {
-            infoViewHeight = Mth.clamp((int)event.y() + 1, 50, height - 50);
-            resizeChildren();
-            isDraggingHorizontal = true;
-            return true;
-        }
-        if ((isDraggingVertical && !isDraggingHorizontal) || isWithinRange((int)event.x(), sidebarWidth - 1, 1)) {
-            sidebarWidth = Mth.clamp((int)event.x() + 1, 50, width - 50);
-            resizeChildren();
-            isDraggingVertical = true;
-            return true;
+        if (allowResize()) {
+            if ((isDraggingHorizontal && !isDraggingVertical) || (isWithinRange((int) event.y(), infoViewHeight - 1, 1) && event.x() < sidebarWidth)) {
+                infoViewHeight = Mth.clamp((int) event.y() + 1, 50, height - 50);
+                resizeChildren();
+                isDraggingHorizontal = true;
+                return true;
+            }
+            if ((isDraggingVertical && !isDraggingHorizontal) || isWithinRange((int) event.x(), sidebarWidth - 1, 1)) {
+                sidebarWidth = Mth.clamp((int) event.x() + 1, 50, width - 50);
+                resizeChildren();
+                isDraggingVertical = true;
+                return true;
+            }
         }
 
         for (GuiEventListener element : children()) {
@@ -165,10 +180,12 @@ public class ResearchScreen extends Screen {
         infoView.onResize();
         listView.onResize();
 
-        zoomInButton.setPosition(sidebarWidth + 5, height - 40);
-        zoomInButton.setSize(15, 15);
-        zoomOutButton.setPosition(sidebarWidth + 5, height - 20);
-        zoomOutButton.setSize(15, 15);
+        if (allowZoom()) {
+            zoomInButton.setPosition(sidebarWidth + 5, height - 40);
+            zoomInButton.setSize(15, 15);
+            zoomOutButton.setPosition(sidebarWidth + 5, height - 20);
+            zoomOutButton.setSize(15, 15);
+        }
 
         ResearcherConfigs.client.researchScreenSidebarWidth.validateAndSet(sidebarWidth);
         ResearcherConfigs.client.researchScreenInfoViewHeight.validateAndSet(infoViewHeight);
@@ -176,7 +193,13 @@ public class ResearchScreen extends Screen {
 
     @Override
     public void mouseMoved(double x, double y) {
-        if (checkZoomButtonNotHovered(x, y, zoomInButton) && checkZoomButtonNotHovered(x, y, zoomOutButton)) {
+        if (allowZoom()) {
+            if (checkZoomButtonNotHovered(x, y, zoomInButton) && checkZoomButtonNotHovered(x, y, zoomOutButton)) {
+                listView.setIsHovered(true);
+                treeView.setIsHovered(true);
+            }
+        }
+        else {
             listView.setIsHovered(true);
             treeView.setIsHovered(true);
         }

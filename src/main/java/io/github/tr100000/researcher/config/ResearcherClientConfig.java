@@ -34,8 +34,10 @@ public class ResearcherClientConfig extends Config {
     public ValidatedColor highlightColor = new ValidatedColor(new Color(0xFFEBC000), true);
     public ValidatedFloat researchTreeScrollSensitivity = new ValidatedFloat(2.5F, 30.0F, 0.5F, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS);
     public ValidatedInt researchScreenSidebarWidth = new ValidatedInt(230, Integer.MAX_VALUE, 10);
-    @ConfigGroup.Pop
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140, Integer.MAX_VALUE, 10);
+    public ValidatedBoolean researchScreenAllowResize = new ValidatedBoolean(true);
+    @ConfigGroup.Pop
+    public ValidatedBoolean researchScreenAllowZoom = new ValidatedBoolean(true);
 
     @Override
     public String translationKey() {
