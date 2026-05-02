@@ -12,6 +12,7 @@ import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.graph.GraphLayout;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -69,6 +70,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         final int nodeSize = 48;
         final int centeredNodeSize = 64;
 
+        long layoutStartTime = System.currentTimeMillis();
+
         GraphLayout graphLayout = new GraphLayout(researchTracker.getGraph());
         Map<Research, Integer> researchDepthMap;
 
@@ -118,7 +121,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
             offsetY = height / 2.0 - centerNode.y();
         }
 
-        Researcher.LOGGER.debug("Rendered graph with {} nodes and {} edges", renderedGraph.nodes().size(), renderedGraph.edges().size());
+        if (FabricLoader.getInstance().isDevelopmentEnvironment())
+            Researcher.LOGGER.info("Rendered graph with {} nodes and {} edges ({}ms)", renderedGraph.nodes().size(), renderedGraph.edges().size(), System.currentTimeMillis() - layoutStartTime);
 
         onResize();
     }

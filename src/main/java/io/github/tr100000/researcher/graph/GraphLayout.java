@@ -251,6 +251,11 @@ public class GraphLayout {
             }
         }
 
+        Map<Node, List<Edge>> outgoingByNode = new Object2ObjectOpenHashMap<>();
+        for (Edge e : aggregateGraph.edges()) {
+            outgoingByNode.computeIfAbsent(e.from, _ -> new ObjectArrayList<>()).add(e);
+        }
+
         Map<Node, RenderedNode> nodeRenderedMap = new Object2ObjectOpenHashMap<>();
         Map<Edge, RenderedEdgeSegment> edgeRenderedMap = new Object2ObjectOpenHashMap<>();
         int y = 0;
@@ -260,18 +265,23 @@ public class GraphLayout {
             y += layerHeight / 2;
 
             List<Node> layer = layers.get(i);
-            List<Edge> edgesFromLayer = aggregateGraph.edges().stream()
-                    .filter(edge -> layer.contains(edge.from()))
-                    .sorted(Comparator.comparingInt(edge -> nodeHorizontalPositions.get(edge.from())))
-                    .toList();
+
+            List<Edge> edgesFromLayer = new ObjectArrayList<>();
+            for (Node node : layer) {
+                List<Edge> outgoing = outgoingByNode.getOrDefault(node, Collections.emptyList());
+                edgesFromLayer.addAll(outgoing);
+            }
+            edgesFromLayer.sort(Comparator.comparingInt(e -> nodeHorizontalPositions.get(e.from())));
 
             int maxY = y + settings.edgeBusMargin() * 2;
             EdgeBusTracker edgeBus = new EdgeBusTracker();
             List<RenderedEdgeSegment> tentativeEdges = new ObjectArrayList<>();
+
             for (Edge edge : edgesFromLayer) {
                 Node from = edge.from();
-                int fromX = nodeHorizontalPositions.get(from) + getEdgeAttachOffset(from, edge, nodeOutgoingEdges.get(from));
                 Node to = edge.to();
+
+                int fromX = nodeHorizontalPositions.get(from) + getEdgeAttachOffset(from, edge, nodeOutgoingEdges.get(from));
                 int toX = nodeHorizontalPositions.get(to) + getEdgeAttachOffset(to, edge, nodeIncomingEdges.get(to));
 
                 IntRange range = IntRange.of(fromX, toX);
