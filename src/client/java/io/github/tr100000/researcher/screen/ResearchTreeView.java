@@ -50,7 +50,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private static final int CONNECTION_COLOR = 0xFFAAAAAA;
 
     public ResearchTreeView(ResearchScreen parent, int width, int height) {
-        super(parent, ResearchScreen.sidebarWidth, 0, width, height);
+        super(parent, ResearchScreen.getSidebarWidth(), 0, width, height);
         this.researchTracker = parent.researchManager;
         this.scissorRect = new ScreenRectangle(x, y, width, height);
     }
@@ -125,8 +125,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     @Override
     public void onResize() {
-        this.x = ResearchScreen.sidebarWidth;
-        this.width = parent.width - ResearchScreen.sidebarWidth;
+        this.x = ResearchScreen.getSidebarWidth();
+        this.width = parent.width - ResearchScreen.getSidebarWidth();
         this.height = parent.height;
         this.scissorRect = new ScreenRectangle(x, y, width, height);
 

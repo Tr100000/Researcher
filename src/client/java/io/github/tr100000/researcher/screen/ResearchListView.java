@@ -31,9 +31,9 @@ public class ResearchListView extends ResearchNodeContainingView {
     private double offsetY;
 
     public ResearchListView(ResearchScreen parent, int height) {
-        super(parent, 0, ResearchScreen.infoViewHeight, ResearchScreen.sidebarWidth, height);
+        super(parent, 0, ResearchScreen.getInfoViewHeight(), ResearchScreen.getSidebarWidth(), height);
 
-        searchField = new EditBox(client.font, 4, 4, ResearchScreen.sidebarWidth - 8, 14, Component.translatable("screen.researcher.search"));
+        searchField = new EditBox(client.font, 4, 4, ResearchScreen.getSidebarWidth() - 8, 14, Component.translatable("screen.researcher.search"));
         searchField.setResponder(this::searchAndReposition);
 
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
@@ -83,12 +83,12 @@ public class ResearchListView extends ResearchNodeContainingView {
     @Override
     public void onResize() {
         clearChildren();
-        this.y = ResearchScreen.infoViewHeight;
-        this.width = ResearchScreen.sidebarWidth;
-        this.height = parent.height - ResearchScreen.infoViewHeight;
+        this.y = ResearchScreen.getInfoViewHeight();
+        this.width = ResearchScreen.getSidebarWidth();
+        this.height = parent.height - ResearchScreen.getInfoViewHeight();
         this.scissorRect = new ScreenRectangle(0, y, width, height);
 
-        searchField.setWidth(ResearchScreen.sidebarWidth - 8);
+        searchField.setWidth(ResearchScreen.getSidebarWidth() - 8);
         addDrawableChild(searchField);
         researchWidgets.forEach(this::addDrawableChild);
 

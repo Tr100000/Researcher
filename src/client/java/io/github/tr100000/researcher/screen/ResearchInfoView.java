@@ -15,7 +15,6 @@ import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
@@ -37,7 +36,7 @@ public class ResearchInfoView extends AbstractResearchView {
     private double offsetY;
 
     public ResearchInfoView(ResearchScreen parent) {
-        super(parent, 0, 0, ResearchScreen.sidebarWidth, ResearchScreen.infoViewHeight);
+        super(parent, 0, 0, ResearchScreen.getSidebarWidth(), ResearchScreen.getInfoViewHeight());
     }
 
     public void initWith(Research research) {
@@ -49,8 +48,8 @@ public class ResearchInfoView extends AbstractResearchView {
 
     @Override
     public void onResize() {
-        this.width = ResearchScreen.sidebarWidth;
-        this.height = ResearchScreen.infoViewHeight;
+        this.width = ResearchScreen.getSidebarWidth();
+        this.height = ResearchScreen.getInfoViewHeight();
         this.scissorRect = new ScreenRectangle(0, 0, width, height);
 
         assert research != null;
@@ -62,7 +61,7 @@ public class ResearchInfoView extends AbstractResearchView {
         int y = 42;
 
         if (!research.recipeUnlocks().isEmpty()) {
-            addDrawableChild(new StringWidget(12, y, ResearchScreen.sidebarWidth - 24, 10, ModUtils.getScreenTranslated("unlocks"), client.font));
+            addDrawableChild(new StringWidget(12, y, ResearchScreen.getSidebarWidth() - 24, 10, ModUtils.getScreenTranslated("unlocks"), client.font));
             y += 10;
             int x = 14;
             for (Identifier unlock : research.recipeUnlocks()) {
@@ -77,7 +76,7 @@ public class ResearchInfoView extends AbstractResearchView {
         }
 
         if (!research.rewards().isEmpty()) {
-            addDrawableChild(new StringWidget(12, y, ResearchScreen.sidebarWidth - 24, 10, ModUtils.getScreenTranslated("rewards"), client.font));
+            addDrawableChild(new StringWidget(12, y, ResearchScreen.getSidebarWidth() - 24, 10, ModUtils.getScreenTranslated("rewards"), client.font));
             y += 10;
             int x = 14;
             for (ResearchReward reward : research.rewards()) {
@@ -106,13 +105,13 @@ public class ResearchInfoView extends AbstractResearchView {
             scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
         }
         else {
-            scrollBounds = MinMaxBounds.Ints.exactly(getHeight() / 2 - rect.getCenterInAxis(ScreenAxis.VERTICAL));
+            scrollBounds = MinMaxBounds.Ints.exactly(0);
         }
     }
 
     @Override
     public ScreenRectangle getContentsRect() {
-        ScreenRectangle viewRect = new ScreenRectangle(0, 0, width, height);
+        ScreenRectangle viewRect = new ScreenRectangle(4, 4, width - 8, height - 8);
         return children().stream()
                 .map(GuiEventListener::getRectangle)
                 .reduce(viewRect, AbstractResearchView::combineRects);

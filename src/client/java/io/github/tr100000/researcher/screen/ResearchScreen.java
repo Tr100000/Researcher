@@ -19,8 +19,8 @@ import org.jspecify.annotations.Nullable;
 public class ResearchScreen extends Screen {
     protected static final Minecraft client = Minecraft.getInstance();
 
-    public static int sidebarWidth;
-    public static int infoViewHeight;
+    private static int sidebarWidth;
+    private static int infoViewHeight;
 
     public static @Nullable Research selected;
 
@@ -48,6 +48,15 @@ public class ResearchScreen extends Screen {
         infoViewHeight = ResearcherConfigs.client.researchScreenInfoViewHeight.get();
     }
 
+    public static int getSidebarWidth() {
+        int n = (sidebarWidth - 6) / 32;
+        return Math.max(2, n) * 32 + 6;
+    }
+
+    public static int getInfoViewHeight() {
+        return infoViewHeight;
+    }
+
     private static boolean allowResize() {
         return ResearcherConfigs.client.researchScreenAllowResize.get();
     }
@@ -73,8 +82,8 @@ public class ResearchScreen extends Screen {
         }
 
         infoView = new ResearchInfoView(this);
-        listView = new ResearchListView(this, height - infoViewHeight);
-        treeView = new ResearchTreeView(this, width - sidebarWidth, height);
+        listView = new ResearchListView(this, height - getInfoViewHeight());
+        treeView = new ResearchTreeView(this, width - getSidebarWidth(), height);
 
         if (allowZoom())
             initTreeViewZoomButtons();
@@ -105,11 +114,11 @@ public class ResearchScreen extends Screen {
     }
 
     private void initTreeViewZoomButtons() {
-        zoomInButton = new ResearchTreeZoomButton(sidebarWidth + 5, height - 40, ModUtils.getScreenTranslated("zoom_in"), _ -> {
+        zoomInButton = new ResearchTreeZoomButton(getSidebarWidth() + 5, height - 40, ModUtils.getScreenTranslated("zoom_in"), _ -> {
                     treeView.zoomIn();
                     updateZoomButtons();
                 });
-        zoomOutButton = new ResearchTreeZoomButton(sidebarWidth + 5, height - 20, ModUtils.getScreenTranslated("zoom_out"), _ -> {
+        zoomOutButton = new ResearchTreeZoomButton(getSidebarWidth() + 5, height - 20, ModUtils.getScreenTranslated("zoom_out"), _ -> {
                     treeView.zoomOut();
                     updateZoomButtons();
                 });
@@ -124,13 +133,13 @@ public class ResearchScreen extends Screen {
             super.extractRenderState(graphics, mouseX, mouseY, delta);
 
             if (allowResize()) {
-                if (isWithinRange(mouseY, infoViewHeight - 1, 1) && mouseX < sidebarWidth) {
+                if (isWithinRange(mouseY, getInfoViewHeight() - 1, 1) && mouseX < getSidebarWidth()) {
                     graphics.requestCursor(CursorTypes.RESIZE_NS);
-                    graphics.horizontalLine(0, sidebarWidth - 2, infoViewHeight - 1, ResearcherConfigs.client.highlightColor.toInt());
+                    graphics.horizontalLine(0, getSidebarWidth() - 2, getInfoViewHeight() - 1, ResearcherConfigs.client.highlightColor.toInt());
                 }
-                else if (isWithinRange(mouseX, sidebarWidth - 1, 1)) {
+                else if (isWithinRange(mouseX, getSidebarWidth() - 1, 1)) {
                     graphics.requestCursor(CursorTypes.RESIZE_EW);
-                    graphics.verticalLine(sidebarWidth - 1, 0, height, ResearcherConfigs.client.highlightColor.toInt());
+                    graphics.verticalLine(getSidebarWidth() - 1, 0, height, ResearcherConfigs.client.highlightColor.toInt());
                 }
             }
         }
@@ -139,13 +148,13 @@ public class ResearchScreen extends Screen {
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if (allowResize()) {
-            if ((isDraggingHorizontal && !isDraggingVertical) || (isWithinRange((int) event.y(), infoViewHeight - 1, 1) && event.x() < sidebarWidth)) {
+            if ((isDraggingHorizontal && !isDraggingVertical) || (isWithinRange((int) event.y(), getInfoViewHeight() - 1, 1) && event.x() < getSidebarWidth())) {
                 infoViewHeight = Mth.clamp((int) event.y() + 1, 50, height - 50);
                 resizeChildren();
                 isDraggingHorizontal = true;
                 return true;
             }
-            if ((isDraggingVertical && !isDraggingHorizontal) || isWithinRange((int) event.x(), sidebarWidth - 1, 1)) {
+            if ((isDraggingVertical && !isDraggingHorizontal) || isWithinRange((int) event.x(), getSidebarWidth() - 1, 1)) {
                 sidebarWidth = Mth.clamp((int) event.x() + 1, 50, width - 50);
                 resizeChildren();
                 isDraggingVertical = true;
@@ -181,14 +190,14 @@ public class ResearchScreen extends Screen {
         listView.onResize();
 
         if (allowZoom()) {
-            zoomInButton.setPosition(sidebarWidth + 5, height - 40);
+            zoomInButton.setPosition(getSidebarWidth() + 5, height - 40);
             zoomInButton.setSize(15, 15);
-            zoomOutButton.setPosition(sidebarWidth + 5, height - 20);
+            zoomOutButton.setPosition(getSidebarWidth() + 5, height - 20);
             zoomOutButton.setSize(15, 15);
         }
 
-        ResearcherConfigs.client.researchScreenSidebarWidth.validateAndSet(sidebarWidth);
-        ResearcherConfigs.client.researchScreenInfoViewHeight.validateAndSet(infoViewHeight);
+        ResearcherConfigs.client.researchScreenSidebarWidth.validateAndSet(getSidebarWidth());
+        ResearcherConfigs.client.researchScreenInfoViewHeight.validateAndSet(getInfoViewHeight());
     }
 
     @Override
