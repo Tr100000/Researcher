@@ -35,7 +35,7 @@ public class ResearcherClientConfig extends Config {
     public ValidatedFloat researchTreeScrollSensitivity = new ValidatedFloat(2.5F, 30.0F, 0.5F, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS);
     public ValidatedInt researchScreenSidebarWidth = new ValidatedInt(230, Integer.MAX_VALUE, 10);
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140, Integer.MAX_VALUE, 10);
-    public ValidatedBoolean researchScreenAllowResize = new ValidatedBoolean(true);
+    public ValidatedEnum<ResearchScreenAllowResizeMode> researchScreenAllowResize = new ValidatedEnum<>(ResearchScreenAllowResizeMode.ALWAYS);
     @ConfigGroup.Pop
     public ValidatedBoolean researchScreenAllowZoom = new ValidatedBoolean(true);
 
@@ -53,6 +53,18 @@ public class ResearcherClientConfig extends Config {
         @Override
         public String prefix() {
             return "config." + Researcher.MODID + ".tree_mode";
+        }
+    }
+
+    public enum ResearchScreenAllowResizeMode implements EnumTranslatable {
+        ALWAYS,
+        WHEN_HOLDING_SHIFT,
+        NEVER
+        ;
+
+        @Override
+        public String prefix() {
+            return "config." + Researcher.MODID + ".research_screen_allow_resize_mode";
         }
     }
 }

@@ -134,7 +134,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         });
         this.currentResearching = data.currentResearching.orElse(null);
         this.pinnedResearches = new ObjectArrayList<>(data.pinnedResearches);
-        validatePinnedResearches();
+        removeUnresearchablePinned();
     }
 
     private Data getData() {
@@ -311,7 +311,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         if (dirty || !progressUpdates.isEmpty() || forceNextUpdate) {
             Map<Identifier, ResearchProgress> updatedProgressMap = new HashMap<>();
             progressUpdates.forEach(research -> updatedProgressMap.put(researchManager.getIdOrThrow(research), getProgress(research)));
-            validatePinnedResearches();
+            removeUnresearchablePinned();
 
             progressUpdates.clear();
             if (dirty || !updatedProgressMap.isEmpty() || forceNextUpdate) {
@@ -330,7 +330,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         }
     }
 
-    private void validatePinnedResearches() {
+    private void removeUnresearchablePinned() {
         pinnedResearches.removeIf(r -> !canResearch(parent().get(r)));
     }
 

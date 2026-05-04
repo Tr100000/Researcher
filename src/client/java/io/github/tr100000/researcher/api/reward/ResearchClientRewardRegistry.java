@@ -6,6 +6,7 @@ import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.researcher.api.ResearchRewardType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -24,9 +25,9 @@ public final class ResearchClientRewardRegistry {
         REGISTRY.put(type, (Function) factory);
     }
 
-    public static @Nullable ResearchClientReward get(ResearchReward reward) {
-        Objects.requireNonNull(reward, "reward is null");
-        if (REGISTRY.containsKey(reward.getType())) {
+    @Contract(value = "null -> null", pure = true)
+    public static @Nullable ResearchClientReward get(@Nullable ResearchReward reward) {
+        if (reward != null && REGISTRY.containsKey(reward.getType())) {
             return REGISTRY.get(reward.getType()).apply(reward);
         }
         return null;

@@ -1,6 +1,10 @@
 package io.github.tr100000.researcher.screen;
 
 public interface ScrollableView {
+    default boolean isScrollable() {
+        return true;
+    }
+
     default int getOffsetX() {
         return 0;
     }

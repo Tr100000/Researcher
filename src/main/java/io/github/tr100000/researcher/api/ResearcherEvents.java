@@ -10,9 +10,9 @@ public final class ResearcherEvents {
 
     public static final Event<ResearchFinished> RESEARCH_FINISHED = EventFactory.createArrayBacked(ResearchFinished.class,
             listeners -> (researchTracker, research) -> {
-                for (ResearchFinished listener : listeners) {
-                    listener.onResearchFinished(researchTracker, research);
-                }
+                    for (ResearchFinished listener : listeners) {
+                        listener.onResearchFinished(researchTracker, research);
+                    }
             });
 
     @FunctionalInterface

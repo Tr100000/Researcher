@@ -27,13 +27,14 @@ public class ResearchListView extends ResearchNodeContainingView {
     private final Map<ResearchNodeWidget, String> researchTitles = new Object2ObjectOpenHashMap<>();
     private final EditBox searchField;
 
+    private boolean isScrollable;
     private MinMaxBounds.Ints scrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetY;
 
     public ResearchListView(ResearchScreen parent, int height) {
         super(parent, 0, ResearchScreen.getInfoViewHeight(), ResearchScreen.getSidebarWidth(), height);
 
-        searchField = new EditBox(client.font, 4, 4, ResearchScreen.getSidebarWidth() - 8, 14, Component.translatable("screen.researcher.search"));
+        searchField = new EditBox(client.font, 4, 4, ResearchScreen.getSidebarWidth() - 8, 20, Component.translatable("screen.researcher.search"));
         searchField.setResponder(this::searchAndReposition);
 
         List<Research> researchList = new ObjectArrayList<>(parent.researchManager.listAll());
@@ -55,7 +56,7 @@ public class ResearchListView extends ResearchNodeContainingView {
         Predicate<CharSequence> predicate = Predicates.containsPattern(text.toUpperCase());
 
         int x = 4;
-        int y = 22;
+        int y = 29;
         for (ResearchNodeWidget widget : researchWidgets) {
             if (predicate.test(researchTitles.get(widget))) {
                 widget.setPosition(x, y);
@@ -74,9 +75,11 @@ public class ResearchListView extends ResearchNodeContainingView {
         ScreenRectangle rect = rectWithPadding(getContentsRect(), 4);
         if (rect.height() > getHeight()) {
             scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+            isScrollable = true;
         }
         else {
             scrollBounds = MinMaxBounds.Ints.exactly(0);
+            isScrollable = false;
         }
     }
 
@@ -132,6 +135,11 @@ public class ResearchListView extends ResearchNodeContainingView {
         offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
         offsetY = Math.clamp(offsetY, scrollBounds.min().orElse(0), scrollBounds.max().orElse(0));
         return true;
+    }
+
+    @Override
+    public boolean isScrollable() {
+        return isScrollable;
     }
 
     @Override

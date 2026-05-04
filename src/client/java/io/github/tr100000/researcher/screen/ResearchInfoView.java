@@ -32,6 +32,7 @@ public class ResearchInfoView extends AbstractResearchView {
     private @Nullable Research research;
     private @Nullable TriggerDisplayElement currentDisplay;
 
+    private boolean isScrollable;
     private MinMaxBounds.Ints scrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetY;
 
@@ -103,9 +104,11 @@ public class ResearchInfoView extends AbstractResearchView {
         ScreenRectangle rect = rectWithPadding(getContentsRect(), 4);
         if (rect.height() > getHeight()) {
             scrollBounds = MinMaxBounds.Ints.between(-rect.bottom() + getHeight(), -rect.top());
+            isScrollable = true;
         }
         else {
             scrollBounds = MinMaxBounds.Ints.exactly(0);
+            isScrollable = false;
         }
     }
 
@@ -140,6 +143,11 @@ public class ResearchInfoView extends AbstractResearchView {
         offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
         offsetY = Math.clamp(offsetY, scrollBounds.min().orElse(0), scrollBounds.max().orElse(0));
         return true;
+    }
+
+    @Override
+    public boolean isScrollable() {
+        return isScrollable;
     }
 
     @Override

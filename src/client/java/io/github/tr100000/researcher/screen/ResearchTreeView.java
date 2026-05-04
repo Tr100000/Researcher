@@ -37,6 +37,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private final List<ResearchNodeWidget> bottomNodes = new ObjectArrayList<>();
 
     private @Nullable ResearchNodeWidget highlightLocked = null;
+    private boolean isScrollable;
     private MinMaxBounds.Ints horizontalScrollBounds = MinMaxBounds.Ints.ANY;
     private MinMaxBounds.Ints verticalScrollBounds = MinMaxBounds.Ints.ANY;
     private double offsetX;
@@ -142,14 +143,17 @@ public class ResearchTreeView extends ResearchNodeContainingView {
         float rectScreenRight = rect.right() * scale;
         float rectScreenBottom = rect.bottom() * scale;
 
+        isScrollable = false;
         if (rectScreenWidth > width) {
             horizontalScrollBounds = MinMaxBounds.Ints.between((int)(width - rectScreenRight), (int)-rectScreenLeft);
+            isScrollable = true;
         }
         else {
             horizontalScrollBounds = MinMaxBounds.Ints.exactly((int)(width / 2.0f - (rectScreenLeft + rectScreenRight) / 2));
         }
         if (rectScreenHeight > height) {
             verticalScrollBounds = MinMaxBounds.Ints.between((int)(height - rectScreenBottom), (int)-rectScreenTop);
+            isScrollable = true;
         }
         else {
             verticalScrollBounds = MinMaxBounds.Ints.exactly((int)(height / 2.0f - (rectScreenTop + rectScreenBottom) / 2));
@@ -313,6 +317,11 @@ public class ResearchTreeView extends ResearchNodeContainingView {
     private void enforceScrollBounds() {
         offsetX = Math.clamp(offsetX, horizontalScrollBounds.min().orElse(0), horizontalScrollBounds.max().orElse(0));
         offsetY = Math.clamp(offsetY, verticalScrollBounds.min().orElse(0), verticalScrollBounds.max().orElse(0));
+    }
+
+    @Override
+    public boolean isScrollable() {
+        return isScrollable;
     }
 
     @Override

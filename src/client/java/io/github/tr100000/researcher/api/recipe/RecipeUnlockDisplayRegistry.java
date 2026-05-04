@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -22,9 +23,9 @@ public final class RecipeUnlockDisplayRegistry {
         REGISTRY.put(recipeType, (Function)displayFactory);
     }
 
-    public static @Nullable RecipeUnlockDisplay getDisplay(RecipeHolder<?> recipeEntry) {
-        Objects.requireNonNull(recipeEntry, "recipeEntry is null");
-        if (REGISTRY.containsKey(recipeEntry.value().getSerializer())) {
+    @Contract(value = "null -> null", pure = true)
+    public static @Nullable RecipeUnlockDisplay getDisplay(@Nullable RecipeHolder<?> recipeEntry) {
+        if (recipeEntry != null && REGISTRY.containsKey(recipeEntry.value().getSerializer())) {
             return REGISTRY.get(recipeEntry.value().getSerializer()).apply(recipeEntry);
         }
         return null;

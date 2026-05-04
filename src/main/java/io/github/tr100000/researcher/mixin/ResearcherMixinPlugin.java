@@ -23,6 +23,9 @@ public class ResearcherMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("compat.jei")) {
             return FabricLoader.getInstance().isModLoaded("jei");
         }
+        else if (mixinClassName.contains("compat.rrv")) {
+            return FabricLoader.getInstance().isModLoaded("rrv");
+        }
         else {
             return true;
         }

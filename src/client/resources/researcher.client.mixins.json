@@ -2,7 +2,7 @@
   "required": true,
   "package": "io.github.tr100000.researcher.mixin.client",
   "plugin": "io.github.tr100000.researcher.mixin.ResearcherMixinPlugin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "ChatScreenMixin",
     "ClientPacketListenerMixin",
@@ -13,7 +13,8 @@
     "ItemsMixin",
     "compat.jei.CraftingRecipeCategoryMixin",
     "compat.jei.JeiStarterMixin",
-    "compat.jei.RecipeManagerInternalMixin"
+    "compat.jei.RecipeManagerInternalMixin",
+    "compat.rrv.CraftingClientRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
