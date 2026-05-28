@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BuiltInRegistries.class)
-public class BuiltInRegistriesMixin {
+public abstract class BuiltInRegistriesMixin {
     @Inject(method = "bootStrap", at = @At("TAIL"))
     private static void bootStrap(CallbackInfo ci) {
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
