@@ -12,7 +12,7 @@ import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.BeeNestDestroyedTrigger;
+import net.minecraft.advancements.triggers.BeeNestDestroyedTrigger;
 import net.minecraft.network.chat.Component;
 
 public class BeeNestDestroyedTriggerHandler implements TriggerHandler<BeeNestDestroyedTrigger.TriggerInstance> {

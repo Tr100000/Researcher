@@ -10,7 +10,7 @@ import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.RecipeCraftedTrigger;
+import net.minecraft.advancements.triggers.RecipeCraftedTrigger;
 import net.minecraft.network.chat.Component;
 
 public class RecipeCraftedTriggerHandler implements TriggerHandler<RecipeCraftedTrigger.TriggerInstance> {

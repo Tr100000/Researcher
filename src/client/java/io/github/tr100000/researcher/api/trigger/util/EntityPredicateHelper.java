@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher.api.trigger.util;
 
+import com.mojang.serialization.Codec;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.api.trigger.TriggerDisplayElement;
@@ -12,35 +13,47 @@ import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityEquipmentPredicate;
-import net.minecraft.advancements.criterion.EntityFlagsPredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.EntitySubPredicate;
-import net.minecraft.advancements.criterion.FishingHookPredicate;
-import net.minecraft.advancements.criterion.FoodPredicate;
-import net.minecraft.advancements.criterion.GameTypePredicate;
-import net.minecraft.advancements.criterion.InputPredicate;
-import net.minecraft.advancements.criterion.LightningBoltPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.advancements.criterion.MobEffectsPredicate;
-import net.minecraft.advancements.criterion.PlayerPredicate;
-import net.minecraft.advancements.criterion.RaiderPredicate;
-import net.minecraft.advancements.criterion.SheepPredicate;
-import net.minecraft.advancements.criterion.SlimePredicate;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.GameTypePredicate;
+import net.minecraft.advancements.predicates.MobEffectsPredicate;
+import net.minecraft.advancements.predicates.entity.CubeMobPredicate;
+import net.minecraft.advancements.predicates.entity.DistanceToPlayerPredicate;
+import net.minecraft.advancements.predicates.entity.EntityEffectsPredicate;
+import net.minecraft.advancements.predicates.entity.EntityEquipmentPredicate;
+import net.minecraft.advancements.predicates.entity.EntityExactDataComponentsPredicate;
+import net.minecraft.advancements.predicates.entity.EntityFlagsPredicate;
+import net.minecraft.advancements.predicates.entity.EntityLocationPredicate;
+import net.minecraft.advancements.predicates.entity.EntityNbtPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPartialComponentsPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntitySlotsPredicate;
+import net.minecraft.advancements.predicates.entity.EntitySubPredicate;
+import net.minecraft.advancements.predicates.entity.EntityTagPredicate;
+import net.minecraft.advancements.predicates.entity.EntityTypePredicate;
+import net.minecraft.advancements.predicates.entity.FishingHookPredicate;
+import net.minecraft.advancements.predicates.entity.LightningBoltPredicate;
+import net.minecraft.advancements.predicates.entity.MovementAffectedByPredicate;
+import net.minecraft.advancements.predicates.entity.MovementPredicate;
+import net.minecraft.advancements.predicates.entity.PassengerPredicate;
+import net.minecraft.advancements.predicates.entity.PeriodicEntityTickPredicate;
+import net.minecraft.advancements.predicates.entity.PlayerPredicate;
+import net.minecraft.advancements.predicates.entity.RaiderPredicate;
+import net.minecraft.advancements.predicates.entity.SheepPredicate;
+import net.minecraft.advancements.predicates.entity.SteppingOnPredicate;
+import net.minecraft.advancements.predicates.entity.TargetedEntityPredicate;
+import net.minecraft.advancements.predicates.entity.TeamPredicate;
+import net.minecraft.advancements.predicates.entity.VehiclePredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MinecartItem;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import org.jetbrains.annotations.ApiStatus;
@@ -51,9 +64,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public final class EntityPredicateHelper {
     private EntityPredicateHelper() {}
+
+    private static final Map<Codec<? extends EntitySubPredicate>, BiConsumer<Object, IndentedTextHolder>> ENTITY_SUB_PREDICATE_HANDLERS = new Object2ObjectOpenHashMap<>();
 
     private static final Map<EntityType<?>, Icon> ENTITY_TYPE_ICONS = new Object2ObjectOpenHashMap<>();
 
@@ -61,15 +77,20 @@ public final class EntityPredicateHelper {
     private static final Component ANY_ENTITY = ModUtils.getScreenTranslated("predicate.entity.any");
 
     private static final Component ENTITY_TYPE = ModUtils.getScreenTranslated("predicate.entity.type");
-    private static final Component ENTITY_LOCATED = ModUtils.getScreenTranslated("predicate.entity.location");
+    private static final Component ENTITY_LOCATION = ModUtils.getScreenTranslated("predicate.entity.location");
     private static final Component ENTITY_STEPPING_ON = ModUtils.getScreenTranslated("predicate.entity.stepping_on");
     private static final Component ENTITY_MOVEMENT_AFFECTED_BY = ModUtils.getScreenTranslated("predicate.entity.movement_affected_by");
+    private static final Component ENTITY_DISTANCE_TO_PLAYER = ModUtils.getScreenTranslated("predicate.entity.distance_to_player");
     private static final Component ENTITY_EFFECTS_HEADER = ModUtils.getScreenTranslated("predicate.entity.effects");
     private static final String ENTITY_PERIODIC_KEY = ModUtils.getScreenTranslationKey("predicate.entity.periodic");
     private static final Component ENTITY_VEHICLE = ModUtils.getScreenTranslated("predicate.entity.vehicle");
     private static final Component ENTITY_PASSENGER = ModUtils.getScreenTranslated("predicate.entity.passenger");
     private static final Component ENTITY_TARGETED = ModUtils.getScreenTranslated("predicate.entity.targeted");
     private static final String ENTITY_TEAM_KEY = ModUtils.getScreenTranslationKey("predicate.entity.team");
+    private static final Component ENTITY_EXACT_COMPONENTS_HEADER = ModUtils.getScreenTranslated("predicate.components");
+    private static final Component ENTITY_TAGS_ALL_OF_HEADER = ModUtils.getScreenTranslated("predicate.entity.tag.all_of");
+    private static final Component ENTITY_TAGS_ANY_OF_HEADER = ModUtils.getScreenTranslated("predicate.entity.tag.any_of");
+    private static final Component ENTITY_TAGS_NONE_OF_HEADER = ModUtils.getScreenTranslated("predicate.entity.tag.none_of");
 
     private static final String EFFECT_HEADER_KEY = ModUtils.getScreenTranslationKey("predicate.entity.effect.header");
     private static final Component EFFECT_AMPLIFIER = ModUtils.getScreenTranslated("predicate.entity.effect.amplifier");
@@ -137,7 +158,7 @@ public final class EntityPredicateHelper {
     private static final Component PLAYER_INPUT_NOT_SNEAK = ModUtils.getScreenTranslated("predicate.entity.player.input.not_sneak");
     private static final Component PLAYER_INPUT_SPRINT = ModUtils.getScreenTranslated("predicate.entity.player.input.sprint");
     private static final Component PLAYER_INPUT_NOT_SPRINT = ModUtils.getScreenTranslated("predicate.entity.player.input.not_sprint");
-    private static final Component SLIME_SIZE = ModUtils.getScreenTranslated("predicate.entity.slime.size");
+    private static final Component CUBE_MOB_SIZE = ModUtils.getScreenTranslated("predicate.entity.cube_mob.size");
     private static final Component RAIDER_HAS_RAID = ModUtils.getScreenTranslated("predicate.entity.raider.has_raid");
     private static final Component RAIDER_DOESNT_HAVE_RAID = ModUtils.getScreenTranslated("predicate.entity.raider.doesnt_have_raid");
     private static final Component RAIDER_IS_CAPTAIN = ModUtils.getScreenTranslated("predicate.entity.raider.is_captain");
@@ -147,85 +168,11 @@ public final class EntityPredicateHelper {
 
     @Contract(mutates = "param2")
     public static void tooltip(EntityPredicate predicate, IndentedTextHolder textHolder) {
-        if (predicate.entityType().isPresent() && predicate.entityType().get().types().size() > 1) {
-            textHolder.accept(ENTITY_TYPE);
-            textHolder.push();
-            predicate.entityType().get().types().forEach(entry -> textHolder.accept(entry.value().getDescription()));
-            textHolder.pop();
-        }
-        if (predicate.distanceToPlayer().isPresent()) {
-            DistancePredicateHelper.tooltip(predicate.distanceToPlayer().get(), textHolder);
-        }
-        if (predicate.movement().isPresent()) {
-            MovementPredicateHelper.tooltip(predicate.movement().get(), textHolder);
-        }
-        if (predicate.location().located().isPresent()) {
-            textHolder.accept(ENTITY_LOCATED);
-            textHolder.push();
-            LocationPredicateHelper.tooltip(predicate.location().located().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.location().steppingOn().isPresent()) {
-            textHolder.accept(ENTITY_STEPPING_ON);
-            textHolder.push();
-            LocationPredicateHelper.tooltip(predicate.location().steppingOn().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.location().affectsMovement().isPresent()) {
-            textHolder.accept(ENTITY_MOVEMENT_AFFECTED_BY);
-            textHolder.push();
-            LocationPredicateHelper.tooltip(predicate.location().affectsMovement().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.effects().isPresent()) {
-            textHolder.accept(ENTITY_EFFECTS_HEADER);
-            textHolder.push();
-            effectTooltip(predicate.effects().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.nbt().isPresent()) {
-            PredicateHelper.nbtTooltip(predicate.nbt().get(), textHolder);
-        }
-        if (predicate.flags().isPresent()) {
-            flagsTooltip(predicate.flags().get(), textHolder);
-        }
-        if (predicate.equipment().isPresent()) {
-            equipmentTooltip(predicate.equipment().get(), textHolder);
-        }
-        if (predicate.subPredicate().isPresent()) {
-            typeSpecificTooltip(predicate.subPredicate().get(), textHolder);
-        }
-        if (predicate.periodicTick().isPresent()) {
-            textHolder.accept(Component.translatable(ENTITY_PERIODIC_KEY, predicate.periodicTick().get()));
-        }
-        if (predicate.vehicle().isPresent()) {
-            textHolder.accept(ENTITY_VEHICLE);
-            textHolder.push();
-            tooltip(predicate.vehicle().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.passenger().isPresent()) {
-            textHolder.accept(ENTITY_PASSENGER);
-            textHolder.push();
-            tooltip(predicate.passenger().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.targetedEntity().isPresent()) {
-            textHolder.accept(ENTITY_TARGETED);
-            textHolder.push();
-            tooltip(predicate.targetedEntity().get(), textHolder);
-            textHolder.pop();
-        }
-        if (predicate.team().isPresent()) {
-            textHolder.accept(Component.translatable(ENTITY_TEAM_KEY, predicate.team().get()));
-        }
-        if (predicate.slots().isPresent()) {
-            // TODO
-            textHolder.accept(Component.literal("TODO slot conditions"));
-        }
-        if (!predicate.components().isEmpty()) {
-            ComponentsPredicateHelper.tooltip(predicate.components(), textHolder);
-        }
+        predicate.parts.forEach((type, value) -> {
+            if (ENTITY_SUB_PREDICATE_HANDLERS.containsKey(type)) {
+                ENTITY_SUB_PREDICATE_HANDLERS.get(type).accept(value, textHolder);
+            }
+        });
     }
 
     @Contract(mutates = "param2")
@@ -248,8 +195,9 @@ public final class EntityPredicateHelper {
 
     @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement element(@Nullable EntityPredicate predicate) {
-        if (predicate != null && predicate.entityType().isPresent()) {
-            List<TriggerDisplayElement> list = predicate.entityType().get().types().stream().map(Holder::value).map(EntityPredicateHelper::element).toList();
+        if (predicate != null && predicate.parts.containsKey(EntityTypePredicate.CODEC)) {
+            EntityTypePredicate typePredicate = (EntityTypePredicate)predicate.parts.get(EntityTypePredicate.CODEC);
+            List<TriggerDisplayElement> list = typePredicate.types().stream().map(Holder::value).map(EntityPredicateHelper::element).toList();
             if (list.size() == 1) {
                 return list.getFirst();
             }
@@ -269,8 +217,8 @@ public final class EntityPredicateHelper {
     @Contract(value = "_ -> new", pure = true)
     public static TriggerDisplayElement vehicleElement(@Nullable ContextAwarePredicate predicate) {
         Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
-        Optional<EntityPredicate> vehiclePredicate = entityPredicate.flatMap(EntityPredicate::vehicle);
-        return element(vehiclePredicate.orElse(null));
+        EntityPredicate vehiclePredicate = entityPredicate.map(p -> ((VehiclePredicate)p.parts.get(VehiclePredicate.CODEC)).vehicle()).orElse(null);
+        return element(vehiclePredicate);
     }
 
     @Contract(pure = true)
@@ -286,6 +234,54 @@ public final class EntityPredicateHelper {
     }
 
     @Contract(mutates = "param2")
+    public static void entityTypeTooltip(EntityTypePredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_TYPE);
+        textHolder.push();
+        predicate.types().forEach(entry -> textHolder.accept(entry.value().getDescription()));
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void locationTooltip(EntityLocationPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_LOCATION);
+        textHolder.push();
+        LocationPredicateHelper.tooltip(predicate.predicate(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void steppingOnTooltip(SteppingOnPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_STEPPING_ON);
+        textHolder.push();
+        LocationPredicateHelper.tooltip(predicate.predicate(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void movementAffectedByTooltip(MovementAffectedByPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_MOVEMENT_AFFECTED_BY);
+        textHolder.push();
+        LocationPredicateHelper.tooltip(predicate.predicate(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void distanceToPlayerTooltip(DistanceToPlayerPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_DISTANCE_TO_PLAYER);
+        textHolder.push();
+        DistancePredicateHelper.tooltip(predicate.distance(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void effectsTooltip(EntityEffectsPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_EFFECTS_HEADER);
+        textHolder.push();
+        effectTooltip(predicate.effects(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
     public static void effectTooltip(MobEffectsPredicate predicate, IndentedTextHolder textHolder) {
         predicate.effectMap().forEach((entry, data) -> {
             textHolder.accept(Component.translatable(EFFECT_HEADER_KEY, entry.unwrapKey().orElseThrow().identifier().toLanguageKey("effect")));
@@ -298,6 +294,11 @@ public final class EntityPredicateHelper {
 
             textHolder.pop();
         });
+    }
+
+    @Contract(mutates = "param2")
+    public static void nbtTooltip(EntityNbtPredicate predicate, IndentedTextHolder textHolder) {
+        PredicateHelper.nbtTooltip(predicate.nbt(), textHolder);
     }
 
     @Contract(mutates = "param2")
@@ -360,98 +361,180 @@ public final class EntityPredicateHelper {
     }
 
     @Contract(mutates = "param2")
-    public static void typeSpecificTooltip(EntitySubPredicate predicate, IndentedTextHolder textHolder) {
-        if (predicate instanceof LightningBoltPredicate(
-                MinMaxBounds.Ints blocksSetOnFire, Optional<EntityPredicate> entityStruck
-        )) {
-            MinMaxBoundsUtils.tooltip(blocksSetOnFire, LIGHTNING_BLOCKS_SET_ON_FIRE, textHolder);
-            if (entityStruck.isPresent()) {
-                textHolder.accept(LIGHTNING_ENTITY_STRUCK);
-                textHolder.push();
-                tooltip(entityStruck.get(), textHolder);
-                textHolder.pop();
-            }
-        }
+    public static void periodicTickTooltip(PeriodicEntityTickPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(Component.translatable(ENTITY_PERIODIC_KEY, predicate.periodicTick()));
+    }
 
-        if (predicate instanceof FishingHookPredicate(
-                Optional<Boolean> inOpenWater
-        )) {
-            PredicateHelper.optionalBooleanTooltip(inOpenWater, FISHING_OPEN_WATER, FISHING_NOT_OPEN_WATER, textHolder);
-        }
+    @Contract(mutates = "param2")
+    public static void vehicleTooltip(VehiclePredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_VEHICLE);
+        textHolder.push();
+        tooltip(predicate.vehicle(), textHolder);
+        textHolder.pop();
+    }
 
-        if (predicate instanceof PlayerPredicate(
-                MinMaxBounds.Ints experienceLevel, FoodPredicate food, GameTypePredicate gameType, List<PlayerPredicate.StatMatcher<?>> stats, Object2BooleanMap<ResourceKey<Recipe<?>>> recipes, Map<Identifier, PlayerPredicate.AdvancementPredicate> advancements, Optional<EntityPredicate> lookingAt, Optional<InputPredicate> input
-        )) {
-            MinMaxBoundsUtils.tooltip(experienceLevel, PLAYER_EXPERIENCE_LEVEL, textHolder);
-            if (gameType != GameTypePredicate.ANY) {
-                textHolder.accept(PLAYER_GAME_MODE);
+    @Contract(mutates = "param2")
+    public static void passengerTooltip(PassengerPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_PASSENGER);
+        textHolder.push();
+        tooltip(predicate.passenger(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void targetedEntityTooltip(TargetedEntityPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_TARGETED);
+        textHolder.push();
+        tooltip(predicate.targetedEntity(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void teamTooltip(TeamPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(Component.translatable(ENTITY_TEAM_KEY, predicate.team()));
+    }
+
+    @Contract(mutates = "param2")
+    public static void slotsTooltip(EntitySlotsPredicate predicate, IndentedTextHolder textHolder) {
+        // TODO
+        textHolder.accept(Component.literal("TODO slot conditions"));
+    }
+
+    @Contract(mutates = "param2")
+    public static void componentsTooltip(EntityExactDataComponentsPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(ENTITY_EXACT_COMPONENTS_HEADER);
+        textHolder.push();
+        ComponentsPredicateHelper.exactTooltip(predicate.predicate(), textHolder);
+        textHolder.pop();
+    }
+
+    @Contract(mutates = "param2")
+    public static void predicatesTooltip(EntityPartialComponentsPredicate predicate, IndentedTextHolder textHolder) {
+        ComponentsPredicateHelper.partialTooltip(predicate.predicates(), textHolder);
+    }
+
+    @Contract(mutates = "param2")
+    public static void tagTooltip(EntityTagPredicate predicate, IndentedTextHolder textHolder) {
+        if (predicate.allOf().isPresent() && !predicate.allOf().get().isEmpty()) {
+            textHolder.accept(ENTITY_TAGS_ALL_OF_HEADER);
+            textHolder.push();
+            predicate.allOf().get().forEach(tag -> textHolder.accept(Component.literal(tag)));
+            textHolder.pop();
+        }
+        if (predicate.anyOf().isPresent() && !predicate.anyOf().get().isEmpty()) {
+            textHolder.accept(ENTITY_TAGS_ANY_OF_HEADER);
+            textHolder.push();
+            predicate.anyOf().get().forEach(tag -> textHolder.accept(Component.literal(tag)));
+            textHolder.pop();
+        }
+        if (predicate.noneOf().isPresent() && !predicate.noneOf().get().isEmpty()) {
+            textHolder.accept(ENTITY_TAGS_NONE_OF_HEADER);
+            textHolder.push();
+            predicate.noneOf().get().forEach(tag -> textHolder.accept(Component.literal(tag)));
+            textHolder.pop();
+        }
+    }
+
+    @Contract(mutates = "param2")
+    public static void typeSpecificLightningTooltip(LightningBoltPredicate predicate, IndentedTextHolder textHolder) {
+        MinMaxBoundsUtils.tooltip(predicate.blocksSetOnFire(), LIGHTNING_BLOCKS_SET_ON_FIRE, textHolder);
+        if (predicate.entityStruck().isPresent()) {
+            textHolder.accept(LIGHTNING_ENTITY_STRUCK);
+            textHolder.push();
+            tooltip(predicate.entityStruck().get(), textHolder);
+            textHolder.pop();
+        }
+    }
+
+    @Contract(mutates = "param2")
+    public static void typeSpecificFishingHookTooltip(FishingHookPredicate predicate, IndentedTextHolder textHolder) {
+        PredicateHelper.optionalBooleanTooltip(predicate.inOpenWater(), FISHING_OPEN_WATER, FISHING_NOT_OPEN_WATER, textHolder);
+    }
+
+    @Contract(mutates = "param2")
+    public static void typeSpecificPlayerTooltip(PlayerPredicate predicate, IndentedTextHolder textHolder) {
+        MinMaxBoundsUtils.tooltip(predicate.level(), PLAYER_EXPERIENCE_LEVEL, textHolder);
+        if (predicate.gameType() != GameTypePredicate.ANY) {
+            textHolder.accept(PLAYER_GAME_MODE);
+            textHolder.push();
+            predicate.gameType().types().forEach(mode -> textHolder.accept(mode.getLongDisplayName()));
+            textHolder.pop();
+        }
+        MinMaxBoundsUtils.tooltip(predicate.food().level(), PLAYER_FOOD_LEVEL, textHolder);
+        MinMaxBoundsUtils.tooltip(predicate.food().saturation(), PLAYER_FOOD_SATURATION, textHolder);
+        if (!predicate.stats().isEmpty()) {
+            textHolder.accept(PLAYER_STATS);
+            textHolder.push();
+            predicate.stats().forEach(matcher -> MinMaxBoundsUtils.tooltip(matcher.range(), Component.translatable(matcher.value().unwrapKey().orElseThrow().identifier().toLanguageKey("stat")), textHolder));
+            textHolder.pop();
+        }
+        predicate.recipes().forEach((key, expected) -> {
+            textHolder.accept(Component.translatable(expected ? PLAYER_HAS_RECIPE : PLAYER_DOESNT_HAVE_RECIPE, key.identifier().toString()));
+        });
+        if (!predicate.advancements().isEmpty()) {
+            predicate.advancements().forEach((id, advPredicate) -> {
+                textHolder.accept(Component.translatable(PLAYER_ADVANCEMENT, id.toString()));
                 textHolder.push();
-                gameType.types().forEach(mode -> textHolder.accept(mode.getLongDisplayName()));
+
+                if (advPredicate instanceof PlayerPredicate.AdvancementCriterionsPredicate(Object2BooleanMap<String> criteriaMap)) {
+                    criteriaMap.forEach((criteria, done) -> {
+                        textHolder.accept(Component.translatable(done ? PLAYER_ADVANCEMENT_CRITERIA_DONE : PLAYER_ADVANCEMENT_CRITERIA_NOT_DONE, criteria));
+                    });
+                }
+                else if (advPredicate instanceof PlayerPredicate.AdvancementDonePredicate(boolean done)) {
+                    textHolder.accept(done ? PLAYER_ADVANCEMENT_DONE : PLAYER_ADVANCEMENT_NOT_DONE);
+                }
+
                 textHolder.pop();
-            }
-            MinMaxBoundsUtils.tooltip(food.level(), PLAYER_FOOD_LEVEL, textHolder);
-            MinMaxBoundsUtils.tooltip(food.saturation(), PLAYER_FOOD_SATURATION, textHolder);
-            if (!stats.isEmpty()) {
-                textHolder.accept(PLAYER_STATS);
-                textHolder.push();
-                stats.forEach(matcher -> MinMaxBoundsUtils.tooltip(matcher.range(), Component.translatable(matcher.value().unwrapKey().orElseThrow().identifier().toLanguageKey("stat")), textHolder));
-                textHolder.pop();
-            }
-            recipes.forEach((key, expected) -> {
-                textHolder.accept(Component.translatable(expected ? PLAYER_HAS_RECIPE : PLAYER_DOESNT_HAVE_RECIPE, key.identifier().toString()));
             });
-            if (!advancements.isEmpty()) {
-                advancements.forEach((id, advPredicate) -> {
-                    textHolder.accept(Component.translatable(PLAYER_ADVANCEMENT, id.toString()));
-                    textHolder.push();
-
-                    if (advPredicate instanceof PlayerPredicate.AdvancementCriterionsPredicate(Object2BooleanMap<String> criteriaMap)) {
-                        criteriaMap.forEach((criteria, done) -> {
-                            textHolder.accept(Component.translatable(done ? PLAYER_ADVANCEMENT_CRITERIA_DONE : PLAYER_ADVANCEMENT_CRITERIA_NOT_DONE, criteria));
-                        });
-                    }
-                    else if (advPredicate instanceof PlayerPredicate.AdvancementDonePredicate(boolean done)) {
-                        textHolder.accept(done ? PLAYER_ADVANCEMENT_DONE : PLAYER_ADVANCEMENT_NOT_DONE);
-                    }
-
-                    textHolder.pop();
-                });
-            }
-            if (lookingAt.isPresent()) {
-                textHolder.accept(PLAYER_LOOKING_AT);
-                textHolder.push();
-                tooltip(lookingAt.get(), textHolder);
-                textHolder.pop();
-            }
-            if (input.isPresent()) {
-                PredicateHelper.optionalBooleanTooltip(input.get().forward(), PLAYER_INPUT_FORWARD, PLAYER_INPUT_NOT_FORWARD, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().backward(), PLAYER_INPUT_BACKWARD, PLAYER_INPUT_NOT_BACKWARD, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().left(), PLAYER_INPUT_LEFT, PLAYER_INPUT_NOT_LEFT, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().right(), PLAYER_INPUT_RIGHT, PLAYER_INPUT_NOT_RIGHT, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().jump(), PLAYER_INPUT_JUMP, PLAYER_INPUT_NOT_JUMP, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().sneak(), PLAYER_INPUT_SNEAK, PLAYER_INPUT_NOT_SNEAK, textHolder);
-                PredicateHelper.optionalBooleanTooltip(input.get().sprint(), PLAYER_INPUT_SPRINT, PLAYER_INPUT_NOT_SPRINT, textHolder);
-            }
         }
-
-        if (predicate instanceof SlimePredicate(
-                MinMaxBounds.Ints size
-        )) {
-            MinMaxBoundsUtils.tooltip(size, SLIME_SIZE, textHolder);
+        if (predicate.lookingAt().isPresent()) {
+            textHolder.accept(PLAYER_LOOKING_AT);
+            textHolder.push();
+            tooltip(predicate.lookingAt().get(), textHolder);
+            textHolder.pop();
         }
-
-        if (predicate instanceof RaiderPredicate(
-                boolean hasRaid, boolean isCaptain
-        )) {
-            textHolder.accept(hasRaid ? RAIDER_HAS_RAID : RAIDER_DOESNT_HAVE_RAID);
-            textHolder.accept(isCaptain ? RAIDER_IS_CAPTAIN : RAIDER_NOT_CAPTAIN);
+        if (predicate.input().isPresent()) {
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().forward(), PLAYER_INPUT_FORWARD, PLAYER_INPUT_NOT_FORWARD, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().backward(), PLAYER_INPUT_BACKWARD, PLAYER_INPUT_NOT_BACKWARD, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().left(), PLAYER_INPUT_LEFT, PLAYER_INPUT_NOT_LEFT, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().right(), PLAYER_INPUT_RIGHT, PLAYER_INPUT_NOT_RIGHT, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().jump(), PLAYER_INPUT_JUMP, PLAYER_INPUT_NOT_JUMP, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().sneak(), PLAYER_INPUT_SNEAK, PLAYER_INPUT_NOT_SNEAK, textHolder);
+            PredicateHelper.optionalBooleanTooltip(predicate.input().get().sprint(), PLAYER_INPUT_SPRINT, PLAYER_INPUT_NOT_SPRINT, textHolder);
         }
+    }
 
-        if (predicate instanceof SheepPredicate(
-                Optional<Boolean> sheared
-        )) {
-            PredicateHelper.optionalBooleanTooltip(sheared, SHEEP_SHEARED, SHEEP_NOT_SHEARED, textHolder);
-        }
+    @Contract(mutates = "param2")
+    public static void typeSpecificCubeMobPredicate(CubeMobPredicate predicate, IndentedTextHolder textHolder) {
+        MinMaxBoundsUtils.tooltip(predicate.size(), CUBE_MOB_SIZE, textHolder);
+    }
+
+    @Contract(mutates = "param2")
+    public static void typeSpecificRaiderPredicate(RaiderPredicate predicate, IndentedTextHolder textHolder) {
+        textHolder.accept(predicate.hasRaid() ? RAIDER_HAS_RAID : RAIDER_DOESNT_HAVE_RAID);
+        textHolder.accept(predicate.isCaptain() ? RAIDER_IS_CAPTAIN : RAIDER_NOT_CAPTAIN);
+    }
+
+    @Contract(mutates = "param2")
+    public static void typeSpecificSheepPredicate(SheepPredicate predicate, IndentedTextHolder textHolder) {
+        PredicateHelper.optionalBooleanTooltip(predicate.sheared(), SHEEP_SHEARED, SHEEP_NOT_SHEARED, textHolder);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <T extends EntitySubPredicate> void registerEntitySubPredicateHandler(Codec<T> codec, BiConsumer<T, IndentedTextHolder> handler) {
+        Objects.requireNonNull(codec, "codec is null");
+        Objects.requireNonNull(handler, "handler in null");
+        ENTITY_SUB_PREDICATE_HANDLERS.put(codec, (BiConsumer)handler);
+    }
+
+    public static <T extends EntitySubPredicate> void registerEntitySubPredicateHandler(Codec<T> codec, BiConsumer<T, IndentedTextHolder> handler, Component header) {
+        registerEntitySubPredicateHandler(codec, (value, textHolder) -> {
+            textHolder.accept(header);
+            textHolder.push();
+            handler.accept(value, textHolder);
+            textHolder.pop();
+        });
     }
 
     public static void registerItemForEntityType(EntityType<?> entityType, @Nullable Item item) {
@@ -468,6 +551,12 @@ public final class EntityPredicateHelper {
 
     @ApiStatus.Internal
     public static void printNonRegistered() {
+        BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE.forEach(type -> {
+            if (!ENTITY_SUB_PREDICATE_HANDLERS.containsKey(type)) {
+                Researcher.LOGGER.warn("{} doesn't have a registered handler", BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE.getKey(type));
+            }
+        });
+
         BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
             if (!ENTITY_TYPE_ICONS.containsKey(entityType)) {
                 Researcher.LOGGER.warn("{} doesn't have a registered item", BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
@@ -487,26 +576,52 @@ public final class EntityPredicateHelper {
 
     @ApiStatus.Internal
     public static void registerDefault() {
-        registerItemForEntityType(EntityType.ARMOR_STAND, Items.ARMOR_STAND);
-        registerItemForEntityType(EntityType.ARROW, Items.ARROW);
-        registerItemForEntityType(EntityType.SPECTRAL_ARROW, Items.SPECTRAL_ARROW);
-        registerItemForEntityType(EntityType.BREEZE_WIND_CHARGE, Items.WIND_CHARGE);
-        registerItemForEntityType(EntityType.EGG, Items.EGG);
-        registerItemForEntityType(EntityType.ENDER_PEARL, Items.ENDER_PEARL);
-        registerItemForEntityType(EntityType.END_CRYSTAL, Items.END_CRYSTAL);
-        registerItemForEntityType(EntityType.EXPERIENCE_BOTTLE, Items.EXPERIENCE_BOTTLE);
-        registerItemForEntityType(EntityType.EXPERIENCE_ORB, Items.EXPERIENCE_BOTTLE);
-        registerItemForEntityType(EntityType.EYE_OF_ENDER, Items.ENDER_EYE);
-        registerItemForEntityType(EntityType.FIREBALL, Items.FIRE_CHARGE);
-        registerItemForEntityType(EntityType.FIREWORK_ROCKET, Items.FIREWORK_ROCKET);
-        registerItemForEntityType(EntityType.LEASH_KNOT, Items.LEAD);
-        registerItemForEntityType(EntityType.SMALL_FIREBALL, Items.FIRE_CHARGE);
-        registerItemForEntityType(EntityType.SPLASH_POTION, Items.SPLASH_POTION);
-        registerItemForEntityType(EntityType.LINGERING_POTION, Items.LINGERING_POTION);
-        registerItemForEntityType(EntityType.SNOWBALL, Items.SNOWBALL);
-        registerItemForEntityType(EntityType.TNT, Items.TNT);
-        registerItemForEntityType(EntityType.TRIDENT, Items.TRIDENT);
-        registerItemForEntityType(EntityType.WIND_CHARGE, Items.WIND_CHARGE);
-        registerItemForEntityType(EntityType.WITHER_SKULL, Items.WITHER_SKELETON_SKULL);
+        registerEntitySubPredicateHandler(EntityTypePredicate.CODEC, EntityPredicateHelper::entityTypeTooltip);
+        registerEntitySubPredicateHandler(EntityLocationPredicate.CODEC, EntityPredicateHelper::locationTooltip);
+        registerEntitySubPredicateHandler(SteppingOnPredicate.CODEC, EntityPredicateHelper::steppingOnTooltip);
+        registerEntitySubPredicateHandler(MovementAffectedByPredicate.CODEC, EntityPredicateHelper::movementAffectedByTooltip);
+        registerEntitySubPredicateHandler(DistanceToPlayerPredicate.CODEC, EntityPredicateHelper::distanceToPlayerTooltip);
+        registerEntitySubPredicateHandler(MovementPredicate.CODEC, MovementPredicateHelper::tooltip);
+        registerEntitySubPredicateHandler(EntityEffectsPredicate.CODEC, EntityPredicateHelper::effectsTooltip);
+        registerEntitySubPredicateHandler(EntityNbtPredicate.CODEC, EntityPredicateHelper::nbtTooltip);
+        registerEntitySubPredicateHandler(EntityFlagsPredicate.CODEC, EntityPredicateHelper::flagsTooltip);
+        registerEntitySubPredicateHandler(EntityEquipmentPredicate.CODEC, EntityPredicateHelper::equipmentTooltip);
+        registerEntitySubPredicateHandler(PeriodicEntityTickPredicate.CODEC, EntityPredicateHelper::periodicTickTooltip);
+        registerEntitySubPredicateHandler(VehiclePredicate.CODEC, EntityPredicateHelper::vehicleTooltip);
+        registerEntitySubPredicateHandler(PassengerPredicate.CODEC, EntityPredicateHelper::passengerTooltip);
+        registerEntitySubPredicateHandler(TargetedEntityPredicate.CODEC, EntityPredicateHelper::targetedEntityTooltip);
+        registerEntitySubPredicateHandler(TeamPredicate.CODEC, EntityPredicateHelper::teamTooltip);
+        registerEntitySubPredicateHandler(EntitySlotsPredicate.CODEC, EntityPredicateHelper::slotsTooltip);
+        registerEntitySubPredicateHandler(EntityExactDataComponentsPredicate.CODEC, EntityPredicateHelper::componentsTooltip);
+        registerEntitySubPredicateHandler(EntityPartialComponentsPredicate.CODEC, EntityPredicateHelper::predicatesTooltip);
+        registerEntitySubPredicateHandler(EntityTagPredicate.CODEC, EntityPredicateHelper::tagTooltip);
+        registerEntitySubPredicateHandler(LightningBoltPredicate.CODEC, EntityPredicateHelper::typeSpecificLightningTooltip);
+        registerEntitySubPredicateHandler(FishingHookPredicate.CODEC, EntityPredicateHelper::typeSpecificFishingHookTooltip);
+        registerEntitySubPredicateHandler(PlayerPredicate.CODEC, EntityPredicateHelper::typeSpecificPlayerTooltip);
+        registerEntitySubPredicateHandler(CubeMobPredicate.CODEC, EntityPredicateHelper::typeSpecificCubeMobPredicate);
+        registerEntitySubPredicateHandler(RaiderPredicate.CODEC, EntityPredicateHelper::typeSpecificRaiderPredicate);
+        registerEntitySubPredicateHandler(SheepPredicate.CODEC, EntityPredicateHelper::typeSpecificSheepPredicate);
+
+        registerItemForEntityType(EntityTypes.ARMOR_STAND, Items.ARMOR_STAND);
+        registerItemForEntityType(EntityTypes.ARROW, Items.ARROW);
+        registerItemForEntityType(EntityTypes.SPECTRAL_ARROW, Items.SPECTRAL_ARROW);
+        registerItemForEntityType(EntityTypes.BREEZE_WIND_CHARGE, Items.WIND_CHARGE);
+        registerItemForEntityType(EntityTypes.EGG, Items.EGG);
+        registerItemForEntityType(EntityTypes.ENDER_PEARL, Items.ENDER_PEARL);
+        registerItemForEntityType(EntityTypes.END_CRYSTAL, Items.END_CRYSTAL);
+        registerItemForEntityType(EntityTypes.EXPERIENCE_BOTTLE, Items.EXPERIENCE_BOTTLE);
+        registerItemForEntityType(EntityTypes.EXPERIENCE_ORB, Items.EXPERIENCE_BOTTLE);
+        registerItemForEntityType(EntityTypes.EYE_OF_ENDER, Items.ENDER_EYE);
+        registerItemForEntityType(EntityTypes.FIREBALL, Items.FIRE_CHARGE);
+        registerItemForEntityType(EntityTypes.FIREWORK_ROCKET, Items.FIREWORK_ROCKET);
+        registerItemForEntityType(EntityTypes.LEASH_KNOT, Items.LEAD);
+        registerItemForEntityType(EntityTypes.SMALL_FIREBALL, Items.FIRE_CHARGE);
+        registerItemForEntityType(EntityTypes.SPLASH_POTION, Items.SPLASH_POTION);
+        registerItemForEntityType(EntityTypes.LINGERING_POTION, Items.LINGERING_POTION);
+        registerItemForEntityType(EntityTypes.SNOWBALL, Items.SNOWBALL);
+        registerItemForEntityType(EntityTypes.TNT, Items.TNT);
+        registerItemForEntityType(EntityTypes.TRIDENT, Items.TRIDENT);
+        registerItemForEntityType(EntityTypes.WIND_CHARGE, Items.WIND_CHARGE);
+        registerItemForEntityType(EntityTypes.WITHER_SKULL, Items.WITHER_SKELETON_SKULL);
     }
 }

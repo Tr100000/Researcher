@@ -12,7 +12,7 @@ import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import io.github.tr100000.trutils.api.item.ItemUtils;
-import net.minecraft.advancements.criterion.BrewedPotionTrigger;
+import net.minecraft.advancements.triggers.BrewedPotionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.alchemy.Potion;

@@ -6,7 +6,7 @@ import io.github.tr100000.researcher.api.trigger.util.DistancePredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.LocationPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.DistanceTrigger;
+import net.minecraft.advancements.triggers.DistanceTrigger;
 import net.minecraft.network.chat.Component;
 
 public class TravelTriggerHandler extends AbstractTriggerHandler<DistanceTrigger.TriggerInstance> {

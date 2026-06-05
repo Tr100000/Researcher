@@ -9,7 +9,7 @@ import io.github.tr100000.researcher.api.trigger.element.ItemElement;
 import io.github.tr100000.researcher.api.trigger.element.SpacingElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

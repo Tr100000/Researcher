@@ -7,7 +7,7 @@ import io.github.tr100000.researcher.api.trigger.element.ItemElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.element.TimedSwitchingElement;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

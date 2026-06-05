@@ -2,7 +2,7 @@ package io.github.tr100000.researcher.api.trigger.util;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Contract;
 

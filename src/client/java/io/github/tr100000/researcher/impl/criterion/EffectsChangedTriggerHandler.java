@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.EffectsChangedTrigger;
+import net.minecraft.advancements.triggers.EffectsChangedTrigger;
 import net.minecraft.network.chat.Component;
 
 public class EffectsChangedTriggerHandler extends AbstractTriggerHandler<EffectsChangedTrigger.TriggerInstance> {

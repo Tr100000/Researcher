@@ -50,9 +50,9 @@ import io.github.tr100000.researcher.impl.criterion.TravelTriggerHandler;
 import io.github.tr100000.researcher.impl.criterion.UsedEnderEyeTriggerHandler;
 import io.github.tr100000.researcher.impl.criterion.UsedTotemTriggerHandler;
 import io.github.tr100000.researcher.impl.criterion.UsingItemTriggerHandler;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.function.Supplier;

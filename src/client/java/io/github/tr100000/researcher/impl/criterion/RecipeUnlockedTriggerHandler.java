@@ -8,7 +8,7 @@ import io.github.tr100000.researcher.api.trigger.TriggerHandler;
 import io.github.tr100000.researcher.api.trigger.element.EmptyElement;
 import io.github.tr100000.researcher.api.trigger.element.ItemElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
+import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 

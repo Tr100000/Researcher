@@ -246,6 +246,6 @@ public class ResearchScreen extends Screen {
 
     @Override
     public void onClose() {
-        client.setScreen(parent);
+        client.gui.setScreen(parent);
     }
 }

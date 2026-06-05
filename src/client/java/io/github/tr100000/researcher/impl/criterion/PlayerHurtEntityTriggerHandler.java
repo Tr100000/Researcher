@@ -10,9 +10,9 @@ import io.github.tr100000.researcher.api.trigger.util.DamagePredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.DamagePredicate;
-import net.minecraft.advancements.criterion.PlayerHurtEntityTrigger;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.DamagePredicate;
+import net.minecraft.advancements.triggers.PlayerHurtEntityTrigger;
 import net.minecraft.network.chat.Component;
 
 import java.util.Optional;

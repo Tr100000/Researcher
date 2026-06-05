@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.UsedEnderEyeTrigger;
+import net.minecraft.advancements.triggers.UsedEnderEyeTrigger;
 import net.minecraft.network.chat.Component;
 
 public class UsedEnderEyeTriggerHandler extends AbstractTriggerHandler<UsedEnderEyeTrigger.TriggerInstance> {

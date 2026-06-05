@@ -10,7 +10,7 @@ import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.ShotCrossbowTrigger;
+import net.minecraft.advancements.triggers.ShotCrossbowTrigger;
 import net.minecraft.network.chat.Component;
 
 import java.util.Optional;

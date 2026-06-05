@@ -14,7 +14,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
@@ -158,25 +157,22 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void beginTracking(Research research) {
         Researcher.LOGGER.debug("Begin tracking research {}", researchManager.getId(research));
-        research.getTrigger().addPlayerListener(playerAdvancements, getConditionsContainer(research));
+        playerAdvancements.addListener(research.trigger().criterion(), getTriggerInstanceKey(research));
     }
 
     private void endTrackingAll() {
         researchManager.listAll().forEach(this::endTracking);
     }
 
-    @SuppressWarnings("unchecked")
     private void endTracking(Research research) {
         Researcher.LOGGER.debug("End tracking research {}", researchManager.getId(research));
-        research.getTrigger().removePlayerListener(playerAdvancements, getConditionsContainer(research));
+        playerAdvancements.removeListener(research.getTrigger(), getTriggerInstanceKey(research));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private CriterionTrigger.Listener getConditionsContainer(Research research) {
-        return new CriterionTrigger.Listener(research.getConditions(), null, researchManager.getId(research).toString());
+    private PlayerAdvancements.TriggerInstanceKey getTriggerInstanceKey(Research research) {
+        return new PlayerAdvancements.TriggerInstanceKey(null, researchManager.getId(research).toString());
     }
 
     public void syncWith(PlayerResearchTracker other) {
@@ -279,6 +275,7 @@ public class PlayerResearchTracker implements PlayerResearchHolder {
         }
     }
 
+    @ApiStatus.Internal
     public boolean incrementCriterion(String id) {
         return incrementCriterion(researchManager.get(Identifier.parse(id)), 1);
     }

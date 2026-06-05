@@ -6,7 +6,7 @@ import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.EnchantedItemTrigger;
+import net.minecraft.advancements.triggers.EnchantedItemTrigger;
 import net.minecraft.network.chat.Component;
 
 public class EnchantedItemTriggerHandler extends AbstractTriggerHandler<EnchantedItemTrigger.TriggerInstance> {

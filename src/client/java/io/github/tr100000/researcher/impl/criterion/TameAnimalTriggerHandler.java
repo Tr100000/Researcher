@@ -10,7 +10,7 @@ import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.TameAnimalTrigger;
+import net.minecraft.advancements.triggers.TameAnimalTrigger;
 import net.minecraft.network.chat.Component;
 
 public class TameAnimalTriggerHandler implements TriggerHandler<TameAnimalTrigger.TriggerInstance> {

@@ -9,7 +9,7 @@ import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.StartRidingTrigger;
+import net.minecraft.advancements.triggers.StartRidingTrigger;
 import net.minecraft.network.chat.Component;
 
 public class StartedRidingTriggerHandler implements TriggerHandler<StartRidingTrigger.TriggerInstance> {

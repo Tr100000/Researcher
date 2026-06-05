@@ -6,7 +6,7 @@ import io.github.tr100000.researcher.api.trigger.util.DistancePredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.LevitationTrigger;
+import net.minecraft.advancements.triggers.LevitationTrigger;
 import net.minecraft.network.chat.Component;
 
 public class LevitationTriggerHandler extends AbstractTriggerHandler<LevitationTrigger.TriggerInstance> {

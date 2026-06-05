@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.DamagePredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.EntityHurtPlayerTrigger;
+import net.minecraft.advancements.triggers.EntityHurtPlayerTrigger;
 import net.minecraft.network.chat.Component;
 
 public class EntityHurtPlayerTriggerHandler extends AbstractTriggerHandler<EntityHurtPlayerTrigger.TriggerInstance> {

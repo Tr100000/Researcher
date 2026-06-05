@@ -5,7 +5,7 @@ import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.UsedTotemTrigger;
+import net.minecraft.advancements.triggers.UsedTotemTrigger;
 
 public class UsedTotemTriggerHandler extends AbstractTriggerHandler<UsedTotemTrigger.TriggerInstance> {
     public UsedTotemTriggerHandler() {

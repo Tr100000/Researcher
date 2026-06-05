@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.AnyBlockInteractionTrigger;
+import net.minecraft.advancements.triggers.AnyBlockInteractionTrigger;
 
 public class AnyBlockUseTriggerHandler extends AbstractTriggerHandler<AnyBlockInteractionTrigger.TriggerInstance> {
     public AnyBlockUseTriggerHandler() {

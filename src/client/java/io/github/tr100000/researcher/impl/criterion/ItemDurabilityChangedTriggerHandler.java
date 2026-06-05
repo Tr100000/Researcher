@@ -6,7 +6,7 @@ import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.ItemDurabilityTrigger;
+import net.minecraft.advancements.triggers.ItemDurabilityTrigger;
 import net.minecraft.network.chat.Component;
 
 public class ItemDurabilityChangedTriggerHandler extends AbstractTriggerHandler<ItemDurabilityTrigger.TriggerInstance> {

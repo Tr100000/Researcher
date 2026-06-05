@@ -60,11 +60,11 @@ public class ResearcherClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (OPEN_RESEARCH_SCREEN_KEY.consumeClick()) {
-                if (client.screen instanceof ResearchScreen researchScreen) {
-                    client.setScreen(researchScreen.parent);
+                if (client.gui.screen() instanceof ResearchScreen researchScreen) {
+                    client.gui.setScreen(researchScreen.parent);
                 }
                 else {
-                    client.setScreen(new ResearchScreen(client.screen));
+                    client.gui.setScreen(new ResearchScreen(client.gui.screen()));
                 }
             }
         });

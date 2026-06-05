@@ -30,7 +30,7 @@ public class RrvDelegate implements RecipeViewerDelegate {
         if (player == null) return false;
 
         List<ReliableClientRecipe> recipes = ClientRecipeCache.INSTANCE.getRecipes();
-        return openRecipeScreen(client.screen, player.getInventory(), recipes);
+        return openRecipeScreen(client.gui.screen(), player.getInventory(), recipes);
     }
 
     @Override
@@ -58,11 +58,11 @@ public class RrvDelegate implements RecipeViewerDelegate {
             viewHistory = recipeViewScreen.getMenu().getViewHistory();
         }
         int containerId = parent instanceof AbstractContainerScreen<?> containerScreen ? containerScreen.getMenu().containerId : 0;
-        client.setScreen(new RecipeViewScreen(new RecipeViewMenu(parent, containerId, inventory, recipes, ItemStack.EMPTY, ActionType.ANY, viewHistory), inventory, Component.empty()));
+        client.gui.setScreen(new RecipeViewScreen(new RecipeViewMenu(parent, containerId, inventory, recipes, ItemStack.EMPTY, ActionType.ANY, viewHistory), inventory, Component.empty()));
         return true;
     }
 
     private boolean didOpenRecipeScreen() {
-        return client.screen instanceof RecipeViewScreen;
+        return client.gui.screen() instanceof RecipeViewScreen;
     }
 }

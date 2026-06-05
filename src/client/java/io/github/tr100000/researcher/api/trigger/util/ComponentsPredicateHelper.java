@@ -6,8 +6,9 @@ import io.github.tr100000.researcher.Researcher;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
 import io.github.tr100000.trutils.api.item.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.advancements.criterion.DataComponentMatchers;
-import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.predicates.DataComponentMatchers;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.predicates.AnyValue;
 import net.minecraft.core.component.predicates.AttributeModifiersPredicate;
@@ -96,13 +97,19 @@ public final class ComponentsPredicateHelper {
 
     private static final Component VILLAGER_TYPE_LIST = ModUtils.getScreenTranslated("predicate.components.villager_type.list");
 
-    @SuppressWarnings("unchecked")
     @Contract(mutates = "param2")
     public static void tooltip(DataComponentMatchers predicate, IndentedTextHolder textHolder) {
         textHolder.accept(COMPONENTS_HEADER);
         textHolder.push();
+        exactTooltip(predicate.exact(), textHolder);
+        partialTooltip(predicate.partial(), textHolder);
+        textHolder.pop();
+    }
 
-        predicate.exact().expectedComponents.forEach(component -> {
+    @SuppressWarnings("unchecked")
+    @Contract(mutates = "param2")
+    public static void exactTooltip(DataComponentExactPredicate predicate, IndentedTextHolder textHolder) {
+        predicate.expectedComponents.forEach(component -> {
             Identifier typeId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
             assert typeId != null;
             if (component.type().codec() == null) {
@@ -113,8 +120,11 @@ public final class ComponentsPredicateHelper {
             String value = Researcher.GSON.toJson(((DataComponentType<@NonNull Object>)component.type()).codec().encodeStart(JsonOps.INSTANCE, component.value()));
             textHolder.accept(Component.translatable(EXACT_VALUE_KEY, typeId, value));
         });
+    }
 
-        predicate.partial().forEach((type, partialPredicate) -> {
+    @Contract(mutates = "param2")
+    public static void partialTooltip(Map<DataComponentPredicate.Type<?>, DataComponentPredicate> predicates, IndentedTextHolder textHolder) {
+        predicates.forEach((type, partialPredicate) -> {
             if (PREDICATE_HANDLER_REGISTRY.containsKey(type)) {
                 PREDICATE_HANDLER_REGISTRY.get(type).accept(partialPredicate, textHolder);
             }
@@ -125,8 +135,6 @@ public final class ComponentsPredicateHelper {
                 textHolder.accept(Component.literal(String.format("No handler for %s", BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.getKey(type))));
             }
         });
-
-        textHolder.pop();
     }
 
     private static void damageTooltip(DamagePredicate predicate, IndentedTextHolder textHolder) {

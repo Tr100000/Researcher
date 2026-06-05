@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.ChanneledLightningTrigger;
+import net.minecraft.advancements.triggers.ChanneledLightningTrigger;
 import net.minecraft.network.chat.Component;
 
 public class ChanneledLightningTriggerHandler extends AbstractTriggerHandler<ChanneledLightningTrigger.TriggerInstance> {

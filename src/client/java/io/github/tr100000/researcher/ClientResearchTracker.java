@@ -70,7 +70,7 @@ public class ClientResearchTracker implements ResearchHolder, PlayerResearchHold
             Research research = get(id);
             progressMap.put(research, progress);
             if (!packet.clearCurrent() && progress.isFinished()) {
-                client.getToastManager().addToast(new ResearchToast(research));
+                client.gui.toastManager().addToast(new ResearchToast(research));
                 ResearcherClientEvents.RESEARCH_FINISHED.invoker().onResearchFinished(this, research);
                 shouldPinAvailable.set(true);
             }

@@ -41,7 +41,7 @@ public final class ResearcherClientCommand {
         Research research = client.getConnection().researcher$getClientTracker().get(id);
         if (research != null) {
             ResearchScreen.setSelected(research);
-            client.setScreen(new ResearchScreen(client.screen));
+            client.gui.setScreen(new ResearchScreen(client.gui.screen()));
             return 1;
         }
         else {

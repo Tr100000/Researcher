@@ -11,7 +11,7 @@ import io.github.tr100000.researcher.api.trigger.TriggerHandler;
 import io.github.tr100000.researcher.api.trigger.TriggerHandlerRegistry;
 import io.github.tr100000.researcher.config.ResearcherConfigs;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;

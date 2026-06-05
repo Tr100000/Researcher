@@ -2,8 +2,8 @@ package io.github.tr100000.researcher.api.trigger.util;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.DamagePredicate;
-import net.minecraft.advancements.criterion.DamageSourcePredicate;
+import net.minecraft.advancements.predicates.DamagePredicate;
+import net.minecraft.advancements.predicates.DamageSourcePredicate;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Contract;
 

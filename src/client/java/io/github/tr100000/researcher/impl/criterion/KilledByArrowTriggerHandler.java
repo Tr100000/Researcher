@@ -7,7 +7,7 @@ import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.MinMaxBoundsUtils;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.criterion.KilledByArrowTrigger;
+import net.minecraft.advancements.triggers.KilledByArrowTrigger;
 import net.minecraft.network.chat.Component;
 
 public class KilledByArrowTriggerHandler extends AbstractTriggerHandler<KilledByArrowTrigger.TriggerInstance> {

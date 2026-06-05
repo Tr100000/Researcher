@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.api.ResearchRewardType;
 import io.github.tr100000.researcher.reward.ExperienceReward;
 import io.github.tr100000.researcher.reward.FireworksReward;
 import io.github.tr100000.researcher.reward.LootReward;
-import io.github.tr100000.trutils.api.utils.RegistryHelper;
+import io.github.tr100000.trutils.api.registry.RegistryHelper;
 
 public final class ResearcherRewardTypes {
     private ResearcherRewardTypes() {}
