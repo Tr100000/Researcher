@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.4+26.1.2]
+
+### Fixed
+- Fixed crash with latest TrUtils version
+
 ## [0.3.3+26.1.2]
 
 ### Added

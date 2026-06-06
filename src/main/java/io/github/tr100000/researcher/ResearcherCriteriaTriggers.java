@@ -4,7 +4,7 @@ import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
 import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
 import io.github.tr100000.researcher.criterion.ResearchItemsTrigger;
 import io.github.tr100000.researcher.criterion.ResearchUnlockedTrigger;
-import io.github.tr100000.trutils.api.utils.RegistryHelper;
+import io.github.tr100000.trutils.api.registry.RegistryHelper;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.ApiStatus;
