@@ -49,7 +49,6 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
-    mavenLocal()
 }
 
 dependencies {
@@ -57,8 +56,7 @@ dependencies {
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-//    implementation "maven.modrinth:trutils:${project.trutils_version}"
-    implementation "io.github.tr100000:trutils:${project.trutils_version}"
+    implementation "maven.modrinth:trutils:${project.trutils_version}"
     compileOnly "maven.modrinth:codec2schema:${project.codec2schema_version}"
     implementation("me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}") {
         exclude group: "me.lucko", module: "fabric-permissions-api"
