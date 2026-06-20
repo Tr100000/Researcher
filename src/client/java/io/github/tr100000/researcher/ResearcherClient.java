@@ -4,6 +4,7 @@ import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.researcher.api.reward.ResearchClientRewardRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
+import io.github.tr100000.researcher.compat.ReiDelegate;
 import io.github.tr100000.researcher.compat.RrvDelegate;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.impl.reward.ResearcherClientRewards;
@@ -28,6 +29,8 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.TransmuteRecipe;
 import org.jspecify.annotations.NullMarked;
 import org.lwjgl.glfw.GLFW;
+
+import static io.github.tr100000.researcher.Researcher.LOGGER;
 
 @NullMarked
 public class ResearcherClient implements ClientModInitializer {
@@ -71,13 +74,16 @@ public class ResearcherClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> ResearchScreen.setSelected(null));
 
-        if (FabricLoader.getInstance().isModLoaded("rei")) {
-//            recipeViewerDelegate = new ReiDelegate();
+        if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+            LOGGER.info("REI integration enabled");
+            recipeViewerDelegate = new ReiDelegate();
         }
         else if (FabricLoader.getInstance().isModLoaded("jei")) {
+            LOGGER.info("JEI integration enabled");
             recipeViewerDelegate = new JeiDelegate();
         }
         else if (FabricLoader.getInstance().isModLoaded("rrv")) {
+            LOGGER.info("RRV integration enabled");
             recipeViewerDelegate = new RrvDelegate();
         }
     }
