@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.1+26.2]
+
+### Added
+- You can now specify the size of researches in the research tree
+
+### Changed
+- Re-enabled REI integration
+- Changed default amount in fireworks rewards to 1 (from 0)
+
+### Fixed
+- Fixed broken JEI mixin
+
 ## [0.4.0+26.2]
 
 **Ported to 26.2**
