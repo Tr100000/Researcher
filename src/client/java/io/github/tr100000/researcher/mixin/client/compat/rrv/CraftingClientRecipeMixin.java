@@ -1,15 +1,14 @@
 package io.github.tr100000.researcher.mixin.client.compat.rrv;
 
+import cc.cassian.rrv.api.client.RecipeScreenContext;
 import cc.cassian.rrv.api.recipe.ReliableClientRecipe;
 import cc.cassian.rrv.common.builtin.crafting.CraftingClientRecipe;
-import cc.cassian.rrv.common.recipe.inventory.RecipeViewScreen;
 import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -38,7 +37,7 @@ public abstract class CraftingClientRecipeMixin implements ReliableClientRecipe 
     public abstract @Nullable Identifier getId();
 
     @Inject(method = "renderRecipe", at = @At("TAIL"))
-    private void render(RecipeViewScreen screen, RecipePosition recipePosition, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+    private void render(RecipeScreenContext context, CallbackInfo ci) {
         ClientResearchTracker tracker = getTracker();
         if (tracker == null) return;
         if (!tracker.canCraftRecipe(getId())) {
@@ -46,10 +45,10 @@ public abstract class CraftingClientRecipeMixin implements ReliableClientRecipe 
             final int texHeight = 16;
             final int x = 61;
             final int y = (getType().getDisplayHeight() - texHeight) / 2 - 1;
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ERROR_TEXTURE, x, y, 0, 0, texWidth, texHeight, texWidth, texHeight);
+            context.guiGraphics().blit(RenderPipelines.GUI_TEXTURED, ERROR_TEXTURE, x, y, 0, 0, texWidth, texHeight, texWidth, texHeight);
 
-            if (GuiHelper.isMouseTouching(x, y, texWidth, texHeight, mouseX, mouseY))
-                GuiHelper.tooltip(guiGraphics, Minecraft.getInstance().font, computeTooltipIfAbsent(tracker), recipePosition.left() + mouseX, recipePosition.top() + mouseY, DefaultTooltipPositioner.INSTANCE);
+            if (GuiHelper.isMouseTouching(x, y, texWidth, texHeight, context.mouseX(), context.mouseY()))
+                GuiHelper.tooltip(context.guiGraphics(), Minecraft.getInstance().font, computeTooltipIfAbsent(tracker), context.recipePosition().left() + context.mouseX(), context.recipePosition().top() + context.mouseY(), DefaultTooltipPositioner.INSTANCE);
         }
     }
 

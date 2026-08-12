@@ -57,11 +57,11 @@ public class GraphLayout {
             Research r = entry.getKey();
             int layer = entry.getValue();
             if (r == settings.centered()) {
-                centeredNode = new Node(r, layer, settings.centeredNodeSize(), settings.centeredNodeSize(), nodeCount++);
+                centeredNode = new Node(r, layer, r.sizeSettings().selectedSize().width(), r.sizeSettings().selectedSize().height(), nodeCount++);
                 researchNodeMap.put(r, centeredNode);
             }
             else {
-                researchNodeMap.put(r, new Node(r, layer, settings.nodeSize(), settings.nodeSize(), nodeCount++));
+                researchNodeMap.put(r, new Node(r, layer, r.sizeSettings().normalSize().width(), r.sizeSettings().normalSize().height(), nodeCount++));
             }
         }
 
@@ -335,7 +335,7 @@ public class GraphLayout {
         );
     }
 
-    public record Settings(@Nullable Research centered, int nodeSize, int centeredNodeSize, int dummyNodeSize, int nodeSpacing, int edgeBusMargin, int edgeBusSpacing, int reorderIterations) {}
+    public record Settings(@Nullable Research centered, int dummyNodeSize, int nodeSpacing, int edgeBusMargin, int edgeBusSpacing, int reorderIterations) {}
 
     public record Node(@Nullable Research research, int layer, int width, int height, int id) {
         public boolean isDummy() {

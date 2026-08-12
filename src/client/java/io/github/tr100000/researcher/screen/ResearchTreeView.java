@@ -68,9 +68,6 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
         resetZoom();
 
-        final int nodeSize = 48;
-        final int centeredNodeSize = 64;
-
         long layoutStartTime = System.currentTimeMillis();
 
         GraphLayout graphLayout = new GraphLayout(researchTracker.getGraph());
@@ -94,7 +91,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
                 break;
         }
 
-        GraphLayout.Settings settings = new GraphLayout.Settings(research, nodeSize, centeredNodeSize, 2, 4, 8, 4, 4);
+        GraphLayout.Settings settings = new GraphLayout.Settings(research, 2, 4, 8, 4, 4);
         renderedGraph = graphLayout.render(researchDepthMap, settings);
 
         for (GraphLayout.RenderedNode node : renderedGraph.nodes()) {

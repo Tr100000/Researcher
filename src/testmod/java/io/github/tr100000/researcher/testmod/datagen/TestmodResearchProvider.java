@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher.testmod.datagen;
 
+import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.api.data.ResearchBuilder;
 import io.github.tr100000.researcher.api.data.ResearchExporter;
 import io.github.tr100000.researcher.api.data.ResearchProvider;
@@ -95,6 +96,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         Identifier.withDefaultNamespace("diamond_boots"),
                         Identifier.withDefaultNamespace("brown_shulker_box")
                 )
+                .sizeSettings(new Research.SizeSettings(new Research.Size(16, 24), new Research.Size(48, 100)))
                 .toUnlock(BlockBrokenTrigger.Conditions.of(Blocks.OBSIDIAN), 20)
                 .export(exporter);
 
@@ -127,6 +129,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                         new BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
                         10
                 )
+                .sizeSettings(new Research.SizeSettings(new Research.Size(100, 128), new Research.Size(200, 80)))
                 .export(exporter);
     }
 }

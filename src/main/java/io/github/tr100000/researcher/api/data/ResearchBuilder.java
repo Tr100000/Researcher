@@ -28,6 +28,7 @@ public class ResearchBuilder {
     private final List<Identifier> recipeUnlocks = new ObjectArrayList<>();
     private final List<ResearchReward> rewards = new ObjectArrayList<>();
     private Icon display = Research.DEFAULT_ICON;
+    private Research.SizeSettings sizeSettings = Research.SizeSettings.DEFAULT;
 
     public ResearchBuilder(Identifier id) {
         this.id = id;
@@ -113,6 +114,12 @@ public class ResearchBuilder {
         return display(new ItemIcon(item));
     }
 
+    @Contract(value = "_ -> this", mutates = "this")
+    public ResearchBuilder sizeSettings(Research.SizeSettings sizeSettings) {
+        this.sizeSettings = sizeSettings;
+        return this;
+    }
+
     public Identifier export(ResearchExporter exporter) {
         exporter.accept(id, build());
         return id;
@@ -127,7 +134,8 @@ public class ResearchBuilder {
                 prerequisiteIds,
                 recipeUnlocks,
                 rewards,
-                display
+                display,
+                sizeSettings
         );
     }
 }

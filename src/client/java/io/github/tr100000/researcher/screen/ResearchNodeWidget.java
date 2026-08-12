@@ -47,10 +47,12 @@ public class ResearchNodeWidget extends AbstractButton {
         boolean showProgressBar = !progress.isFinished() && progress.getCount() > 0;
         graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), getFillColor(progress));
 
-        int iconSize = (int)(getWidth() * 0.85F);
+        int shortestSide = Math.min(getWidth(), getHeight());
+        int iconSize = (int)(shortestSide * 0.85F);
         if (iconSize % 2 == 1) iconSize++;
-        int iconOffset = (getWidth() - iconSize) / 2;
-        IconRenderers.drawWithSize(research.display(), graphics, getX() + iconOffset, getY() + iconOffset - (showProgressBar ? 1 : 0), iconSize, delta);
+        int iconOffsetX = (getWidth() - iconSize) / 2;
+        int iconOffsetY = (getHeight() - iconSize) / 2 - (showProgressBar ? 1 : 0);
+        IconRenderers.drawWithSize(research.display(), graphics, getX() + iconOffsetX, getY() + iconOffsetY, iconSize, delta);
         if (showProgressBar) {
             graphics.fill(getX(), getY() + getHeight() - 2, getX() + getWidth(), getY() + getHeight(), FILL_PROGRESS_BACKGROUND);
             graphics.fill(getX(), getY() + getHeight() - 2, getX() + progress.getScaledProgress(research.trigger().count(), getWidth()), getY() + getHeight(), FILL_PROGRESS_BAR);

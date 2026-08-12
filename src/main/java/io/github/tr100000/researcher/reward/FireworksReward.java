@@ -30,7 +30,7 @@ import java.util.List;
 
 public record FireworksReward(int amount, boolean ownedByPlayer) implements ResearchReward {
     public static final MapCodec<FireworksReward> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("amount", 0).forGetter(FireworksReward::amount),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("amount", 1).forGetter(FireworksReward::amount),
             Codec.BOOL.optionalFieldOf("owned_by_player", true).forGetter(FireworksReward::ownedByPlayer)
     ).apply(instance, FireworksReward::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, FireworksReward> STREAM_CODEC = StreamCodec.composite(
