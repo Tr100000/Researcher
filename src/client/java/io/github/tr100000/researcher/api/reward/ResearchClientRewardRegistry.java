@@ -5,6 +5,7 @@ import io.github.tr100000.researcher.ResearcherRegistries;
 import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.researcher.api.ResearchRewardType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -37,7 +38,7 @@ public final class ResearchClientRewardRegistry {
     public static void printNonRegistered() {
         ResearcherRegistries.RESEARCH_REWARD_TYPE.forEach(type -> {
             if (!REGISTRY.containsKey(type)) {
-                Researcher.LOGGER.warn("Reward type {} does not have a registered handler", ResearcherRegistries.RESEARCH_REWARD_TYPE.getKey(type));
+                Researcher.LOGGER.warn("Reward type {} does not have a registered handler", Util.getRegisteredName(ResearcherRegistries.RESEARCH_REWARD_TYPE, type));
             }
         });
     }

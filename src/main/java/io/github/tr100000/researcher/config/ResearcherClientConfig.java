@@ -2,6 +2,8 @@ package io.github.tr100000.researcher.config;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.Researcher;
+import me.fzzyhmstrs.fzzy_config.annotations.Action;
+import me.fzzyhmstrs.fzzy_config.annotations.RequiresAction;
 import me.fzzyhmstrs.fzzy_config.annotations.RootConfig;
 import me.fzzyhmstrs.fzzy_config.annotations.Translation;
 import me.fzzyhmstrs.fzzy_config.config.Config;
@@ -38,6 +40,11 @@ public class ResearcherClientConfig extends Config {
     public ValidatedEnum<ResearchScreenAllowResizeMode> researchScreenAllowResize = new ValidatedEnum<>(ResearchScreenAllowResizeMode.ALWAYS);
     @ConfigGroup.Pop
     public ValidatedBoolean researchScreenAllowZoom = new ValidatedBoolean(true);
+
+    public ConfigGroup miscGroup = new ConfigGroup("miscellaneous");
+    @ConfigGroup.Pop
+    @RequiresAction(action = Action.RESTART)
+    public ValidatedBoolean disableRecipeViewerIntegration = new ValidatedBoolean(false);
 
     @Override
     public String translationKey() {

@@ -52,7 +52,7 @@ public class RrvDelegate implements RecipeViewerDelegate {
     }
 
     private boolean openRecipeScreen(@Nullable Screen parent, Inventory inventory, List<? extends ReliableClientRecipe> recipes) {
-        ArrayList<RecipeViewScreen> viewHistory = new ArrayList<>();
+        ArrayList<RecipeViewMenu> viewHistory = new ArrayList<>();
         if (parent instanceof RecipeViewScreen recipeViewScreen) {
             parent = recipeViewScreen.getMenu().getParentScreen();
             viewHistory = recipeViewScreen.getMenu().getViewHistory();

@@ -34,7 +34,7 @@ public class JeiDelegate implements RecipeViewerDelegate {
     @ApiStatus.Internal
     public static void runtimeAvailable(IJeiRuntime runtime) {
         JeiDelegate.runtime = (JeiRuntime)runtime;
-        focusUtil = new FocusUtil(runtime.getJeiHelpers().getFocusFactory(), Internal.getJeiClientConfigs().getClientConfig(), runtime.getIngredientManager());
+        focusUtil = new FocusUtil(runtime.getJeiHelpers().getFocusFactory(), Internal.getClientConfigs().getClientConfig(), runtime.getIngredientManager());
     }
 
     @ApiStatus.Internal

@@ -8,6 +8,7 @@ import io.github.tr100000.researcher.criterion.BlockBrokenTrigger;
 import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
 import io.github.tr100000.researcher.reward.FireworksReward;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.advancements.predicates.DamageSourcePredicate;
 import net.minecraft.advancements.predicates.DistancePredicate;
 import net.minecraft.advancements.predicates.ItemPredicate;
@@ -16,6 +17,7 @@ import net.minecraft.advancements.predicates.TagPredicate;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.BrewedPotionTrigger;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.EntityHurtPlayerTrigger;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.advancements.triggers.KilledTrigger;
 import net.minecraft.core.HolderGetter;
@@ -121,7 +123,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .recipeUnlocks(Identifier.withDefaultNamespace("ender_eye"))
                 .export(exporter);
 
-        new ResearchBuilder(id("brew_potion"))
+        Identifier brewPotion = new ResearchBuilder(id("brew_potion"))
                 .title(Component.literal("Potion Brewing Test"))
                 .prerequisites(killTest)
                 .toUnlock(
@@ -131,5 +133,16 @@ public class TestmodResearchProvider extends ResearchProvider {
                 )
                 .sizeSettings(new Research.SizeSettings(new Research.Size(100, 128), new Research.Size(200, 80)))
                 .export(exporter);
+
+        new ResearchBuilder(id("conditions_test"))
+                .title(Component.literal("Resource Conditions Test"))
+                .prerequisites(brewPotion)
+                .toUnlock(
+                        CriteriaTriggers.ENTITY_HURT_PLAYER,
+                        new EntityHurtPlayerTrigger.TriggerInstance(Optional.empty(), Optional.empty()),
+                        100
+                )
+                .sizeSettings(new Research.SizeSettings(new Research.Size(100, 128), new Research.Size(200, 80)))
+                .exportWithConditions(exporter, ResourceConditions.alwaysFalse());
     }
 }

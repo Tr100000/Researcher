@@ -32,6 +32,7 @@ repositories {
         url = "https://maven.blamejared.com/"
         content {
             includeGroup "mezz.jei"
+            includeGroup "net.mezzdev.config"
         }
     }
     maven {
@@ -80,8 +81,6 @@ dependencies {
     compileOnly "maven.modrinth:rrv:${project.rrv_version}-fabric"
 }
 
-apply from: "https://raw.githubusercontent.com/Tr100000/modding-utils/main/scripts/devlogin.gradle"
-
 loom.splitEnvironmentSourceSets()
 
 sourceSets {
@@ -111,11 +110,9 @@ loom {
     runs {
         testmod {
             client()
-            name = "Testmod Client"
+            displayName = "Testmod Client"
             source = sourceSets.testmod
-            ideConfigGenerated = true
-            programArgs "--launch_target", "net.fabricmc.loader.impl.launch.knot.KnotClient"
-            mainClass.set "net.covers1624.devlogin.DevLogin"
+            generateRunConfig = true
         }
     }
 }
@@ -175,6 +172,7 @@ modrinth {
     projectId = "researcher"
     versionNumber = project.version
     versionName = project.version
+    versionType = project.modrinth_version_type
     uploadFile = jar
     additionalFiles = [sourcesJar]
     changelog = rootProject.file("CHANGELOG.md").text

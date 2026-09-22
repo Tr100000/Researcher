@@ -30,6 +30,7 @@ import net.minecraft.core.component.predicates.WrittenBookPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
@@ -129,10 +130,10 @@ public final class ComponentsPredicateHelper {
                 PREDICATE_HANDLER_REGISTRY.get(type).accept(partialPredicate, textHolder);
             }
             else if (partialPredicate instanceof AnyValue(DataComponentType<?> componentType)) {
-                textHolder.accept(Component.translatable(ANY_VALUE_KEY, Objects.requireNonNull(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType))));
+                textHolder.accept(Component.translatable(ANY_VALUE_KEY, Util.getRegisteredName(BuiltInRegistries.DATA_COMPONENT_TYPE, componentType)));
             }
             else {
-                textHolder.accept(Component.literal(String.format("No handler for %s", BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.getKey(type))));
+                textHolder.accept(Component.literal(String.format("No handler for %s", Util.getRegisteredName(BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE, type))));
             }
         });
     }
@@ -305,7 +306,7 @@ public final class ComponentsPredicateHelper {
     public static void printNonRegistered() {
         BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.forEach(type -> {
             if (!PREDICATE_HANDLER_REGISTRY.containsKey(type)) {
-                Researcher.LOGGER.warn("Data component predicate {} does not have a registered handler", BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE.getKey(type));
+                Researcher.LOGGER.warn("Data component predicate {} does not have a registered handler", Util.getRegisteredName(BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE, type));
             }
         });
     }

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.2+26.2]
+
+### Added
+- Added an option to disable recipe viewer integration
+- Improved support for Resource Conditions API
+
+### Fixed
+- Fixed recipe viewer integration to work with latest versions
+
 ## [0.4.1+26.2]
 
 ### Added

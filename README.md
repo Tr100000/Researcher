@@ -4,7 +4,7 @@ A (mostly) data-driven research system for Minecraft inspired by Factorio.
 
 **This mod does nothing on its own, and is meant to be used by other mods, datapacks and modpacks.**
 
-**Currently, only the 26.1.x branch is suppoted.** 
+**Currently, only the 26.2.x branch is suppoted.** 
 
 ## Features
 

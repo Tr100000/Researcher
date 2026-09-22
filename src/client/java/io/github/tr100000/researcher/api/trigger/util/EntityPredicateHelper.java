@@ -47,6 +47,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.BoatItem;
@@ -553,13 +554,13 @@ public final class EntityPredicateHelper {
     public static void printNonRegistered() {
         BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE.forEach(type -> {
             if (!ENTITY_SUB_PREDICATE_HANDLERS.containsKey(type)) {
-                Researcher.LOGGER.warn("{} doesn't have a registered handler", BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE.getKey(type));
+                Researcher.LOGGER.warn("{} doesn't have a registered handler", Util.getRegisteredName(BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE, type));
             }
         });
 
         BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
             if (!ENTITY_TYPE_ICONS.containsKey(entityType)) {
-                Researcher.LOGGER.warn("{} doesn't have a registered item", BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
+                Researcher.LOGGER.warn("{} doesn't have a registered item", Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, entityType));
             }
         });
     }

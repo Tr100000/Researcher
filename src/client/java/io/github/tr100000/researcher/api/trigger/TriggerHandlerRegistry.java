@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 
@@ -36,7 +37,7 @@ public final class TriggerHandlerRegistry {
     public static void printNonRegistered() {
         BuiltInRegistries.TRIGGER_TYPES.forEach(criterion -> {
             if (!REGISTRY.containsKey(criterion)) {
-                Researcher.LOGGER.warn("Trigger {} does not have a handler", BuiltInRegistries.TRIGGER_TYPES.getKey(criterion));
+                Researcher.LOGGER.warn("Trigger {} does not have a handler", Util.getRegisteredName(BuiltInRegistries.TRIGGER_TYPES, criterion));
             }
         });
     }

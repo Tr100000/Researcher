@@ -1,11 +1,14 @@
 package io.github.tr100000.researcher.api.data;
 
+import com.google.common.base.Preconditions;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.ResearchCriterion;
 import io.github.tr100000.researcher.api.ResearchReward;
 import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.CriterionTrigger;
@@ -122,6 +125,15 @@ public class ResearchBuilder {
 
     public Identifier export(ResearchExporter exporter) {
         exporter.accept(id, build());
+        return id;
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public Identifier exportWithConditions(ResearchExporter exporter, ResourceCondition... conditions) {
+        Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
+        Research research = build();
+        FabricDataGenHelper.addConditions(research, conditions);
+        exporter.accept(id, research);
         return id;
     }
 

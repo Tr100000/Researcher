@@ -6,6 +6,7 @@ import io.github.tr100000.researcher.command.ResearcherClientCommand;
 import io.github.tr100000.researcher.compat.JeiDelegate;
 import io.github.tr100000.researcher.compat.ReiDelegate;
 import io.github.tr100000.researcher.compat.RrvDelegate;
+import io.github.tr100000.researcher.config.ResearcherConfigs;
 import io.github.tr100000.researcher.impl.recipe.CraftingRecipeUnlockDisplay;
 import io.github.tr100000.researcher.impl.reward.ResearcherClientRewards;
 import io.github.tr100000.researcher.networking.ResearcherClientNetworking;
@@ -74,6 +75,11 @@ public class ResearcherClient implements ClientModInitializer {
 
         ClientPlayConnectionEvents.DISCONNECT.register((_, _) -> ResearchScreen.setSelected(null));
 
+        if (!ResearcherConfigs.client.disableRecipeViewerIntegration.get())
+            initRecipeViewerDelegate();
+    }
+
+    private void initRecipeViewerDelegate() {
         if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
             LOGGER.info("REI integration enabled");
             recipeViewerDelegate = new ReiDelegate();
