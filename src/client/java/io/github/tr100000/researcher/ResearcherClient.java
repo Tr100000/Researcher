@@ -1,5 +1,6 @@
 package io.github.tr100000.researcher;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.tr100000.researcher.api.recipe.RecipeUnlockDisplayRegistry;
 import io.github.tr100000.researcher.api.reward.ResearchClientRewardRegistry;
 import io.github.tr100000.researcher.command.ResearcherClientCommand;
@@ -29,14 +30,13 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.TransmuteRecipe;
 import org.jspecify.annotations.NullMarked;
-import org.lwjgl.glfw.GLFW;
 
 import static io.github.tr100000.researcher.Researcher.LOGGER;
 
 @NullMarked
 public class ResearcherClient implements ClientModInitializer {
     public static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(ModUtils.id("main"));
-    public static final KeyMapping OPEN_RESEARCH_SCREEN_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(ModUtils.id("open_research_screen").toLanguageKey("key"), GLFW.GLFW_KEY_R, KEY_CATEGORY));
+    public static final KeyMapping OPEN_RESEARCH_SCREEN_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(ModUtils.id("open_research_screen").toLanguageKey("key"), InputConstants.KEY_R, KEY_CATEGORY));
 
     public static final SoundEvent RESEARCH_FINISHED_SOUND = SoundEvent.createVariableRangeEvent(ModUtils.id("ui.toast.research_finished"));
 

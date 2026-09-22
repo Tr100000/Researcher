@@ -3,9 +3,7 @@ package io.github.tr100000.researcher.criterion;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.ResearcherCriteriaTriggers;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.predicates.StatePropertiesPredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.Holder;
@@ -13,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -26,10 +25,10 @@ public class BlockBrokenTrigger extends SimpleCriterionTrigger<BlockBrokenTrigge
         this.trigger(player, conditions -> conditions.matches(brokenBlock));
     }
 
-    public record Conditions(Optional<ContextAwarePredicate> player, Optional<Holder<Block>> block, Optional<StatePropertiesPredicate> state) implements SimpleCriterionTrigger.SimpleInstance {
+    public record Conditions(Optional<Holder<LootItemCondition>> player, Optional<Holder<Block>> block, Optional<StatePropertiesPredicate> state) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<Conditions> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Conditions::player),
+                        LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Conditions::player),
                         BuiltInRegistries.BLOCK.holderByNameCodec().optionalFieldOf("block").forGetter(Conditions::block),
                         StatePropertiesPredicate.CODEC.optionalFieldOf("state").forGetter(Conditions::state)
                 ).apply(instance, Conditions::new)

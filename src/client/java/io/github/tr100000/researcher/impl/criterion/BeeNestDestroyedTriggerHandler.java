@@ -43,7 +43,7 @@ public class BeeNestDestroyedTriggerHandler implements TriggerHandler<BeeNestDes
             textAfter = textAfter.withTextTooltip(textHolder.getText());
         }
 
-        TriggerDisplayElement block = criterion.conditions().block().map(BlockPredicateHelper::element).orElseGet(() -> new TextElement(ANY_BLOCK));
+        TriggerDisplayElement block = criterion.conditions().block().flatMap(BlockPredicateHelper::setElement).orElseGet(() -> new TextElement(ANY_BLOCK));
 
         return new TriggerDisplay(
                 TriggerDisplay.makeCountElement(criterion),

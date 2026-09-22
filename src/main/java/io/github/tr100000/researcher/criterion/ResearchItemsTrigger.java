@@ -3,12 +3,13 @@ package io.github.tr100000.researcher.criterion;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.ResearcherCriteriaTriggers;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class ResearchItemsTrigger extends SimpleCriterionTrigger<ResearchItemsTr
         }
 
         @Override
-        public Optional<ContextAwarePredicate> player() {
+        public Optional<Holder<LootItemCondition>> player() {
             return Optional.empty();
         }
     }

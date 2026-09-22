@@ -8,6 +8,7 @@ import io.github.tr100000.trutils.api.item.ItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.advancements.predicates.DataComponentMatchers;
 import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.predicates.AnyValue;
@@ -158,7 +159,9 @@ public final class ComponentsPredicateHelper {
     }
 
     private static void potionContentsTooltip(PotionsPredicate predicate, IndentedTextHolder textHolder) {
-        predicate.potions().forEach(entry -> textHolder.accept(Component.translatable(ItemUtils.getPotionTranslationKey(entry))));
+        predicate.potions()
+                .orElse(HolderSet.empty())
+                .forEach(entry -> textHolder.accept(Component.translatable(ItemUtils.getPotionTranslationKey(entry))));
     }
 
     private static void customDataTooltip(CustomDataPredicate predicate, IndentedTextHolder textHolder) {

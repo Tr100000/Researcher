@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -63,7 +64,7 @@ public record LootReward(List<ResourceKey<LootTable>> loot) implements ResearchR
                     changes = true;
                 }
                 else {
-                    ItemEntity drop = player.drop(stack, false);
+                    ItemEntity drop = player.drop(stack, false, Prediction.SERVER_ONLY);
                     if (drop != null) {
                         drop.setDefaultPickUpDelay();
                         drop.setTarget(player.getUUID());

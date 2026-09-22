@@ -48,7 +48,7 @@ public class Researcher implements ModInitializer {
         ResearcherNetworking.registerServerRecievers();
 
         ResourceLoader.get(PackType.SERVER_DATA).addListenerOrdering(
-                ResourceReloaderKeys.Server.RECIPES,
+                ResourceReloaderKeys.AFTER_VANILLA,
                 ResearchManager.ID
         );
 

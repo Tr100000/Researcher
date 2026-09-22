@@ -7,14 +7,17 @@ import io.github.tr100000.researcher.api.trigger.element.ItemElement;
 import io.github.tr100000.researcher.api.trigger.element.TextElement;
 import io.github.tr100000.researcher.api.trigger.element.TimedSwitchingElement;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.predicates.BlockPredicate;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class BlockPredicateHelper {
     private BlockPredicateHelper() {}
@@ -90,6 +93,17 @@ public final class BlockPredicateHelper {
         if (block == null) return anyBlockElement();
 
         return element(block.value());
+    }
+
+    public static Optional<TriggerDisplayElement> setElement(HolderSet<Block> blocks) {
+        List<TriggerDisplayElement> elements = new ObjectArrayList<>();
+        for (Holder<Block> block : blocks) {
+            elements.add(element(block));
+        }
+
+        return elements.isEmpty()
+                ? Optional.empty()
+                : Optional.of(new TimedSwitchingElement(elements));
     }
 
     @Contract(value = "-> new", pure = true)

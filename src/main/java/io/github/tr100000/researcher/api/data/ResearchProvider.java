@@ -34,7 +34,7 @@ public abstract class ResearchProvider implements DataProvider {
         this.registries = registries;
     }
 
-    protected abstract void configure(ResearchExporter exporter, HolderLookup.Provider lookup);
+    protected abstract void configure(ResearchExporter exporter, HolderLookup.Provider registryLookup);
 
     @Override
     @SuppressWarnings("UnstableApiUsage")

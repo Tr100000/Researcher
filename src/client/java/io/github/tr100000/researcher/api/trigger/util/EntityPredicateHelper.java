@@ -13,7 +13,6 @@ import io.github.tr100000.trutils.api.gui.Icon;
 import io.github.tr100000.trutils.api.gui.ItemIcon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.predicates.GameTypePredicate;
 import net.minecraft.advancements.predicates.MobEffectsPredicate;
 import net.minecraft.advancements.predicates.entity.CubeMobPredicate;
@@ -177,12 +176,12 @@ public final class EntityPredicateHelper {
     }
 
     @Contract(mutates = "param2")
-    public static void tooltip(@Nullable ContextAwarePredicate predicate, IndentedTextHolder textHolder) {
-        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
+    public static void tooltip(@Nullable Holder<LootItemCondition> predicate, IndentedTextHolder textHolder) {
+        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootItemConditionHolder(predicate);
         entityPredicate.ifPresentOrElse(p -> tooltip(p, textHolder), () -> textHolder.accept(PREDICATE_MISSING));
     }
 
-    public static Optional<List<MutableComponent>> tooltip(Optional<ContextAwarePredicate> predicate, @Nullable Component headerText) {
+    public static Optional<List<MutableComponent>> tooltip(Optional<Holder<LootItemCondition>> predicate, @Nullable Component headerText) {
         return PredicateHelper.optionalTooltip(predicate, EntityPredicateHelper::tooltip, headerText);
     }
 
@@ -210,28 +209,25 @@ public final class EntityPredicateHelper {
     }
 
     @Contract(value = "_ -> new", pure = true)
-    public static TriggerDisplayElement element(@Nullable ContextAwarePredicate predicate) {
-        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
+    public static TriggerDisplayElement element(@Nullable Holder<LootItemCondition> predicate) {
+        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootItemConditionHolder(predicate);
         return entityPredicate.map(EntityPredicateHelper::element).orElseGet(() -> new TextElement(ANY_ENTITY));
     }
 
     @Contract(value = "_ -> new", pure = true)
-    public static TriggerDisplayElement vehicleElement(@Nullable ContextAwarePredicate predicate) {
-        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootContextPredicate(predicate);
+    public static TriggerDisplayElement vehicleElement(@Nullable Holder<LootItemCondition> predicate) {
+        Optional<EntityPredicate> entityPredicate = entityPredicateFromLootItemConditionHolder(predicate);
         EntityPredicate vehiclePredicate = entityPredicate.map(p -> ((VehiclePredicate)p.parts.get(VehiclePredicate.CODEC)).vehicle()).orElse(null);
         return element(vehiclePredicate);
     }
 
     @Contract(pure = true)
-    private static Optional<EntityPredicate> entityPredicateFromLootContextPredicate(@Nullable ContextAwarePredicate predicate) {
+    private static Optional<EntityPredicate> entityPredicateFromLootItemConditionHolder(@Nullable Holder<LootItemCondition> predicate) {
         if (predicate == null) return Optional.empty();
 
-        for (LootItemCondition condition : predicate.conditions) {
-            if (condition instanceof LootItemEntityPropertyCondition entityPropertiesCondition) {
-                return entityPropertiesCondition.predicate();
-            }
-        }
-        return Optional.empty();
+        return predicate.value() instanceof LootItemEntityPropertyCondition entityPropertiesCondition
+                ? entityPropertiesCondition.predicate()
+                : Optional.empty();
     }
 
     @Contract(mutates = "param2")

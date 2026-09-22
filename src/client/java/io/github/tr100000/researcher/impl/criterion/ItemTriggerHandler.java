@@ -2,17 +2,17 @@ package io.github.tr100000.researcher.impl.criterion;
 
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearchCriterion;
+import io.github.tr100000.researcher.api.trigger.util.BlockPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.ItemPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.BlockPredicate;
 import net.minecraft.advancements.predicates.ItemPredicate;
-import net.minecraft.advancements.predicates.StatePropertiesPredicate;
 import net.minecraft.advancements.triggers.ItemUsedOnLocationTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 
 import java.util.Optional;
@@ -37,17 +37,13 @@ public class ItemTriggerHandler extends AbstractTriggerHandler<ItemUsedOnLocatio
         playerTooltip(criterion, textHolder);
     }
 
-    public static void locationTooltip(ContextAwarePredicate predicate, IndentedTextHolder textHolder) {
-        predicate.conditions.forEach(condition -> {
-            if (condition instanceof LootItemBlockStatePropertyCondition(Holder<Block> block, Optional<StatePropertiesPredicate> properties)) {
-                textHolder.accept(Component.translatable(BLOCK_KEY, block.unwrapKey().orElseThrow().identifier()));
-                PredicateHelper.optionalTooltip(properties, PredicateHelper::stateTooltip, BLOCK_PROPERTIES_TEXT)
-                        .ifPresent(textHolder::accept);
-            }
-            else if (condition instanceof MatchTool(Optional<ItemPredicate> toolItem)) {
-                PredicateHelper.optionalTooltip(toolItem, ItemPredicateHelper::tooltip, TOOL_TEXT)
-                        .ifPresent(textHolder::accept);
-            }
-        });
+    public static void locationTooltip(Holder<LootItemCondition> predicate, IndentedTextHolder textHolder) {
+        if (predicate.value() instanceof MatchBlock(BlockPredicate blockPredicate)) {
+            BlockPredicateHelper.tooltip(blockPredicate, textHolder);
+        }
+        else if (predicate.value() instanceof MatchTool(Optional<ItemPredicate> toolItem)) {
+            PredicateHelper.optionalTooltip(toolItem, ItemPredicateHelper::tooltip, TOOL_TEXT)
+                    .ifPresent(textHolder::accept);
+        }
     }
 }

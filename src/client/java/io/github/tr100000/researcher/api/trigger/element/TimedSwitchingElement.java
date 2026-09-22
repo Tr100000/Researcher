@@ -29,6 +29,8 @@ public class TimedSwitchingElement implements TriggerDisplayElement {
     }
 
     private TriggerDisplayElement getCurrentElement() {
+        if (elements.isEmpty()) return EmptyElement.INSTANCE;
+
         final long timeMilliseconds = Util.getMillis();
         int index = Mth.floor((double)timeMilliseconds / 1000L / switchTimeSeconds) % elements.size();
         return elements.get(index);

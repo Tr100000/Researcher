@@ -4,12 +4,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.tr100000.researcher.ModUtils;
 import io.github.tr100000.researcher.ResearcherCriteriaTriggers;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -23,10 +23,10 @@ public class ResearchUnlockedTrigger extends SimpleCriterionTrigger<ResearchUnlo
         this.trigger(player, triggerInstance -> triggerInstance.matches(id));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, Identifier researchId) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, Identifier researchId) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+                        LootItemCondition.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
                         Identifier.CODEC.fieldOf("research").forGetter(TriggerInstance::researchId)
                 ).apply(instance, TriggerInstance::new)
         );

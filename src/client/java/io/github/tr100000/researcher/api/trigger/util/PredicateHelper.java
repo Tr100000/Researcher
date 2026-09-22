@@ -6,6 +6,7 @@ import net.minecraft.advancements.predicates.CollectionPredicate;
 import net.minecraft.advancements.predicates.NbtPredicate;
 import net.minecraft.advancements.predicates.StatePropertiesPredicate;
 import net.minecraft.advancements.predicates.TagPredicate;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Contract;
@@ -67,7 +68,10 @@ public final class PredicateHelper {
 
     @Contract(mutates = "param2")
     public static <T> void tagTooltip(TagPredicate<T> predicate, IndentedTextHolder textHolder) {
-        textHolder.accept(Component.translatable(predicate.expected() ? TAG_EXPECTED : TAG_NOT_EXPECTED, predicate.tag().location().toString()));
+        if (predicate.tag() instanceof HolderSet.Named<T> named)
+            textHolder.accept(Component.translatable(predicate.expected() ? TAG_EXPECTED : TAG_NOT_EXPECTED, named.key().location().toString()));
+        else
+            textHolder.accept(Component.literal("ERROR: Unknown tag predicate"));
     }
 
     @Contract(mutates = "param2")

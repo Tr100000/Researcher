@@ -9,6 +9,7 @@ import io.github.tr100000.researcher.criterion.ItemCraftedTrigger;
 import io.github.tr100000.researcher.reward.FireworksReward;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.minecraft.advancements.predicates.CollectionPredicate;
 import net.minecraft.advancements.predicates.DamageSourcePredicate;
 import net.minecraft.advancements.predicates.DistancePredicate;
 import net.minecraft.advancements.predicates.ItemPredicate;
@@ -22,11 +23,14 @@ import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.advancements.triggers.KilledTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.predicates.PotionsPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
@@ -44,8 +48,9 @@ public class TestmodResearchProvider extends ResearchProvider {
     }
 
     @Override
-    protected void configure(ResearchExporter exporter, HolderLookup.Provider lookup) {
-        HolderGetter<Item> itemLookup = lookup.lookupOrThrow(Registries.ITEM);
+    protected void configure(ResearchExporter exporter, HolderLookup.Provider registryLookup) {
+        HolderGetter<Item> itemLookup = registryLookup.lookupOrThrow(Registries.ITEM);
+        HolderGetter<DamageType> damageTypeLookup = registryLookup.lookupOrThrow(Registries.DAMAGE_TYPE);
 
         Identifier blastFurnace = new ResearchBuilder(id("blast_furnace"))
                 .title(Component.literal("Blast Furnace"))
@@ -107,8 +112,8 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .description(Component.literal("Kill a skeleton from at least 50 meters away!"))
                 .prerequisites(ironTools, testing)
                 .toUnlock(KilledTrigger.TriggerInstance.playerKilledEntity(
-                        EntityPredicate.Builder.entity().of(lookup.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(MinMaxBounds.Doubles.atLeast(50.0))),
-                        DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE))
+                        EntityPredicate.Builder.entity().of(registryLookup.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS).distance(DistancePredicate.horizontal(MinMaxBounds.Doubles.atLeast(50.0))),
+                        DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(damageTypeLookup, DamageTypeTags.IS_PROJECTILE))
                 ), 5)
                 .export(exporter);
 
@@ -128,7 +133,7 @@ public class TestmodResearchProvider extends ResearchProvider {
                 .prerequisites(killTest)
                 .toUnlock(
                         CriteriaTriggers.BREWED_POTION,
-                        new BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(Potions.STRONG_TURTLE_MASTER)),
+                        new BrewedPotionTrigger.TriggerInstance(Optional.empty(), Optional.of(new PotionsPredicate(Optional.of(HolderSet.direct(Potions.STRONG_TURTLE_MASTER)), Optional.of(new CollectionPredicate<>(Optional.empty(), Optional.empty(), Optional.empty()))))),
                         10
                 )
                 .sizeSettings(new Research.SizeSettings(new Research.Size(100, 128), new Research.Size(200, 80)))

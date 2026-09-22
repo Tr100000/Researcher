@@ -6,6 +6,7 @@ import io.github.tr100000.researcher.Research;
 import io.github.tr100000.trutils.api.gui.GuiHelper;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.library.plugins.vanilla.crafting.CraftingRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -25,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CraftingRecipeCategory.class)
-public class CraftingRecipeCategoryMixin {
+public abstract class CraftingRecipeCategoryMixin implements IRecipeCategory<RecipeHolder<CraftingRecipe>> {
     @Unique
     private static final Identifier ERROR_TEXTURE = ModUtils.id("textures/gui/error_overlay.png");
 
     @Shadow @Final
     public static int height;
 
-    @Inject(method = "draw(Lnet/minecraft/world/item/crafting/RecipeHolder;Lmezz/jei/api/gui/ingredient/IRecipeSlotsView;Lnet/minecraft/client/gui/GuiGraphicsExtractor;DD)V", at = @At("TAIL"))
-    private void draw(RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY, CallbackInfo ci) {
+    @Override
+    public void draw(RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         ClientResearchTracker tracker = getTracker();
         if (tracker == null) return;
         if (!tracker.canCraftRecipe(recipeHolder.id().identifier())) {

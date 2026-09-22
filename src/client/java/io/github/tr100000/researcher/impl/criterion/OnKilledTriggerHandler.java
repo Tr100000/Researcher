@@ -10,10 +10,11 @@ import io.github.tr100000.researcher.api.trigger.util.DamagePredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.EntityPredicateHelper;
 import io.github.tr100000.researcher.api.trigger.util.PredicateHelper;
 import io.github.tr100000.researcher.api.util.IndentedTextHolder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.predicates.DamageSourcePredicate;
 import net.minecraft.advancements.triggers.KilledTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
@@ -60,9 +61,9 @@ public class OnKilledTriggerHandler implements TriggerHandler<KilledTrigger.Trig
 
     @Override
     public TriggerDisplayElement prepare(ResearchCriterion<KilledTrigger.TriggerInstance> criterion) {
-        Optional<ContextAwarePredicate> playerPredicate = criterion.conditions().player();
+        Optional<Holder<LootItemCondition>> playerPredicate = criterion.conditions().player();
         Optional<DamageSourcePredicate> killingBlowPredicate = criterion.conditions().killingBlow();
-        Optional<ContextAwarePredicate> entityPredicate = criterion.conditions().entity();
+        Optional<Holder<LootItemCondition>> entityPredicate = criterion.conditions().entity();
 
         IndentedTextHolder killConditionTextHolder = new IndentedTextHolder();
         PredicateHelper.optionalTooltip(playerPredicate, EntityPredicateHelper::tooltip, PLAYER_CONDITIONS_HEADER)

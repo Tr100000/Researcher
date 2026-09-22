@@ -41,7 +41,7 @@ public class SlideDownBlockTriggerHandler implements TriggerHandler<SlideDownBlo
         PredicateHelper.optionalTooltip(criterion.conditions().state(), PredicateHelper::stateTooltip, BLOCK_CONDITIONS_HEADER)
                 .ifPresent(blockConditionTextHolder::accept);
 
-        TriggerDisplayElement block = criterion.conditions().block().map(BlockPredicateHelper::element).orElseGet(() -> new TextElement(ANY_BLOCK));
+        TriggerDisplayElement block = criterion.conditions().block().flatMap(BlockPredicateHelper::setElement).orElseGet(() -> new TextElement(ANY_BLOCK));
 
         if (!blockConditionTextHolder.isEmpty()) {
             block = new GroupedElement(block, new TextElement(Component.literal("*"))).withTextTooltip(blockConditionTextHolder.getText());
