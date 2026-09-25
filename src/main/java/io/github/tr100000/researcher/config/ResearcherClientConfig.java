@@ -34,7 +34,7 @@ public class ResearcherClientConfig extends Config {
     public ValidatedEnum<ResearchTreeMode> researchTreeMode = new ValidatedEnum<>(ResearchTreeMode.ALL_RELATED);
     public ValidatedBoolean discoveryResearchMode = new ValidatedBoolean(false);
     public ValidatedColor highlightColor = new ValidatedColor(new Color(0xFFEBC000), true);
-    public ValidatedFloat researchTreeScrollSensitivity = new ValidatedFloat(2.5F, 30.0F, 0.5F, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS);
+    public ValidatedFloat researchTreeScrollSensitivity = new ValidatedFloat(1.0F, 50.0F, 0.1F, ValidatedNumber.WidgetType.SLIDER);
     public ValidatedInt researchScreenSidebarWidth = new ValidatedInt(230, Integer.MAX_VALUE, 10);
     public ValidatedInt researchScreenInfoViewHeight = new ValidatedInt(140, Integer.MAX_VALUE, 10);
     public ValidatedEnum<ResearchScreenAllowResizeMode> researchScreenAllowResize = new ValidatedEnum<>(ResearchScreenAllowResizeMode.ALWAYS);

@@ -305,8 +305,8 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        offsetX += horizontalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
-        offsetY += verticalAmount * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        offsetX += horizontalAmount * 16.0 * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
+        offsetY += verticalAmount * 16.0 * ResearcherConfigs.client.researchTreeScrollSensitivity.get();
         enforceScrollBounds();
         return true;
     }
