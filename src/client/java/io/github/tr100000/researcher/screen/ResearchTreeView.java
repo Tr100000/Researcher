@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.tr100000.researcher.ClientResearchTracker;
 import io.github.tr100000.researcher.Research;
 import io.github.tr100000.researcher.Researcher;
@@ -292,7 +293,7 @@ public class ResearchTreeView extends ResearchNodeContainingView {
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        if (event.button() == 0) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             this.offsetX += dx;
             this.offsetY += dy;
             enforceScrollBounds();

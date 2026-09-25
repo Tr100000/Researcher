@@ -4,3 +4,4 @@
 
 ### Fixed
 - Fixed minor gui issue with JEI integration
+- Fixed dragging to move the tree view
